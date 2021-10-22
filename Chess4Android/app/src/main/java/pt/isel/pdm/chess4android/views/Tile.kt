@@ -28,12 +28,12 @@ class Tile(
     private val tilesPerSide: Int,
 ) : View(ctx) {
 
-    fun createDrawable(xmlFile: Drawable): VectorDrawableCompat? {
+    private fun createDrawable(xmlFile: Int): VectorDrawableCompat? {
         return VectorDrawableCompat
-            .create(ctx.resources, 0, null)
+            .create(ctx.resources, xmlFile, null)
     }
-    private val blackBishopDrawable = VectorDrawableCompat
-        .create(ctx.resources, R.drawable.ic_white_knight, null)
+
+    private val blackBishopDrawable = createDrawable(R.drawable.ic_black_bishop)
 
     enum class Type { WHITE, BLACK }
 
