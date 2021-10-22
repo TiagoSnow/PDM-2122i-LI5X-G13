@@ -14,6 +14,5 @@ class CreditsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        //setContentView(R.layout.activity_credits)
     }
 }
