@@ -20,11 +20,11 @@ class GameActivityViewModel: ViewModel() {
             .create(ChessRoyaleService::class.java)
     }
 
-    fun getPuzzleOfDay(completion: (Object) -> Unit) {
+    fun getPuzzleOfDay(completion: (Test) -> Unit) {
         //Let's make the request
         service.getPuzzle().enqueue(object: Callback<Test> {
             override fun onResponse(call: Call<Test>, response: Response<Test>) {
-                response.body()?.game?.let { completion(it) }
+                response.body()?.let { completion(it) }
             }
 
             override fun onFailure(call: Call<Test>, t: Throwable) {

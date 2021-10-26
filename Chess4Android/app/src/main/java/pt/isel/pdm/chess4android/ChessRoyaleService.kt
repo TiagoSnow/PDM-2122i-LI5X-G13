@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 import java.util.*
 
-data class Test(val game: Object)
+data class Test(val game: Object, val puzzle: Object)
 
 interface ChessRoyaleService {
 
