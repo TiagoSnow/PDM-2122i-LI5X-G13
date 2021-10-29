@@ -1,5 +1,6 @@
 package pt.isel.pdm.chess4android
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,5 +17,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.creditsButton.setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
+        }
     }
+
+
+
 }

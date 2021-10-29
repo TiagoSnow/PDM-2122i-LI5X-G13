@@ -14,19 +14,19 @@
         android:theme="@style/Theme.Chess4Android">
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreditsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GameActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GameActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
