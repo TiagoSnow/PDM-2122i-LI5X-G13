@@ -20,8 +20,15 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.getPuzzleOfDay {
-            Log.v("APP",it)
+
+        binding.button.setOnClickListener {
+            binding.textView.text = "Fetching quote"
+            viewModel.getPuzzleOfDay {
+                Log.v("APP", it.toString())
+                binding.textView.text = it.toString()
+
+            }
         }
+
     }
 }
