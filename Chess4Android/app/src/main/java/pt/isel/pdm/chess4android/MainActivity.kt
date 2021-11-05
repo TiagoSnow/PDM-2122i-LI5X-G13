@@ -20,6 +20,11 @@ class MainActivity : AppCompatActivity() {
         binding.creditsButton.setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
+
+        binding.puzzleOfDayButton.setOnClickListener {
+            startActivity(Intent(this, GameActivity::class.java))
+        }
+
     }
 
 

@@ -2,10 +2,8 @@ package pt.isel.pdm.chess4android
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
-import pt.isel.pdm.chess4android.databinding.ActivityMainBinding
 
 class GameActivity : AppCompatActivity() {
 
@@ -23,11 +21,12 @@ class GameActivity : AppCompatActivity() {
 
         binding.button.setOnClickListener {
             binding.textView.text = "Fetching quote"
-            viewModel.getPuzzleOfDay {
-                Log.v("APP", it.toString())
-                binding.textView.text = it.toString()
+            viewModel.getPuzzleOfDay()
+        }
 
-            }
+        viewModel.dataOfDay.observe(this) {
+            binding.textView.text = it.game.toString()
+            viewModel.addData(it)
         }
 
     }

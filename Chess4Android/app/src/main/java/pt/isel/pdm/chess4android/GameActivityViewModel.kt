@@ -1,37 +1,59 @@
 package pt.isel.pdm.chess4android
 
+import android.app.Application
 import android.util.Log
-import android.widget.TextView
-import androidx.lifecycle.ViewModel
-import org.json.JSONObject
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
+import com.google.gson.internal.LinkedTreeMap
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
-class GameActivityViewModel: ViewModel() {
-    companion object {
-        val service = Retrofit.Builder()
-            .baseUrl("https://lichess.org/api/puzzle/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ChessRoyaleService::class.java)
+private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
+
+class GameActivityViewModel(application: Application, private val state: SavedStateHandle): AndroidViewModel(application) {
+
+    val dataOfDay: LiveData<Data> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
+
+    fun getPuzzleOfDay() {
+        this.getApplication<PuzzleOfDayApplication>()
+            .puzzleOfDayService
+            .getPuzzle()
+            .enqueue(object: Callback<Data> {
+            override fun onResponse(call: Call<Data>, response: Response<Data>) {
+                val puzzle = response.body()
+                if(puzzle != null && response.isSuccessful)
+                    state.set(GAME_ACTIVITY_VIEW_STATE, puzzle)
+            }
+
+            override fun onFailure(call: Call<Data>, t: Throwable) {
+                Log.e("APP", "onFailure", t)
+            }
+        })
     }
 
-    fun getPuzzleOfDay(completion: (Test) -> Unit) {
+    fun addData(data: Data) {
+        val gameData = data.game
+        val gameKeys = gameData.keys
+        for (key in gameKeys){
+            Log.v("APP", key)
+        }
+    }
+
+    /*fun getPuzzleOfDay(completion: (Puzzle) -> Unit) {
         //Let's make the request
-        service.getPuzzle().enqueue(object: Callback<Test> {
-            override fun onResponse(call: Call<Test>, response: Response<Test>) {
+        service.getPuzzle().enqueue(object: Callback<Puzzle> {
+            override fun onResponse(call: Call<Puzzle>, response: Response<Puzzle>) {
                 response.body()?.let { completion(it) }
             }
 
-            override fun onFailure(call: Call<Test>, t: Throwable) {
+            override fun onFailure(call: Call<Puzzle>, t: Throwable) {
                 Log.e("APP", "onFailure", t)
             }
 
         })
-    }
+    }*/
 
 }
