@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chess4Android</string>
+    <string name="puzzle_of_day">Puzzle do Dia</string>
+    <string name="credits">Créditos</string>
+    <string name="chessroyale">ChessRoyale</string>
+</resources>
