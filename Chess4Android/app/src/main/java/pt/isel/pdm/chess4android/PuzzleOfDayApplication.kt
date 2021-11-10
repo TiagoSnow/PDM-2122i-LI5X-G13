@@ -11,7 +11,7 @@ class PuzzleOfDayApplication: Application() {
             .baseUrl("https://lichess.org/api/puzzle/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ChessRoyaleService::class.java)
+            .create(DailyPuzzleService::class.java)
     }
 
 }

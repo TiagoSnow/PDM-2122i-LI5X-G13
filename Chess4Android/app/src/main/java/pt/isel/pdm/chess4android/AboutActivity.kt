@@ -24,8 +24,6 @@ class AboutActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun showPopup(view: View) {
         val popup = PopupMenu(this, view)
         popup.inflate(R.menu.menu)

@@ -26,7 +26,7 @@ class GameActivity : AppCompatActivity() {
 
         viewModel.dataOfDay.observe(this) {
             binding.textView.text = it.game.toString()
-            viewModel.addData(it)
+            viewModel.setBoard(it)
         }
 
     }
