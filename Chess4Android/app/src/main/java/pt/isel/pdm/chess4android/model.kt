@@ -5,3 +5,8 @@ enum class Piece {
     PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
 }
 
+data class PieceId(val army: Boolean, val piece: Piece) {
+
+}
+
+

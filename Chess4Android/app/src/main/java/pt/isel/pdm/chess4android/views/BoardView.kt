@@ -9,6 +9,7 @@ import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.Piece
+import pt.isel.pdm.chess4android.PieceId
 
 import pt.isel.pdm.chess4android.R
 
@@ -19,6 +20,10 @@ import pt.isel.pdm.chess4android.R
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
 
     private val side = 8
+
+    private var tiles: Array<Array<Tile?>> = Array(COLUMNS) { column ->
+        Array(LINES) { null }
+    }
 
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
@@ -57,9 +62,11 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             )
             //tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
             addView(tile)
+            tiles[column][row] = tile
         }
     }
     //var onTileClickedListener: TileTouchListener? = null
+
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
@@ -68,4 +75,27 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(0f, 0f, 0f, height.toFloat(), brush)
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
+
+
+    fun updateView(pieceId: PieceId){
+        val color:Army = if(pieceId.army) {
+            Army.BLACK
+        } else {
+            Army.WHITE
+        }
+
+        val tile = Tile(ctx, color, 8, piecesImages, Pair(color, pieceId.piece))
+
+        removeView(tiles[0][0])
+        addView(tile)
+        tiles[0][0] = tile
+
+    }
+
+    companion object {
+        private const val COLUMNS = 8
+        private const val LINES = 8
+    }
+
+
 }

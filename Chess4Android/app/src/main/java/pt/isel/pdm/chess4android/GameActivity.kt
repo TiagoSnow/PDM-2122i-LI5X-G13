@@ -3,6 +3,7 @@ package pt.isel.pdm.chess4android
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.get
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
@@ -18,16 +19,15 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-
-        binding.button.setOnClickListener {
-            binding.textView.text = "Fetching quote"
-            viewModel.getPuzzleOfDay()
-        }
+        viewModel.getPuzzleOfDay()
 
         viewModel.dataOfDay.observe(this) {
-            binding.textView.text = it.game.toString()
-            viewModel.setBoard(it)
+            binding.boardView.updateView(PieceId(false, Piece.PAWN))
+        //viewModel.setBoard(it, binding.boardView)
         }
+
+
+
 
     }
 }
