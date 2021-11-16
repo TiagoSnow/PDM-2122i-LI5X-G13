@@ -1,15 +1,15 @@
-package pt.isel.pdm.chess4android
+package pt.isel.pdm.ches
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
-import pt.isel.pdm.chess4android.views.BoardView
+import pt.isel.pdm.chess4android.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import pt.isel.pdm.chess4android.Army
+
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
 private const val COLUMNS = 8
 private const val LINES = 8
@@ -20,21 +20,24 @@ class GameActivityViewModel(
 ) :
     AndroidViewModel(application) {
 
-     var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) { column ->
+    var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) { column ->
         Array(LINES) { null }
     }
 
-    fun beginBoard() {
+    fun getArmy(armyFlag: Boolean): Army {
+        return if (armyFlag)
+            Army.WHITE
+        else
+            Army.BLACK
+    }
+
+    private fun beginBoard() {
         //colocar as peças no estado inicial
         var armyFlag = true
         var army: Army;
         for (line in 0 until 8 step 7) {
             armyFlag = !armyFlag
-
-            army = if(armyFlag)
-                Army.WHITE
-            else
-                Army.BLACK
+            army = getArmy(armyFlag)
 
             for (column in 0 until 8 step 1) {
                 when (column) {
@@ -61,12 +64,10 @@ class GameActivityViewModel(
                 }
             }
         }
-
         for (column in 0 until 8 step 1) {
             board[column][1] = Pair(Army.BLACK, Piece.PAWN)
             board[column][6] = Pair(Army.WHITE, Piece.PAWN)
         }
-
     }
 
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
@@ -90,58 +91,73 @@ class GameActivityViewModel(
 
     //  pawn  pawn  pawn
     //  e4  |  c5  |d4   |  cxd4  |Nf3|d6|Nxd4|Nf6|Nc3|a6|Bg5|e6
+    private fun checkIfPawnExists(col: Int, line: Int, army: Army): Boolean {
+        return (board[col][line] != null && board[col][line]?.first == army)
+    }
 
-    /*fun setBoard(data: PuzzleInfo, boardView: BoardView) {
-        Log.v("APP", data.game.toString())
-        Log.v("APP", data.puzzle.solution.toString())
+    private fun movePawnPGN(move: String, army: Army) {
+        val col = move[0] - 'a'
+        val line = 8 - move[1].digitToInt()
+        var startingPoint = 0
+        if ((line == 3) && army == Army.BLACK ||
+            (line == 4) && army == Army.WHITE
+        ) {
+            if (checkIfPawnExists(col, 1, army)) startingPoint = 1
+            else
+                if (checkIfPawnExists(col, 2, army)) startingPoint = 2
+                else
+                    if (checkIfPawnExists(col, 5, army)) startingPoint = 5
+                    else
+                        if (checkIfPawnExists(col, 6, army)) startingPoint = 6
+        } else
+            startingPoint = if (army == Army.WHITE) line + 1 else line - 1
 
+        board[col][startingPoint] = null
+        board[col][line] = Pair(army, Piece.PAWN)
+    }
+
+    private fun moveRookPGN(move: String, army: Army) {
+        when (move.length) {
+            3 -> {
+                val col = move[1] - 'a'
+                val line = 8 - move[2].digitToInt()
+                for (line in 0 until 7 step 1) {
+
+                }
+
+            }
+        }
+
+
+        val col = move[1] - 'a'
+        val line = 8 - move[1].digitToInt()
+        var startingPoint = 0
+    }
+
+    fun placePieces(pgn: String) {
         beginBoard()
-
-        for (line in 0 until 8 step 1) {
-            for (column in 0 until 8 step 1) {
-                val value = board[column][line]
-                if(value != null)
-                    boardView.updateView(viewModel.board, value)
-            }
-        }
-
-    }*/
-
-    /*fun placePieces(pgn: String) {
-        var armyFlag = false
+        var armyFlag = true
         val lst: List<String> = pgn.split(" ")
-        for (p: String in lst) {
-            when (p.length) {
-                2 -> /*pawn*/ {
-                    board[p[0] - 'A'][Integer.parseInt(p[1].toString())] =
-                        Pair(armyFlag, Piece.PAWN)
-                    armyFlag = !armyFlag
+        for (move: String in lst) {
+            val army = getArmy(armyFlag)
+            when (move[0]) {
+                'R' -> moveRookPGN(move, army)
+                'B' -> {
                 }
-                3 -> {//Qd2
-                    /*create other piece*/
-                    var piece = getPiece(p[0])
-                    board[p[1] - 'A'][Integer.parseInt(p[2].toString())] =
-                        Pair(armyFlag, piece)
-                    armyFlag = !armyFlag
-                    //if (p == "O-O")
-                        //move()
-                    /*Kingside Castle*/
+                'Q' -> {
                 }
-                else -> {
-                    if (p == "O-O-O")
-                    /*Queenside castle*/
-                    /*Move*/
-                        move(
-                            PieceId(armyFlag, getPiece(p[0])),
-                            p[2] - 'A',
-                            Integer.parseInt(p[3].toString())
-                        )
-                    armyFlag = !armyFlag
+                'N' -> {
                 }
-            }
+                'K' -> {
+                }
+                'O' -> {
+                }
+                else -> movePawnPGN(move, army)
 
+            }
+            armyFlag = !armyFlag
         }
-    }*/
+    }
 
     private fun move(piece: PieceId, newColumn: Int, newLine: Int) {
         //procurar a peça no array

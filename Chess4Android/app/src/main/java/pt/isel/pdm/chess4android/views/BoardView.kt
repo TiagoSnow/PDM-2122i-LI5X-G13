@@ -14,7 +14,7 @@ import pt.isel.pdm.chess4android.*
  */
 @SuppressLint("ClickableViewAccessibility")
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
-   // var model = GameActivityViewModel.
+    // var model = GameActivityViewModel.
     private val side = 8
 
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
@@ -55,8 +55,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 ctx,
                 if ((row + column) % 2 == 0) Army.WHITE else Army.BLACK,
                 side,
-                piecesImages,
-                Pair(Army.WHITE,Piece.KNIGHT)
+                piecesImages
             )
             //tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
             addView(tile)
@@ -64,7 +63,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
     }
     //var onTileClickedListener: TileTouchListener? = null
-
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
@@ -75,20 +73,11 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(board: Array<Array<Pair<Army, Piece>?>>) {
-        for (column in 0 until 8 step 1){
+        for (column in 0 until 8 step 1) {
             for (line in 0 until 8 step 1) {
                 tiles[column][line]?.piece = board[column][line]
             }
         }
-
-
-
-       // val tile = Tile(ctx, color, 8, piecesImages, Pair(color, pieceId.piece))
-
-        //removeView(tiles[0][0])
-        //addView(tile)
-
-        //tiles[0][0]?.piece = Pair(Army.WHITE,Piece.BISHOP)
     }
 
     companion object {
