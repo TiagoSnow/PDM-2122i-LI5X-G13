@@ -20,11 +20,9 @@ class GameActivityViewModel(
 ) :
     AndroidViewModel(application) {
 
-    var board: Array<Array<PieceId?>> = Array(COLUMNS) { column ->
+     var board: Array<Array<PieceId?>> = Array(COLUMNS) { column ->
         Array(LINES) { null }
     }
-
-
 
     fun beginBoard() {
         //colocar as peças no estado inicial
@@ -103,7 +101,6 @@ class GameActivityViewModel(
 
     }
 
-
     fun placePieces(pgn: String) {
         var armyFlag = false
         val lst: List<String> = pgn.split(" ")
@@ -160,6 +157,4 @@ class GameActivityViewModel(
             }
         }
     }
-
-
 }

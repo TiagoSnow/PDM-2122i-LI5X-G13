@@ -7,21 +7,17 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Piece
-import pt.isel.pdm.chess4android.PieceId
-
-import pt.isel.pdm.chess4android.R
+import pt.isel.pdm.chess4android.*
 
 /**
  * Custom view that implements a chess board.
  */
 @SuppressLint("ClickableViewAccessibility")
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
-
+   // var model = GameActivityViewModel.
     private val side = 8
 
-    private var tiles: Array<Array<Tile?>> = Array(COLUMNS) { column ->
+    private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
 
@@ -30,6 +26,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         style = Paint.Style.STROKE
         strokeWidth = 10F
     }
+
     private fun createImageEntry(army: Army, piece: Piece, imageId: Int) =
         Pair(Pair(army, piece), VectorDrawableCompat.create(ctx.resources, imageId, null))
 
@@ -56,9 +53,10 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             val column = it % side
             val tile = Tile(
                 ctx,
-                if((row + column) % 2 == 0) Army.WHITE else Army.BLACK,
+                if ((row + column) % 2 == 0) Army.WHITE else Army.BLACK,
                 side,
-                piecesImages
+                piecesImages,
+                Pair(Army.WHITE,Piece.KNIGHT)
             )
             //tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
             addView(tile)
@@ -76,20 +74,18 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-
-    fun updateView(pieceId: PieceId){
-        val color:Army = if(pieceId.army) {
+    fun updateView(pieceId: PieceId) {
+        val color: Army = if (pieceId.army) {
             Army.BLACK
         } else {
             Army.WHITE
         }
 
-        val tile = Tile(ctx, color, 8, piecesImages, Pair(color, pieceId.piece))
+       // val tile = Tile(ctx, color, 8, piecesImages, Pair(color, pieceId.piece))
 
-        removeView(tiles[0][0])
-        addView(tile)
-        tiles[0][0] = tile
-
+        //removeView(tiles[0][0])
+        //addView(tile)
+        tiles[0][0]?.piece = Pair(Army.WHITE,Piece.BISHOP)
     }
 
     companion object {

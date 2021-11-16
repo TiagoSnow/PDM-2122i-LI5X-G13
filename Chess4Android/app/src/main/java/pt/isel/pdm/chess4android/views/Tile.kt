@@ -35,7 +35,6 @@ class Tile(
             invalidate()
         }
 
-
     private val brush = Paint().apply {
         color = ctx.resources.getColor(
             if (type == Army.WHITE) R.color.chess_board_white else R.color.chess_board_black,
