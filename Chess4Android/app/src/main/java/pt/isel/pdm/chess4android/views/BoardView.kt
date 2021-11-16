@@ -74,18 +74,21 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView(pieceId: PieceId) {
-        val color: Army = if (pieceId.army) {
-            Army.BLACK
-        } else {
-            Army.WHITE
+    fun updateView(board: Array<Array<Pair<Army, Piece>?>>) {
+        for (column in 0 until 8 step 1){
+            for (line in 0 until 8 step 1) {
+                tiles[column][line]?.piece = board[column][line]
+            }
         }
+
+
 
        // val tile = Tile(ctx, color, 8, piecesImages, Pair(color, pieceId.piece))
 
         //removeView(tiles[0][0])
         //addView(tile)
-        tiles[0][0]?.piece = Pair(Army.WHITE,Piece.BISHOP)
+
+        //tiles[0][0]?.piece = Pair(Army.WHITE,Piece.BISHOP)
     }
 
     companion object {

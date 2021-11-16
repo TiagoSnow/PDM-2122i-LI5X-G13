@@ -9,7 +9,7 @@ import pt.isel.pdm.chess4android.views.BoardView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import pt.isel.pdm.chess4android.Army
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
 private const val COLUMNS = 8
 private const val LINES = 8
@@ -20,36 +20,42 @@ class GameActivityViewModel(
 ) :
     AndroidViewModel(application) {
 
-     var board: Array<Array<PieceId?>> = Array(COLUMNS) { column ->
+     var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) { column ->
         Array(LINES) { null }
     }
 
     fun beginBoard() {
         //colocar as peças no estado inicial
-
         var armyFlag = true
+        var army: Army;
         for (line in 0 until 8 step 7) {
             armyFlag = !armyFlag
+
+            army = if(armyFlag)
+                Army.WHITE
+            else
+                Army.BLACK
+
             for (column in 0 until 8 step 1) {
                 when (column) {
                     0, 7 -> {
-                        board[column][line] = PieceId(armyFlag, Piece.ROOK)
+                        board[column][line] = Pair(army, Piece.ROOK)
 
                     }
                     1, 6 -> {
-                        board[column][line] = PieceId(armyFlag, Piece.KNIGHT)
+                        board[column][line] = Pair(army, Piece.KNIGHT)
 
                     }
                     2, 5 -> {
-                        board[column][line] = PieceId(armyFlag, Piece.BISHOP)
+                        board[column][line] = Pair(army, Piece.BISHOP)
 
                     }
                     3 -> {
-                        board[column][line] = PieceId(armyFlag, Piece.QUEEN)
+                        board[column][line] = Pair(army, Piece.QUEEN)
 
                     }
                     4 -> {
-                        board[column][line] = PieceId(armyFlag, Piece.KING)
+                        board[column][line] = Pair(army, Piece.KING)
 
                     }
                 }
@@ -57,8 +63,8 @@ class GameActivityViewModel(
         }
 
         for (column in 0 until 8 step 1) {
-            board[column][1] = PieceId(false, Piece.PAWN)//white
-            board[column][6] = PieceId(true, Piece.PAWN)//black
+            board[column][1] = Pair(Army.BLACK, Piece.PAWN)
+            board[column][6] = Pair(Army.WHITE, Piece.PAWN)
         }
 
     }
@@ -85,7 +91,7 @@ class GameActivityViewModel(
     //  pawn  pawn  pawn
     //  e4  |  c5  |d4   |  cxd4  |Nf3|d6|Nxd4|Nf6|Nc3|a6|Bg5|e6
 
-    fun setBoard(data: PuzzleInfo, boardView: BoardView) {
+    /*fun setBoard(data: PuzzleInfo, boardView: BoardView) {
         Log.v("APP", data.game.toString())
         Log.v("APP", data.puzzle.solution.toString())
 
@@ -95,27 +101,27 @@ class GameActivityViewModel(
             for (column in 0 until 8 step 1) {
                 val value = board[column][line]
                 if(value != null)
-                    boardView.updateView(value)
+                    boardView.updateView(viewModel.board, value)
             }
         }
 
-    }
+    }*/
 
-    fun placePieces(pgn: String) {
+    /*fun placePieces(pgn: String) {
         var armyFlag = false
         val lst: List<String> = pgn.split(" ")
         for (p: String in lst) {
             when (p.length) {
                 2 -> /*pawn*/ {
                     board[p[0] - 'A'][Integer.parseInt(p[1].toString())] =
-                        PieceId(armyFlag, Piece.PAWN)
+                        Pair(armyFlag, Piece.PAWN)
                     armyFlag = !armyFlag
                 }
                 3 -> {//Qd2
                     /*create other piece*/
                     var piece = getPiece(p[0])
                     board[p[1] - 'A'][Integer.parseInt(p[2].toString())] =
-                        PieceId(armyFlag, piece)
+                        Pair(armyFlag, piece)
                     armyFlag = !armyFlag
                     //if (p == "O-O")
                         //move()
@@ -135,7 +141,7 @@ class GameActivityViewModel(
             }
 
         }
-    }
+    }*/
 
     private fun move(piece: PieceId, newColumn: Int, newLine: Int) {
         //procurar a peça no array

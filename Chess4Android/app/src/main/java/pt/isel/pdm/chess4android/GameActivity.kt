@@ -3,7 +3,6 @@ package pt.isel.pdm.chess4android
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.view.get
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 
 class GameActivity : AppCompatActivity() {
@@ -21,8 +20,12 @@ class GameActivity : AppCompatActivity() {
 
         viewModel.getPuzzleOfDay()
 
+        viewModel.beginBoard()
+
         viewModel.dataOfDay.observe(this) {
-            binding.boardView.updateView(PieceId(false, Piece.PAWN))
+
+
+            binding.boardView.updateView(viewModel.board)
         //viewModel.setBoard(it, binding.boardView)
         }
 
