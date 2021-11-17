@@ -64,7 +64,7 @@ class GameModel() {
         board[6][7] = King(Army.WHITE)
     }
 
-    fun placePieces(pgn: String) {
+    fun placePieces(pgn: String, board: Array<Array<Piece?>>): Array<Array<Piece?>> {
         beginBoard()
         var armyFlag = true
         val lst: List<String> = pgn.split(" ")
