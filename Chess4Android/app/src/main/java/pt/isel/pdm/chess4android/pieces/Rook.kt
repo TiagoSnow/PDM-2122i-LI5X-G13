@@ -122,7 +122,7 @@ class Rook(override var army: Army) : Piece() {
         return if (colFrom == colDest) {
             var line = 0
             while (line < MAX_BOARD_VAL) {
-                if (checkIfPieceExists(colFrom, line, army, pt.isel.pdm.chess4android.PiecesType.ROOK))
+                if (checkIfPieceExists(colFrom, line, army, PiecesType.ROOK))
                     break
                 line++
             }

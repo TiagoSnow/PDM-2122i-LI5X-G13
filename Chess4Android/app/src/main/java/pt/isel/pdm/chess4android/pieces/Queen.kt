@@ -30,7 +30,7 @@ class Queen(override var army: Army) : Piece() {
         var startLinePosition = 0
         for (c in 0..7) {
             for (l in 0..8) {
-                if (board[c][l]?.second == Piece.QUEEN && board[c][l]?.first == army) {
+                if (board[c][l]?.second == PiecesType.QUEEN && board[c][l]?.first == army) {
                     startColPosition = c
                     startLinePosition = l
                     break

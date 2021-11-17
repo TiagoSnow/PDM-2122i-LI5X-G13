@@ -3,15 +3,8 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-<<<<<<< HEAD
 abstract class Piece {
 
-    abstract var army: Army
-    abstract var piece: Pieces
-=======
-abstract class Piece() {
-
->>>>>>> 49afb9ff3bff47664f159abb3c92f6692cea418e
     val MIN_BOARD_VAL = 0
     val MAX_BOARD_VAL = 7
 
