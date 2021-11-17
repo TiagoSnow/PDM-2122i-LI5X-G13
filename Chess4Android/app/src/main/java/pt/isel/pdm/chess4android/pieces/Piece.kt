@@ -7,7 +7,6 @@ abstract class Piece {
 
     abstract var army: Army
     abstract var piece: Pieces
-
     val MIN_BOARD_VAL = 0
     val MAX_BOARD_VAL = 7
 
