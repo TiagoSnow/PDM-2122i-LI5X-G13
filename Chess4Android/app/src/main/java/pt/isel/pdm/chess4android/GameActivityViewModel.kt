@@ -151,8 +151,8 @@ class GameActivityViewModel(
     }
 
     private fun moveRookPGN(move: String, army: Army) {
-        val colDest : Int
-        val lineDest : Int
+        val colDest: Int
+        val lineDest: Int
         when (move.length) {
             3 -> {
                 //Destination values
@@ -203,23 +203,29 @@ class GameActivityViewModel(
                 putPiece(colDest, lineDest, army, Piece.ROOK)
             }
             4 -> {
-                val colFrom : Int
-                val lineFrom : Int
+                val colFrom: Int
+                val lineFrom: Int
+                // If capture
                 if (move[1] == 'x') {
 
                 } else {
-
-
                     if (move[1] in '0'..'9') {
-                       // colDest, colFrom = move[2] - 'a'
+                        lineFrom = move[1].digitToInt()
                         lineDest = move[3].digitToInt()
-                      //  lineFrom =
+                        colDest = move[2] - 'a'
+                        colFrom = colDest
+                    } else {
+                        colFrom = move[1] - 'a'
+                        //specific case where the column stays the same in vertical move
+                        if (colFrom == move[2] - 'a') {
+
+                        } else colDest = move[2] - 'a'
+
+                        lineFrom = move[3].digitToInt()
+                        lineDest = lineFrom
                     }
-                    else {
-                        val colDest = move[1] - 'a'
-                        val lineDest = 8 - move[2].digitToInt()
-                    }
-                    var foundRook = false
+                    putPiece(colDest, lineDest, army, Piece.ROOK)
+                    board[colFrom][lineFrom] = null
                 }
             }
         }
