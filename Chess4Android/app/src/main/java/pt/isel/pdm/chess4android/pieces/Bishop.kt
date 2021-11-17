@@ -14,7 +14,7 @@ class Bishop(override var army: Army) : Piece() {
         for (c in 0..MAX_BOARD_VAL) {
             initLineAux = if (initLineAux == 0) 1 else 0
             for (l in initLineAux until 8 step 2)
-                if (board[c][l]?.second == pt.isel.pdm.chess4android.PiecesType.BISHOP && board[c][l]?.first == army) {
+                if (board[c][l]?.second == PiecesType.BISHOP && board[c][l]?.first == army) {
                     startColPosition = c
                     startLinePosition = l
                     break

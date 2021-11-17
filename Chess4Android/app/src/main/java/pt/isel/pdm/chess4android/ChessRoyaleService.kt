@@ -2,7 +2,6 @@ package pt.isel.pdm.chess4android
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 import retrofit2.Call
 import retrofit2.http.GET
 import java.util.*

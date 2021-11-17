@@ -12,12 +12,4 @@ abstract class Piece() {
     abstract val army: Army
     abstract fun movePGN(move: String)
 
-    fun putPiece(col: Int, line: Int, piece: Piece) {
-        board[col][line] = piece
-    }
-
-    fun removePiece(col: Int, line: Int) {
-        board[col][line] = null
-    }
-
 }
