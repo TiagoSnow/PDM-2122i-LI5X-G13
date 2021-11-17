@@ -101,7 +101,7 @@ class GameActivityViewModel(
                 && board[col][line]?.second == piece)
     }
 
-    private fun moveBishopPGN(move: String, army: Army) {
+    private fun moveKnightPNG(move: String, army: Army){
         val col: Int
         val line: Int
         if (move.length == 3) {
@@ -111,13 +111,33 @@ class GameActivityViewModel(
             col = move[2] - 'a'
             line = 8 - move[3].digitToInt()
         }
-        val startPositions = searchBishop((col + line) % 2, army)//tile => 0 = white, 1 = black
+        val startPositions = searchKnight(col, line, army)
 
-        board[startPositions[0]][startPositions[1]] = null
-        board[col][line] = Pair(army, Piece.BISHOP)
+        board[startPositions.first][startPositions.second] = null
+        board[col][line] = Pair(army, Piece.KNIGHT)
     }
 
-    private fun searchBishop(tileStart: Int, army: Army): Array<Int> {
+    private fun searchKnight(col: Int, line: Int, army: Army): Pair<Int, Int> {
+        if(col + 2 in 0..7){
+            if(line+1 in 0..7 && checkIfPieceExists(col+2,line+1,army,Piece.KNIGHT)) return Pair(col+2,line+1)
+            if(line-1 in 0..7 && checkIfPieceExists(col+2,line-1,army,Piece.KNIGHT)) return Pair(col+2,line-1)
+        }
+        if(col - 2 in 0..7){
+            if(line+1 in 0..7 && checkIfPieceExists(col-2,line+1,army,Piece.KNIGHT)) return Pair(col-2,line+1)
+            if(line-1 in 0..7 && checkIfPieceExists(col-2,line-1,army,Piece.KNIGHT)) return Pair(col-2,line-1)
+        }
+        if(line + 2 in 0..7){
+            if(col+1 in 0..7 && checkIfPieceExists(col+1,line+2,army,Piece.KNIGHT)) return Pair(col+1,line+2)
+            if(col-1 >= 0 && checkIfPieceExists(col-1,line+2,army,Piece.KNIGHT)) return Pair(col-1,line+2)
+        }
+        if(line - 2 in 0..7){
+            if(col+1 in 0..7 && checkIfPieceExists(col+1,line-2,army,Piece.KNIGHT)) return Pair(col+1,line-2)
+            if(col-1 in 0..7 && checkIfPieceExists(col-1,line-2,army,Piece.KNIGHT)) return Pair(col-1,line-2)
+        }
+        return Pair(-1,-1)
+    }
+
+    private fun searchBishop(tileStart: Int, army: Army): Pair<Int, Int> {
         var startColPosition = 0
         var startLinePosition = 0
         var initLineAux = tileStart - 1
@@ -130,8 +150,25 @@ class GameActivityViewModel(
                     break
                 }
         }
-        return arrayOf(startColPosition, startLinePosition)
+        return Pair(startColPosition, startLinePosition)
     }
+
+    private fun moveBishopPGN(move: String, army: Army) {
+        val col: Int
+        val line: Int
+        if (move.length == 3) {
+            col = move[1] - 'a'
+            line = 8 - move[2].digitToInt()
+        } else {
+            col = move[2] - 'a'
+            line = 8 - move[3].digitToInt()
+        }
+        val startPositions = searchBishop((col + line) % 2, army)//tile => 0 = white, 1 = black
+
+        board[startPositions.first][startPositions.second] = null
+        board[col][line] = Pair(army, Piece.BISHOP)
+    }
+
 
     private fun movePawnPGN(move: String, army: Army) {
         val col: Int
@@ -163,6 +200,23 @@ class GameActivityViewModel(
         }
         board[col][startingPoint] = null
         putPiece(col, line, army, Piece.PAWN)
+    }
+
+    private fun searchRookInSameCol(
+        colFrom: Int,
+        colDest: Int,
+        lineDest: Int,
+        army: Army,
+    ): Int {
+        return if (colFrom == colDest) {
+            var line = 0
+            while (line < MAX_BOARD_VAL) {
+                if (checkIfPieceExists(colFrom, line, army, Piece.ROOK))
+                    break
+                line++
+            }
+            line
+        } else lineDest
     }
 
     private fun searchRook(colDest: Int, lineDest: Int, army: Army): Pair<Int, Int> {
@@ -231,44 +285,39 @@ class GameActivityViewModel(
                 //Destination values
                 colDest = move[1] - 'a'
                 lineDest = 8 - move[2].digitToInt()
-                //searches for rook in previous position horizontally
-                //right search
                 val coords = searchRook(colDest, lineDest, army)
                 colFrom = coords.first
                 lineFrom = coords.second
-
             }
             4 -> {
+                colDest = move[2] - 'a'
+                lineDest = 8 - move[3].digitToInt()
                 // If capture
                 if (move[1] == 'x') {
                     //Rxc7
-                    colDest = move[2] - 'a'
-                    lineDest = move[3].digitToInt()
-
+                    val coords = searchRook(colDest, lineDest, army)
+                    colFrom = coords.first
+                    lineFrom = coords.second
                 } else {
-                    //R3c4
-                    if (move[1] in '0'..'9') {
+                    if (move[1] in '0'..'9') {      //R3c4
                         lineFrom = 8 - move[1].digitToInt()
-                        lineDest = 8 - move[3].digitToInt()
-                        colDest = move[2] - 'a'
                         colFrom = colDest
-                        //Rhc3
-                    } else {
+                    } else {                        //Rhc3
                         colFrom = move[1] - 'a'
-                        colDest = move[2] - 'a'
-                        lineDest = 8 - move[3].digitToInt()
                         //specific case where the column stays the same in vertical move (ex:Raa3)
-                        lineFrom =
-                            if (colFrom == colDest) {
-                                var line = 0
-                                while (line < MAX_BOARD_VAL) {
-                                    if (checkIfPieceExists(colFrom, line, army, Piece.ROOK))
-                                        break
-                                    line++
-                                }
-                                line
-                            } else lineDest
+                        lineFrom = searchRookInSameCol(colFrom, colDest, lineDest, army)
                     }
+                }
+            }
+            5 -> { //R4xc5 || Rdxd5
+                colDest = move[3] - 'a'
+                lineDest = 8 - move[4].digitToInt()
+                if (move[1] in '0'..'9') {
+                    colFrom = colDest
+                    lineFrom = 8 - move[1].digitToInt()
+                } else {
+                    colFrom = move[1] - 'a'
+                    lineFrom = searchRookInSameCol(colFrom, colDest, lineDest, army)
                 }
             }
         }
