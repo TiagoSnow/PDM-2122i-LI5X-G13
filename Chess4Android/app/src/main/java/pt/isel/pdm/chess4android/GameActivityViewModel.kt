@@ -116,7 +116,12 @@ class GameActivityViewModel(
         board[startPositions.first][startPositions.second] = null
         board[col][line] = Pair(army, Piece.KNIGHT)
     }
-
+    private fun zz(){
+        if(x+2 in 0..7){
+            if(y+1 in 0..7 && checkIfPieceExists(x+2,line+1,army,Piece.KNIGHT)) return Pair(col+2,line+1)
+            if(y-1 in 0..7 && checkIfPieceExists(x+2,line-1,army,Piece.KNIGHT)) return Pair(col+2,line-1)
+        }
+    }
     private fun searchKnight(col: Int, line: Int, army: Army): Pair<Int, Int> {
         if(col + 2 in 0..7){
             if(line+1 in 0..7 && checkIfPieceExists(col+2,line+1,army,Piece.KNIGHT)) return Pair(col+2,line+1)
