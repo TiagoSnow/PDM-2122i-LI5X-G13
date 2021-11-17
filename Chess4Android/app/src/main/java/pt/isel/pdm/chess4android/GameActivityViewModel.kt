@@ -13,6 +13,8 @@ import retrofit2.Response
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
 private const val COLUMNS = 8
 private const val LINES = 8
+private const val MIN_BOARD_VAL = 0
+private const val MAX_BOARD_VAL = 7
 
 class GameActivityViewModel(
     application: Application,
@@ -39,7 +41,7 @@ class GameActivityViewModel(
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
 
 
-    var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) { column ->
+    var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
 
@@ -83,7 +85,7 @@ class GameActivityViewModel(
         fillHalfBoard(0, getArmy(false))
         fillHalfBoard(7, getArmy(true))
 
-        for (column in 0..7) {
+        for (column in 0..MAX_BOARD_VAL) {
             board[column][1] = Pair(Army.BLACK, Piece.PAWN)
             board[column][6] = Pair(Army.WHITE, Piece.PAWN)
         }
@@ -119,7 +121,7 @@ class GameActivityViewModel(
         var startColPosition = 0
         var startLinePosition = 0
         var initLineAux = tileStart - 1
-        for (c in 0 until 8 step 1) {
+        for (c in 0..MAX_BOARD_VAL) {
             initLineAux = if (initLineAux == 0) 1 else 0
             for (l in initLineAux until 8 step 2)
                 if (board[c][l]?.second == Piece.BISHOP && board[c][l]?.first == army) {
@@ -132,103 +134,146 @@ class GameActivityViewModel(
     }
 
     private fun movePawnPGN(move: String, army: Army) {
-        val col = move[0] - 'a'
-        val line = 8 - move[1].digitToInt()
+        val col: Int
+        val line: Int
         var startingPoint = 0
-        if ((line == 3) && army == Army.BLACK ||
-            (line == 4) && army == Army.WHITE
-        ) when {
-            //mais clean?
-            checkIfPieceExists(col, 1, army, Piece.PAWN) -> startingPoint = 1
-            checkIfPieceExists(col, 2, army, Piece.PAWN) -> startingPoint = 2
-            checkIfPieceExists(col, 5, army, Piece.PAWN) -> startingPoint = 5
-            checkIfPieceExists(col, 6, army, Piece.PAWN) -> startingPoint = 6
-        } else
-            startingPoint = if (army == Army.WHITE) line + 1 else line - 1
-
+        if (move.length == 3) {
+            col = move[2] - 'a'
+            line = 8 - move[3].digitToInt()
+            val startColumn = move[0] - 'a'
+            for (l in 0..7) {
+                if (checkIfPieceExists(startColumn, l, army, Piece.PAWN)) {
+                    startingPoint = l
+                    break
+                }
+            }
+        } else {
+            col = move[0] - 'a'
+            line = 8 - move[1].digitToInt()
+            if ((line == 3) && army == Army.BLACK ||
+                (line == 4) && army == Army.WHITE
+            ) when {
+                //mais clean?
+                checkIfPieceExists(col, 1, army, Piece.PAWN) -> startingPoint = 1
+                checkIfPieceExists(col, 2, army, Piece.PAWN) -> startingPoint = 2
+                checkIfPieceExists(col, 5, army, Piece.PAWN) -> startingPoint = 5
+                checkIfPieceExists(col, 6, army, Piece.PAWN) -> startingPoint = 6
+            } else
+                startingPoint = if (army == Army.WHITE) line + 1 else line - 1
+        }
         board[col][startingPoint] = null
         putPiece(col, line, army, Piece.PAWN)
     }
 
+    private fun searchRook(colDest: Int, lineDest: Int, army: Army): Pair<Int, Int> {
+        var colFrom = 0
+        var lineFrom = 0
+        for (i in 1..7) {
+            if (lineDest + i <= MAX_BOARD_VAL && checkIfPieceExists(
+                    colDest,
+                    lineDest + i,
+                    army,
+                    Piece.ROOK
+                )
+            ) {
+                colFrom = colDest
+                lineFrom = lineDest + i
+                break
+            }
+            //left search
+            if (lineDest - i >= MIN_BOARD_VAL && checkIfPieceExists(
+                    colDest,
+                    lineDest - i,
+                    army,
+                    Piece.ROOK
+                )
+            ) {
+                colFrom = colDest
+                lineFrom = lineDest - i
+                break
+            }
+            //searches for rook in previous position vertically
+            //right search
+            if (colDest + i <= MAX_BOARD_VAL && checkIfPieceExists(
+                    colDest + i,
+                    lineDest,
+                    army,
+                    Piece.ROOK
+                )
+            ) {
+                colFrom = colDest + i
+                lineFrom = lineDest
+                break
+            }
+            //left search
+            if (colDest - i >= MIN_BOARD_VAL && checkIfPieceExists(
+                    colDest - i,
+                    lineDest,
+                    army,
+                    Piece.ROOK
+                )
+            ) {
+                colFrom = colDest - i
+                lineFrom = lineDest
+                break
+            }
+        }
+        return Pair(colFrom, lineFrom)
+    }
+
     private fun moveRookPGN(move: String, army: Army) {
-        val colDest: Int
-        val lineDest: Int
+        var colDest = 0
+        var lineDest = 0
+        var colFrom = 0
+        var lineFrom = 0
         when (move.length) {
             3 -> {
                 //Destination values
                 colDest = move[1] - 'a'
                 lineDest = 8 - move[2].digitToInt()
+                //searches for rook in previous position horizontally
+                //right search
+                val coords = searchRook(colDest, lineDest, army)
+                colFrom = coords.first
+                lineFrom = coords.second
 
-                var foundRook = false
-                //if destination is on the right or left side of the board.
-                //In case more than 1 rook is found in a line
-                if (colDest > 3) {
-                    for (line in 7 downTo 0) {
-                        if (checkIfPieceExists(colDest, line, army, Piece.ROOK)) {
-                            foundRook = true;
-                            board[colDest][line] = null
-                            break
-                        }
-                    }
-                } else {
-                    for (line in 0..8) {
-                        if (checkIfPieceExists(colDest, line, army, Piece.ROOK)) {
-                            foundRook = true;
-                            board[colDest][line] = null
-                            break
-                        }
-                    }
-                }
-
-                //if rook not found vertically, search horizontally
-                if (!foundRook) {
-                    if (lineDest > 3) {
-                        for (col in 7 downTo 0) {
-                            if (checkIfPieceExists(col, lineDest, army, Piece.ROOK)) {
-                                foundRook = true;
-                                board[col][lineDest] = null
-                                break
-                            }
-                        }
-                    } else {
-                        for (col in 0..8) {
-                            if (checkIfPieceExists(col, lineDest, army, Piece.ROOK)) {
-                                foundRook = true;
-                                board[col][lineDest] = null
-                                break
-                            }
-                        }
-                    }
-                }
-                putPiece(colDest, lineDest, army, Piece.ROOK)
             }
             4 -> {
-                val colFrom: Int
-                val lineFrom: Int
                 // If capture
                 if (move[1] == 'x') {
+                    //Rxc7
+                    colDest = move[2] - 'a'
+                    lineDest = move[3].digitToInt()
 
                 } else {
+                    //R3c4
                     if (move[1] in '0'..'9') {
-                        lineFrom = move[1].digitToInt()
-                        lineDest = move[3].digitToInt()
+                        lineFrom = 8 - move[1].digitToInt()
+                        lineDest = 8 - move[3].digitToInt()
                         colDest = move[2] - 'a'
                         colFrom = colDest
+                        //Rhc3
                     } else {
                         colFrom = move[1] - 'a'
-                        //specific case where the column stays the same in vertical move
-                        if (colFrom == move[2] - 'a') {
-
-                        } else colDest = move[2] - 'a'
-
-                        lineFrom = move[3].digitToInt()
-                        lineDest = lineFrom
+                        colDest = move[2] - 'a'
+                        lineDest = 8 - move[3].digitToInt()
+                        //specific case where the column stays the same in vertical move (ex:Raa3)
+                        lineFrom =
+                            if (colFrom == colDest) {
+                                var line = 0
+                                while (line < MAX_BOARD_VAL) {
+                                    if (checkIfPieceExists(colFrom, line, army, Piece.ROOK))
+                                        break
+                                    line++
+                                }
+                                line
+                            } else lineDest
                     }
-                    putPiece(colDest, lineDest, army, Piece.ROOK)
-                    board[colFrom][lineFrom] = null
                 }
             }
         }
+        board[colFrom][lineFrom] = null
+        putPiece(colDest, lineDest, army, Piece.ROOK)
     }
 
     fun placePieces(pgn: String) {
@@ -239,8 +284,7 @@ class GameActivityViewModel(
             val army = getArmy(armyFlag)
             when (move[0]) {
                 'R' -> moveRookPGN(move, army)
-                'B' -> {
-                }
+                'B' -> moveBishopPGN(move, army)
                 'Q' -> {
                 }
                 'N' -> {
