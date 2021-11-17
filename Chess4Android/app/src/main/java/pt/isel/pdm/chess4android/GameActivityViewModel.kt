@@ -95,13 +95,9 @@ class GameActivityViewModel(
         board[col][line] = Pair(army, piece)
     }
 
-    private fun checkIfPieceExists(col: Int, line: Int, army: Army, piece: Piece): Boolean {
-        return (board[col][line] != null
-                && board[col][line]?.first == army
-                && board[col][line]?.second == piece)
-    }
 
-    private fun moveKnightPNG(move: String, army: Army){
+
+    private fun moveKnightPNG(move: String, army: Army) {
         val col: Int
         val line: Int
         if (move.length == 3) {
@@ -116,30 +112,81 @@ class GameActivityViewModel(
         board[startPositions.first][startPositions.second] = null
         board[col][line] = Pair(army, Piece.KNIGHT)
     }
-    private fun zz(){
-        if(x+2 in 0..7){
-            if(y+1 in 0..7 && checkIfPieceExists(x+2,line+1,army,Piece.KNIGHT)) return Pair(col+2,line+1)
-            if(y-1 in 0..7 && checkIfPieceExists(x+2,line-1,army,Piece.KNIGHT)) return Pair(col+2,line-1)
+
+    /*private fun zz(x:Int, y:Int, xOffset:Int, yOffset:Int,army: Army,piece: Piece): Pair<Int, Int>? {
+        if(x + xOffset  in 0..7){
+            if(y+yOffset in 0..7 && checkIfPieceExists(x+xOffset,y+yOffset,army,Piece.KNIGHT)) return Pair(x+xOffset,y+yOffset)
+            if(y-yOffset in 0..7 && checkIfPieceExists(x,y-yOffset,army,Piece.KNIGHT)) return Pair(x+xOffset,y-yOffset)
         }
+        return null
     }
+*/
     private fun searchKnight(col: Int, line: Int, army: Army): Pair<Int, Int> {
-        if(col + 2 in 0..7){
-            if(line+1 in 0..7 && checkIfPieceExists(col+2,line+1,army,Piece.KNIGHT)) return Pair(col+2,line+1)
-            if(line-1 in 0..7 && checkIfPieceExists(col+2,line-1,army,Piece.KNIGHT)) return Pair(col+2,line-1)
+        if (col + 2 in 0..7) {
+            if (line + 1 in 0..7 && checkIfPieceExists(
+                    col + 2,
+                    line + 1,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col + 2, line + 1)
+            if (line - 1 in 0..7 && checkIfPieceExists(
+                    col + 2,
+                    line - 1,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col + 2, line - 1)
         }
-        if(col - 2 in 0..7){
-            if(line+1 in 0..7 && checkIfPieceExists(col-2,line+1,army,Piece.KNIGHT)) return Pair(col-2,line+1)
-            if(line-1 in 0..7 && checkIfPieceExists(col-2,line-1,army,Piece.KNIGHT)) return Pair(col-2,line-1)
+        if (col - 2 in 0..7) {
+            if (line + 1 in 0..7 && checkIfPieceExists(
+                    col - 2,
+                    line + 1,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col - 2, line + 1)
+            if (line - 1 in 0..7 && checkIfPieceExists(
+                    col - 2,
+                    line - 1,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col - 2, line - 1)
         }
-        if(line + 2 in 0..7){
-            if(col+1 in 0..7 && checkIfPieceExists(col+1,line+2,army,Piece.KNIGHT)) return Pair(col+1,line+2)
-            if(col-1 >= 0 && checkIfPieceExists(col-1,line+2,army,Piece.KNIGHT)) return Pair(col-1,line+2)
+        if (line + 2 in 0..7) {
+            if (col + 1 in 0..7 && checkIfPieceExists(
+                    col + 1,
+                    line + 2,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col + 1, line + 2)
+            if (col - 1 >= 0 && checkIfPieceExists(
+                    col - 1,
+                    line + 2,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col - 1, line + 2)
         }
-        if(line - 2 in 0..7){
-            if(col+1 in 0..7 && checkIfPieceExists(col+1,line-2,army,Piece.KNIGHT)) return Pair(col+1,line-2)
-            if(col-1 in 0..7 && checkIfPieceExists(col-1,line-2,army,Piece.KNIGHT)) return Pair(col-1,line-2)
+        if (line - 2 in 0..7) {
+            if (col + 1 in 0..7 && checkIfPieceExists(
+                    col + 1,
+                    line - 2,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col + 1, line - 2)
+            if (col - 1 in 0..7 && checkIfPieceExists(
+                    col - 1,
+                    line - 2,
+                    army,
+                    Piece.KNIGHT
+                )
+            ) return Pair(col - 1, line - 2)
         }
-        return Pair(-1,-1)
+        return Pair(-1, -1)
     }
 
     private fun searchBishop(tileStart: Int, army: Army): Pair<Int, Int> {
@@ -179,7 +226,7 @@ class GameActivityViewModel(
         val col: Int
         val line: Int
         var startingPoint = 0
-        if (move.length == 3) {
+        if (move.length == 4) {
             col = move[2] - 'a'
             line = 8 - move[3].digitToInt()
             val startColumn = move[0] - 'a'
@@ -330,6 +377,97 @@ class GameActivityViewModel(
         putPiece(colDest, lineDest, army, Piece.ROOK)
     }
 
+    private fun moveKingPGN(move: String, army: Army) {
+        val col: Int
+        val line: Int
+
+        if (move.length == 4) {
+            col = move[2] - 'a'
+            line = 8 - move[3].digitToInt()
+        } else {
+            col = move[1] - 'a'
+            line = 8 - move[2].digitToInt()
+        }
+        val startPositions = searchKing(col, line, army)
+
+        board[startPositions.first][startPositions.second] = null
+        putPiece(col, line, army, Piece.KING)
+    }
+
+    private fun castlingLeft() {
+        //update Rook
+        board[0][0] = null
+        board[3][0] = Pair(Army.BLACK, Piece.ROOK)
+
+        //update King
+        board[4][0] = null
+        board[2][0] = Pair(Army.BLACK, Piece.KING)
+    }
+
+    private fun castlingRight() {
+        //update Rook
+        board[7][7] = null
+        board[5][7] = Pair(Army.WHITE, Piece.ROOK)
+
+        //update King
+        board[4][7] = null
+        board[6][7] = Pair(Army.WHITE, Piece.KING)
+    }
+
+    private fun searchKing(col: Int, line: Int, army: Army): Pair<Int, Int> {
+        val piece = Piece.KING
+
+        if (col - 1 in 0..7 && line - 1 in 0..7)
+            if (checkIfPieceExists(col - 1, line - 1, army, piece)) return Pair(
+                col - 1,
+                line - 1
+            )      //diagonal up left
+
+        if ((col in 0..7) && line - 1 in 0..7)
+            if (checkIfPieceExists(col, line - 1, army, piece)) return Pair(
+                col,
+                line - 1
+            )              //up
+
+        if (col + 1 in 0..7 && line - 1 in 0..7)
+            if (checkIfPieceExists(col + 1, line - 1, army, piece)) return Pair(
+                col + 1,
+                line - 1
+            )      //diagonal up right
+
+        if (col - 1 in 0..7 && line in 0..7)
+            if (checkIfPieceExists(col - 1, line, army, piece)) return Pair(
+                col - 1,
+                line
+            )              //left
+
+        if (col + 1 in 0..7 && line in 0..7)
+            if (checkIfPieceExists(col + 1, line, army, piece)) return Pair(
+                col + 1,
+                line
+            )              //right
+
+        if (col - 1 in 0..7 && line + 1 in 0..7)
+            if (checkIfPieceExists(col - 1, line + 1, army, piece)) return Pair(
+                col - 1,
+                line + 1
+            )      //diagonal down left
+
+        if ((col in 0..7) && line + 1 in 0..7)
+            if (checkIfPieceExists(col, line + 1, army, piece)) return Pair(
+                col,
+                line + 1
+            )             //down
+
+        if (col + 1 in 0..7 && line + 1 in 0..7)
+            if (checkIfPieceExists(col + 1, line + 1, army, piece)) return Pair(
+                col + 1,
+                line + 1
+            )     //diagonal down right
+
+        return Pair(-1, -1);
+    }
+
     fun placePieces(pgn: String) {
         beginBoard()
         var armyFlag = true
@@ -346,6 +484,10 @@ class GameActivityViewModel(
                 'K' -> {
                 }
                 'O' -> {
+                    if (move.length == 5)
+                        castlingLeft()
+                    else
+                        castlingRight()
                 }
                 else -> movePawnPGN(move, army)
             }

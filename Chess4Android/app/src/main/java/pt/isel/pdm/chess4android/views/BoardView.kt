@@ -73,8 +73,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(board: Array<Array<Pair<Army, Piece>?>>) {
-        for (column in 0 until 8 step 1) {
-            for (line in 0 until 8 step 1) {
+        for (column in 0..7) {
+            for (line in 0..7) {
                 tiles[column][line]?.piece = board[column][line]
             }
         }
