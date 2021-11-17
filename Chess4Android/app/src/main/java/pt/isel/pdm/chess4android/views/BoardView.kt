@@ -28,22 +28,22 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         strokeWidth = 10F
     }
 
-    private fun createImageEntry(army: Army, pieces: Pieces, imageId: Int) =
-        Pair(Pair(army, pieces), VectorDrawableCompat.create(ctx.resources, imageId, null))
+    private fun createImageEntry(army: Army, piecesType: PiecesType, imageId: Int) =
+        Pair(Pair(army, piecesType), VectorDrawableCompat.create(ctx.resources, imageId, null))
 
     private val piecesImages = mapOf(
-        createImageEntry(Army.WHITE, Pieces.PAWN, R.drawable.ic_white_pawn),
-        createImageEntry(Army.WHITE, Pieces.KNIGHT, R.drawable.ic_white_knight),
-        createImageEntry(Army.WHITE, Pieces.BISHOP, R.drawable.ic_white_bishop),
-        createImageEntry(Army.WHITE, Pieces.ROOK, R.drawable.ic_white_rook),
-        createImageEntry(Army.WHITE, Pieces.QUEEN, R.drawable.ic_white_queen),
-        createImageEntry(Army.WHITE, Pieces.KING, R.drawable.ic_white_king),
-        createImageEntry(Army.BLACK, Pieces.PAWN, R.drawable.ic_black_pawn),
-        createImageEntry(Army.BLACK, Pieces.KNIGHT, R.drawable.ic_black_knight),
-        createImageEntry(Army.BLACK, Pieces.BISHOP, R.drawable.ic_black_bishop),
-        createImageEntry(Army.BLACK, Pieces.ROOK, R.drawable.ic_black_rook),
-        createImageEntry(Army.BLACK, Pieces.QUEEN, R.drawable.ic_black_queen),
-        createImageEntry(Army.BLACK, Pieces.KING, R.drawable.ic_black_king),
+        createImageEntry(Army.WHITE, PiecesType.PAWN, R.drawable.ic_white_pawn),
+        createImageEntry(Army.WHITE, PiecesType.KNIGHT, R.drawable.ic_white_knight),
+        createImageEntry(Army.WHITE, PiecesType.BISHOP, R.drawable.ic_white_bishop),
+        createImageEntry(Army.WHITE, PiecesType.ROOK, R.drawable.ic_white_rook),
+        createImageEntry(Army.WHITE, PiecesType.QUEEN, R.drawable.ic_white_queen),
+        createImageEntry(Army.WHITE, PiecesType.KING, R.drawable.ic_white_king),
+        createImageEntry(Army.BLACK, PiecesType.PAWN, R.drawable.ic_black_pawn),
+        createImageEntry(Army.BLACK, PiecesType.KNIGHT, R.drawable.ic_black_knight),
+        createImageEntry(Army.BLACK, PiecesType.BISHOP, R.drawable.ic_black_bishop),
+        createImageEntry(Army.BLACK, PiecesType.ROOK, R.drawable.ic_black_rook),
+        createImageEntry(Army.BLACK, PiecesType.QUEEN, R.drawable.ic_black_queen),
+        createImageEntry(Army.BLACK, PiecesType.KING, R.drawable.ic_black_king),
     )
 
     init {
@@ -78,9 +78,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             for (line in 0..7) {
                 val piece = board[column][line]
                 if(piece != null)
-                    tiles[column][line]?.pieces = Pair(piece.army, piece.piece)
+                    tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else
-                    tiles[column][line]?.pieces = null
+                    tiles[column][line]?.piecesType = null
             }
         }
     }
@@ -89,6 +89,5 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         private const val COLUMNS = 8
         private const val LINES = 8
     }
-
 
 }

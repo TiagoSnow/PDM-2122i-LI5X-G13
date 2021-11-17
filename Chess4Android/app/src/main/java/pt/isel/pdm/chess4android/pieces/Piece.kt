@@ -1,23 +1,16 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
-abstract class Piece {
-
-    abstract var army: Army
-    abstract var piece: Pieces
+abstract class Piece() {
 
     val MIN_BOARD_VAL = 0
     val MAX_BOARD_VAL = 7
 
+    abstract val piece: PiecesType
+    abstract val army: Army
     abstract fun movePGN(move: String)
-
-    private fun checkIfPieceExists(col: Int, line: Int, army: Army, pieces: Pieces): Boolean {
-        return (board[col][line] != null
-                && board[col][line]?.first == army
-                && board[col][line]?.second == pieces)
-    }
 
     fun putPiece(col: Int, line: Int, piece: Piece) {
         board[col][line] = piece

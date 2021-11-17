@@ -1,11 +1,11 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
 class Bishop(override var army: Army) : Piece() {
 
-    override var piece = Pieces.BISHOP
+    override var piece = PiecesType.BISHOP
 
     private fun searchBishop(tileStart: Int, army: Army): Pair<Int, Int> {
         var startColPosition = 0
@@ -14,7 +14,7 @@ class Bishop(override var army: Army) : Piece() {
         for (c in 0..MAX_BOARD_VAL) {
             initLineAux = if (initLineAux == 0) 1 else 0
             for (l in initLineAux until 8 step 2)
-                if (board[c][l]?.second == pt.isel.pdm.chess4android.Pieces.BISHOP && board[c][l]?.first == army) {
+                if (board[c][l]?.second == pt.isel.pdm.chess4android.PiecesType.BISHOP && board[c][l]?.first == army) {
                     startColPosition = c
                     startLinePosition = l
                     break

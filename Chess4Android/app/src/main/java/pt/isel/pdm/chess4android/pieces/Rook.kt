@@ -1,11 +1,11 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
 class Rook(override var army: Army) : Piece() {
 
-    override var piece = Pieces.ROOK
+    override var piece = PiecesType.ROOK
 
     override fun movePGN(move: String) {
         var colDest = 0
@@ -66,7 +66,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest + i,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.ROOK
+                    pt.isel.pdm.chess4android.PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -78,7 +78,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest - i,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.ROOK
+                    pt.isel.pdm.chess4android.PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -91,7 +91,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest + i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.ROOK
+                    pt.isel.pdm.chess4android.PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest + i
@@ -103,7 +103,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest - i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.ROOK
+                    pt.isel.pdm.chess4android.PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest - i
@@ -113,10 +113,6 @@ class Rook(override var army: Army) : Piece() {
         }
         return Pair(colFrom, lineFrom)
     }
-
-
-
-
     private fun searchRookInSameCol(
         colFrom: Int,
         colDest: Int,
@@ -126,13 +122,12 @@ class Rook(override var army: Army) : Piece() {
         return if (colFrom == colDest) {
             var line = 0
             while (line < MAX_BOARD_VAL) {
-                if (checkIfPieceExists(colFrom, line, army, pt.isel.pdm.chess4android.Pieces.ROOK))
+                if (checkIfPieceExists(colFrom, line, army, pt.isel.pdm.chess4android.PiecesType.ROOK))
                     break
                 line++
             }
             line
         } else lineDest
     }
-
 
 }

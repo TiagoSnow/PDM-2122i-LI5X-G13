@@ -1,11 +1,11 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
 class Knight(override var army: Army) : Piece() {
 
-    override var piece = Pieces.KNIGHT
+    override var piece = PiecesType.KNIGHT
 
     override fun movePGN(move: String) {
         val col: Int
@@ -30,14 +30,14 @@ class Knight(override var army: Army) : Piece() {
                     col + 2,
                     line + 1,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col + 2, line + 1)
             if (line - 1 in 0..7 && checkIfPieceExists(
                     col + 2,
                     line - 1,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col + 2, line - 1)
         }
@@ -46,14 +46,14 @@ class Knight(override var army: Army) : Piece() {
                     col - 2,
                     line + 1,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col - 2, line + 1)
             if (line - 1 in 0..7 && checkIfPieceExists(
                     col - 2,
                     line - 1,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col - 2, line - 1)
         }
@@ -62,14 +62,14 @@ class Knight(override var army: Army) : Piece() {
                     col + 1,
                     line + 2,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col + 1, line + 2)
             if (col - 1 >= 0 && checkIfPieceExists(
                     col - 1,
                     line + 2,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col - 1, line + 2)
         }
@@ -78,14 +78,14 @@ class Knight(override var army: Army) : Piece() {
                     col + 1,
                     line - 2,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col + 1, line - 2)
             if (col - 1 in 0..7 && checkIfPieceExists(
                     col - 1,
                     line - 2,
                     army,
-                    pt.isel.pdm.chess4android.Pieces.KNIGHT
+                    pt.isel.pdm.chess4android.PiecesType.KNIGHT
                 )
             ) return Pair(col - 1, line - 2)
         }

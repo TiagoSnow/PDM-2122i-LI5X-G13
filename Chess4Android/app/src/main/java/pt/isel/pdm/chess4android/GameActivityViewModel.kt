@@ -39,12 +39,7 @@ class GameActivityViewModel(
 
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
 
-
-    /*var board: Array<Array<Pair<Army, Piece>?>> = Array(COLUMNS) {
-        Array(LINES) { null }
-    }*/
-
-    var board = arrayOf<Array<Piece?>>()
+    public var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
     fun beginBoard() {
         //colocar as peças no estado inicial
@@ -58,41 +53,23 @@ class GameActivityViewModel(
         }
     }
 
-    fun fillHalfBoard(line: Int, army: Army) {
+    private fun fillHalfBoard(line: Int, army: Army) {
         for (column in 0..8) {
             when (column) {
-                0, 7 -> {
-                    board[column][line] = Rook(army)
-
-                }
-                1, 6 -> {
-                    board[column][line] = Knight(army)
-
-                }
-                2, 5 -> {
-                    board[column][line] = Bishop(army)
-
-                }
-                3 -> {
-                    board[column][line] = Queen(army)
-
-                }
-                4 -> {
-                    board[column][line] = King(army)
-
-                }
+                0, 7 -> board[column][line] = Rook(army)
+                1, 6 -> board[column][line] = Knight(army)
+                2, 5 -> board[column][line] = Bishop(army)
+                3 -> board[column][line] = Queen(army)
+                4 -> board[column][line] = King(army)
             }
         }
     }
 
-    /*private fun zz(x:Int, y:Int, xOffset:Int, yOffset:Int,army: Army,piece: Piece): Pair<Int, Int>? {
-        if(x + xOffset  in 0..7){
-            if(y+yOffset in 0..7 && checkIfPieceExists(x+xOffset,y+yOffset,army,Piece.KNIGHT)) return Pair(x+xOffset,y+yOffset)
-            if(y-yOffset in 0..7 && checkIfPieceExists(x,y-yOffset,army,Piece.KNIGHT)) return Pair(x+xOffset,y-yOffset)
-        }
-        return null
+    public fun checkIfPieceExists(col: Int, line: Int, army: Army, piece: PiecesType): Boolean {
+        return (board[col][line] != null
+                && board[col][line]?.army == army
+                && board[col][line]?.piece == piece)
     }
-*/
 
     private fun castlingLeft() {
         //update Rook

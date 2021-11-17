@@ -1,11 +1,11 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
 class Queen(override var army: Army) : Piece() {
 
-    override var piece = Pieces.QUEEN
+    override var piece = PiecesType.QUEEN
 
     override fun movePGN(move: String) {
         val col: Int

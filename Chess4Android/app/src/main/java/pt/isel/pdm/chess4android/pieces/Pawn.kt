@@ -1,11 +1,12 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
+import pt.isel.pdm.chess4android.*
 
-class Pawn(override var army: Army) : Piece() {
+class Pawn(override val army: Army) : Piece() {
 
-    override var piece = Pieces.PAWN
+    override val piece = PiecesType.PAWN
 
     override fun movePGN(move: String) {
         val col: Int
@@ -16,7 +17,7 @@ class Pawn(override var army: Army) : Piece() {
             line = 8 - move[3].digitToInt()
             val startColumn = move[0] - 'a'
             for (l in 0..7) {
-                if (checkIfPieceExists(startColumn, l, army, pt.isel.pdm.chess4android.Pieces.PAWN)) {
+                if (checkIfPieceExists(startColumn, l, army, piece)) {
                     startingPoint = l
                     break
                 }
@@ -28,10 +29,10 @@ class Pawn(override var army: Army) : Piece() {
                 (line == 4) && army == Army.WHITE
             ) when {
                 //mais clean?
-                checkIfPieceExists(col, 1, army, pt.isel.pdm.chess4android.Pieces.PAWN) -> startingPoint = 1
-                checkIfPieceExists(col, 2, army, pt.isel.pdm.chess4android.Pieces.PAWN) -> startingPoint = 2
-                checkIfPieceExists(col, 5, army, pt.isel.pdm.chess4android.Pieces.PAWN) -> startingPoint = 5
-                checkIfPieceExists(col, 6, army, pt.isel.pdm.chess4android.Pieces.PAWN) -> startingPoint = 6
+                checkIfPieceExists(col, 1, army, piece) -> startingPoint = 1
+                checkIfPieceExists(col, 2, army, piece) -> startingPoint = 2
+                checkIfPieceExists(col, 5, army, piece) -> startingPoint = 5
+                checkIfPieceExists(col, 6, army, piece) -> startingPoint = 6
             } else
                 startingPoint = if (army == Army.WHITE) line + 1 else line - 1
         }

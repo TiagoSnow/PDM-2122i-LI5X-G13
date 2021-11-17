@@ -1,11 +1,11 @@
 package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 
 class King(override var army: Army) : Piece() {
 
-    override var piece = Pieces.KING
+    override var piece = PiecesType.KING
 
     override fun movePGN(move: String) {
         val col: Int
@@ -25,7 +25,7 @@ class King(override var army: Army) : Piece() {
     }
 
     private fun searchKing(col: Int, line: Int, army: Army): Pair<Int, Int> {
-        val piece = pt.isel.pdm.chess4android.Pieces.KING
+        val piece = pt.isel.pdm.chess4android.PiecesType.KING
 
         if (col - 1 in 0..7 && line - 1 in 0..7)
             if (checkIfPieceExists(col - 1, line - 1, army, piece)) return Pair(
