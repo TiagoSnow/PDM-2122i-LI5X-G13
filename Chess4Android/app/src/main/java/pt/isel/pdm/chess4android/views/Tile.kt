@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.view.View
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.Pieces
+import pt.isel.pdm.chess4android.PiecesType
 import pt.isel.pdm.chess4android.R
 
 /**
@@ -25,11 +25,11 @@ class Tile(
     private val ctx: Context,
     private val type: Army,
     private val tilesPerSide: Int,
-    private val images: Map<Pair<Army, Pieces>, VectorDrawableCompat?>,
-    initialPieces: Pair<Army, Pieces>? = null,
+    private val images: Map<Pair<Army, PiecesType>, VectorDrawableCompat?>,
+    initialPiecesType: Pair<Army, PiecesType>? = null,
 ) : View(ctx) {
 
-    var pieces: Pair<Army, Pieces>? = initialPieces
+    var piecesType: Pair<Army, PiecesType>? = initialPiecesType
         set(value) {
             field = value
             invalidate()
@@ -53,8 +53,8 @@ class Tile(
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), brush)
-        if (pieces != null) {
-            images[pieces]?.apply {
+        if (piecesType != null) {
+            images[piecesType]?.apply {
                 val padding = 8
                 setBounds(padding, padding, width-padding, height-padding)
                 draw(canvas)
