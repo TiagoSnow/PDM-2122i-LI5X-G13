@@ -45,7 +45,45 @@ class Bishop(
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
-        TODO("Not yet implemented")
+        return getAllAvailableOptions()
     }
+
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+
+        val listDigUL = searchRouteDiagonal(-1, -1)     //diagonal up/left
+        val listDigUR = searchRouteDiagonal(+1, -1)   //diagonal up/right
+        val listDL = searchRouteDiagonal(-1, +1)  //diagonal down/left
+        val listDR = searchRouteDiagonal(+1, +1)   //diagonal down/right
+
+        list.addAll(listDigUL)
+        list.addAll(listDigUR)
+        list.addAll(listDL)
+        list.addAll(listDR)
+
+        return list
+    }
+
+    private fun searchRouteDiagonal(colDir: Int, lineDir: Int): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        var colDirection = colDir
+        var lineDirection = lineDir
+
+        while (col + colDirection in 0..7 && line + lineDirection in 0..7 && board[col + colDirection][line + lineDirection]?.army != army) {
+            if (board[col + colDirection][line + lineDirection] == null) list.add(
+                Pair(
+                    Coord(
+                        col + colDirection,
+                        line + lineDirection
+                    ), false
+                )
+            )
+            else list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+            colDirection += colDir
+            lineDirection += lineDir
+        }
+        return list
+    }
+
 
 }
