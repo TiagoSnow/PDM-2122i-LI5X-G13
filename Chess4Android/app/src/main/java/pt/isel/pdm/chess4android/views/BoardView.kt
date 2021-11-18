@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.GridLayout
@@ -36,6 +37,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         style = Paint.Style.STROKE
         strokeWidth = 10F
     }
+
+    private var circle_img =
+        VectorDrawableCompat.create(ctx.resources, R.drawable.circle, null) // ver onde se utilizar
 
     private fun createImageEntry(army: Army, piecesType: PiecesType, imageId: Int) =
         Pair(Pair(army, piecesType), VectorDrawableCompat.create(ctx.resources, imageId, null))

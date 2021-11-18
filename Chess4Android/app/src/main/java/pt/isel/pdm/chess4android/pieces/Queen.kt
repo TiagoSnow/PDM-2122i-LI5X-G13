@@ -45,7 +45,14 @@ class Queen(
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
-        TODO("To implement")
+        return getAllAvailableOptions()
+    }
+
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+        var array = mutableListOf<Pair<Coord, Boolean>?>()
+
+        if ()
+
     }
 
 }
