@@ -4,7 +4,7 @@ import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 import pt.isel.pdm.chess4android.*
 
-class Pawn(override val army: Army) : Piece() {
+class Pawn(override val army: Army, override var board: Array<Array<Piece?>>) : Piece() {
 
     override val piece = PiecesType.PAWN
 

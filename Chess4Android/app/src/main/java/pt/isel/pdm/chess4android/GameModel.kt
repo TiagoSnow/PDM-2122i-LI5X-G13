@@ -13,58 +13,45 @@ class GameModel() {
         fillHalfBoard(7, getArmy(true))
 
         for (column in 0..7) {
-            board[column][1] = Pawn(Army.BLACK)
-            board[column][6] = Pawn(Army.WHITE)
+            board[column][1] = Pawn(Army.BLACK, board)
+            board[column][6] = Pawn(Army.WHITE, board)
         }
-    }
-
-    fun putPiece(col: Int, line: Int, piece: Piece) {
-        board[col][line] = piece
-    }
-
-    fun removePiece(col: Int, line: Int) {
-        board[col][line] = null
     }
 
     private fun fillHalfBoard(line: Int, army: Army) {
-        for (column in 0..8) {
+        for (column in 0..7) {
             when (column) {
-                0, 7 -> board[column][line] = Rook(army)
-                1, 6 -> board[column][line] = Knight(army)
-                2, 5 -> board[column][line] = Bishop(army)
-                3 -> board[column][line] = Queen(army)
-                4 -> board[column][line] = King(army)
+                0, 7 -> board[column][line] = Rook(army, board)
+                1, 6 -> board[column][line] = Knight(army, board)
+                2, 5 -> board[column][line] = Bishop(army, board)
+                3 -> board[column][line] = Queen(army, board)
+                4 -> board[column][line] = King(army, board)
             }
         }
-    }
-
-    public fun checkIfPieceExists(col: Int, line: Int, army: Army, piece: PiecesType): Boolean {
-        return (board[col][line] != null
-                && board[col][line]?.army == army
-                && board[col][line]?.piece == piece)
     }
 
     private fun castlingLeft() {
         //update Rook
         board[0][0] = null
-        board[3][0] = Rook(Army.BLACK)
+        board[3][0] = Rook(Army.BLACK, board)
 
         //update King
         board[4][0] = null
-        board[2][0] = King(Army.BLACK)
+        board[2][0] = King(Army.BLACK, board)
     }
 
     private fun castlingRight() {
         //update Rook
         board[7][7] = null
-        board[5][7] = Rook(Army.WHITE)
+        board[5][7] = Rook(Army.WHITE, board)
 
         //update King
         board[4][7] = null
-        board[6][7] = King(Army.WHITE)
+        board[6][7] = King(Army.WHITE, board)
     }
 
     fun placePieces(pgn: String, board: Array<Array<Piece?>>): Array<Array<Piece?>> {
+        this.board = board
         beginBoard()
         var armyFlag = true
         val lst: List<String> = pgn.split(" ")
@@ -72,23 +59,23 @@ class GameModel() {
             val army = getArmy(armyFlag)
             when (move[0]) {
                 'R' -> {
-                    val rook = Rook(army)
+                    val rook = Rook(army, board)
                     rook.movePGN(move)
                 }
                 'B' -> {
-                    val bishop = Bishop(army)
+                    val bishop = Bishop(army, board)
                     bishop.movePGN(move)
                 }
                 'Q' -> {
-                    val queen = Queen(army)
+                    val queen = Queen(army, board)
                     queen.movePGN(move)
                 }
                 'N' -> {
-                    val knight = Knight(army)
+                    val knight = Knight(army, board)
                     knight.movePGN(move)
                 }
                 'K' -> {
-                    val king = King(army)
+                    val king = King(army, board)
                     king.movePGN(move)
                 }
                 'O' -> {
@@ -98,12 +85,13 @@ class GameModel() {
                         castlingRight()
                 }
                 else -> {
-                    val pawn = Pawn(army)
+                    val pawn = Pawn(army, board)
                     pawn.movePGN(move)
                 }
             }
             armyFlag = !armyFlag
         }
+        return board
     }
 
     fun getArmy(armyFlag: Boolean): Army {

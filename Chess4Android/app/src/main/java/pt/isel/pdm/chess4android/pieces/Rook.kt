@@ -3,7 +3,7 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Rook(override var army: Army) : Piece() {
+class Rook(override var army: Army, override var board: Array<Array<Piece?>>) : Piece() {
 
     override var piece = PiecesType.ROOK
 
@@ -57,7 +57,6 @@ class Rook(override var army: Army) : Piece() {
         putPiece(colDest, lineDest, this)
     }
 
-
     private fun searchRook(colDest: Int, lineDest: Int, army: Army): Pair<Int, Int> {
         var colFrom = 0
         var lineFrom = 0
@@ -66,7 +65,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest + i,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -78,7 +77,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest - i,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -91,7 +90,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest + i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest + i
@@ -103,7 +102,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest - i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest - i

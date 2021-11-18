@@ -58,12 +58,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 side,
                 piecesImages
             )
-            tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
+            //tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
             addView(tile)
             tiles[column][row] = tile
         }
     }
-    var onTileClickedListener: TileTouchListener? = null
+    //var onTileClickedListener: TileTouchListener? = null
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)

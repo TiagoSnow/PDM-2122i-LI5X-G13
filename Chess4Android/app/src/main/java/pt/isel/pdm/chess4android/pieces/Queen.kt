@@ -3,7 +3,7 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Queen(override var army: Army) : Piece() {
+class Queen(override var army: Army, override var board: Array<Array<Piece?>>) : Piece() {
 
     override var piece = PiecesType.QUEEN
 
@@ -30,7 +30,7 @@ class Queen(override var army: Army) : Piece() {
         var startLinePosition = 0
         for (c in 0..7) {
             for (l in 0..8) {
-                if (board[c][l]?.second == PiecesType.QUEEN && board[c][l]?.first == army) {
+                if (board[c][l]?.piece == PiecesType.QUEEN && board[c][l]?.army == army) {
                     startColPosition = c
                     startLinePosition = l
                     break
