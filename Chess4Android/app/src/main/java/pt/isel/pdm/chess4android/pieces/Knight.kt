@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Knight(override var army: Army, override var board: Array<Array<Piece?>>) : Piece() {
+class Knight(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.KNIGHT
 
@@ -22,7 +27,6 @@ class Knight(override var army: Army, override var board: Array<Array<Piece?>>) 
         removePiece(startPositions.first, startPositions.second)
         putPiece(col, line, this)
     }
-
 
     private fun searchKnight(col: Int, line: Int, army: Army): Pair<Int, Int> {
         if (col + 2 in 0..7) {
@@ -93,5 +97,7 @@ class Knight(override var army: Army, override var board: Array<Array<Piece?>>) 
     }
 
 
-
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        TODO("Not yet implemented")
+    }
 }

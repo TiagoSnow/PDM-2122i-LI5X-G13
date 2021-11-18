@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Bishop(override var army: Army, override var board: Array<Array<Piece?>>) : Piece() {
+class Bishop(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.BISHOP
 
@@ -37,6 +42,10 @@ class Bishop(override var army: Army, override var board: Array<Array<Piece?>>) 
 
         removePiece(startPositions.first, startPositions.second)
         putPiece(col, line, this)
+    }
+
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        TODO("Not yet implemented")
     }
 
 }

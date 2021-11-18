@@ -9,6 +9,9 @@ abstract class Piece {
     val MAX_BOARD_VAL = 7
     abstract val board: Array<Array<Piece?>>
 
+    abstract var col: Int
+    abstract var line: Int
+
     abstract val piece: PiecesType
     abstract val army: Army
     abstract fun movePGN(move: String)
@@ -21,10 +24,15 @@ abstract class Piece {
 
     fun putPiece(col: Int, line: Int, piece: Piece) {
         board[col][line] = piece
+        board[col][line]?.col = col
+        board[col][line]?.line = line
+
     }
 
     fun removePiece(col: Int, line: Int) {
         board[col][line] = null
     }
+
+    abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>  //pode ser de Piece???
 
 }

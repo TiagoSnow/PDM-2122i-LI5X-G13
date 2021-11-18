@@ -2,9 +2,8 @@ package pt.isel.pdm.chess4android.pieces
 
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
-import pt.isel.pdm.chess4android.*
 
-class Pawn(override val army: Army, override var board: Array<Array<Piece?>>) : Piece() {
+class Pawn(override val army: Army, override var board: Array<Array<Piece?>>, override var col: Int, override var line: Int) : Piece() {
 
     override val piece = PiecesType.PAWN
 
@@ -40,4 +39,9 @@ class Pawn(override val army: Army, override var board: Array<Array<Piece?>>) : 
         removePiece(col, startingPoint)
         putPiece(col, line, this)
     }
+
+    override fun searchRoute() : MutableList<Pair<Coord, Boolean>?> {
+        TODO("To implement")
+    }
+
 }

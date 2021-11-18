@@ -3,24 +3,33 @@ package pt.isel.pdm.chess4android.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.*
+import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 
 /**
  * Custom view that implements a chess board.
  */
+
+typealias TileTouchListener = (tile: Tile, row: Int, column: Int) -> Unit
+
 @SuppressLint("ClickableViewAccessibility")
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
     // var model = GameActivityViewModel.
+
     private val side = 8
 
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
+
+    private lateinit var board: Array<Array<Piece?>>
 
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
@@ -58,12 +67,72 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 side,
                 piecesImages
             )
-            //tile.setOnClickListener { onTileClickedListener?.invoke(tile, row, column) }
+
+            tile.setOnClickListener {
+                onTileClickedListener?.invoke(tile, row, column)
+
+                val options = getAvailableOptions(row, column)
+
+                if(tile.isAlreadySelected) {
+                    for(coordinate in options) {
+                        val c = coordinate?.first?.col
+                        val l = coordinate?.first?.line
+
+                        setOriginalColor(l!!, c!!, tiles[c][l]!!)
+                    }
+                    setOriginalColor(row, column, tile)
+                    tile.isAlreadySelected = false
+                }
+                else {
+                    changeBackgroundColor(tile, Color.GREEN)
+
+                    //pintar todas as opções
+                    if(!options.isEmpty()) {
+                        for(coordinate in options) {
+                            val c = coordinate?.first?.col
+                            val l = coordinate?.first?.line
+
+                            changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
+                        }
+                    }
+
+                    tile.isAlreadySelected = true
+                }
+
+
+                Log.v("App", row.toString() + " : "+ column)
+            }
+
+
             addView(tile)
             tiles[column][row] = tile
         }
     }
-    //var onTileClickedListener: TileTouchListener? = null
+
+    private fun setOriginalColor(row: Int, column: Int, tile: Tile) {
+        when ((row + column) % 2) {
+            0 -> changeBackgroundColor(tile, ctx.resources.getColor(R.color.chess_board_white, null))
+
+            1 -> changeBackgroundColor(tile, ctx.resources.getColor(R.color.chess_board_black, null))
+        }
+    }
+
+    private fun getAvailableOptions(row: Int, column: Int): MutableList<Pair<Coord, Boolean>?> {
+        val piece = board[column][row]
+        if(piece != null)
+            return piece.searchRoute()
+
+        return mutableListOf()
+    }
+
+    fun changeBackgroundColor(tile: Tile, color: Int) {
+        tile.setBackgroundColor(color)
+        tile.brush.color = color
+    }
+
+    var onTileClickedListener: TileTouchListener? = null
+
+
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
@@ -74,6 +143,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(board: Array<Array<Piece?>>) {
+        this.board = board
         for (column in 0..7) {
             for (line in 0..7) {
                 val piece = board[column][line]

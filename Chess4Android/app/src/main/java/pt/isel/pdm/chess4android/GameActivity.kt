@@ -25,9 +25,10 @@ class GameActivity : AppCompatActivity() {
             binding.boardView.updateView(viewModel.board)
 
         }
-        binding.boardView.setOnClickListener {
+        /*binding.boardView.setOnClickListener() {
+
             startActivity(Intent(this, AboutActivity::class.java))
-        }
+        }*/
     }
 
 

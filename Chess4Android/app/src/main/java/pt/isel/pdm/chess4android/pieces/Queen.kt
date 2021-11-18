@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Queen(override var army: Army, override var board: Array<Array<Piece?>>) : Piece() {
+class Queen(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.QUEEN
 
@@ -24,7 +29,6 @@ class Queen(override var army: Army, override var board: Array<Array<Piece?>>) :
         putPiece(col, line, this)
     }
 
-
     private fun searchQueen(army: Army): Array<Int> {
         var startColPosition = 0
         var startLinePosition = 0
@@ -38,6 +42,10 @@ class Queen(override var army: Army, override var board: Array<Array<Piece?>>) :
             }
         }
         return arrayOf(startColPosition, startLinePosition)
+    }
+
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        TODO("To implement")
     }
 
 }

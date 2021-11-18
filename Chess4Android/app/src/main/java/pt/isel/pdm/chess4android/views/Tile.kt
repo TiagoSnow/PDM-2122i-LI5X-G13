@@ -3,7 +3,9 @@ package pt.isel.pdm.chess4android.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.view.MotionEvent
 import android.view.View
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.Army
@@ -29,13 +31,15 @@ class Tile(
     initialPiecesType: Pair<Army, PiecesType>? = null,
 ) : View(ctx) {
 
+    var isAlreadySelected = false
+
     var piecesType: Pair<Army, PiecesType>? = initialPiecesType
         set(value) {
             field = value
             invalidate()
         }
 
-    private val brush = Paint().apply {
+    var brush = Paint().apply {
         color = ctx.resources.getColor(
             if (type == Army.WHITE) R.color.chess_board_white else R.color.chess_board_black,
             null
