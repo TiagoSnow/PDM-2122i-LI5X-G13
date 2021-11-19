@@ -78,59 +78,35 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tile.setOnClickListener {
                 //if (!hasSelection || tile.isAlreadySelected) {
                 onTileClickedListener?.invoke(tile, row, column)
-
-                if (options.size != 0) {
+                if (options.isNotEmpty()) {
                     for (position in options) {
                         if (position!!.first.col == column && position!!.first.line == row) {
-
                             //atualizar model
-                            var pieceType = board[prevCoord!!.first][prevCoord!!.second]
+                            val pieceType = board[prevCoord!!.first][prevCoord!!.second]
                             board[prevCoord!!.first][prevCoord!!.second] = null
                             board[column][row] = pieceType
 
                             //atualizar View
-                            tiles[prevCoord!!.first][prevCoord!!.second] = null
+                            var previousTile = tiles[prevCoord!!.first][prevCoord!!.second]
+                            previousTile?.piecesType = null
+                            previousTile?.isAlreadySelected = false
+
                             tiles[column][row]?.piecesType =
                                 Pair(pieceType!!.army, pieceType!!.piece)
-                        }
-                        tiles[position.first.col][position.first.line]?.let { it1 ->
-                            setOriginalColor(
-                                position.first.col, position.first.line,
-                                it1
-                            )
+
+                            //set background color back to normal in the tile that the piece was
+                            setOriginalColor(prevCoord!!.first, prevCoord!!.second, previousTile!!)
+                            setOriginalColorToAllOptions()
+                            options = mutableListOf()
+                            return@setOnClickListener
                         }
                     }
+                    setOriginalColor(prevCoord!!.first, prevCoord!!.second, tiles[prevCoord!!.first][prevCoord!!.second]!!)
+                    setOriginalColorToAllOptions()
+                    getNewOptionsForPiece(row, column, tile)
                 } else {
-                    options = getAvailableOptions(row, column)
-
-                    if (tile.isAlreadySelected) {
-                        //options = getAvailableOptions(row, column)
-                        for (coordinate in options) {
-                            val c = coordinate?.first?.col
-                            val l = coordinate?.first?.line
-
-                            setOriginalColor(l!!, c!!, tiles[c][l]!!)
-                        }
-                        setOriginalColor(row, column, tile)
-                        tile.isAlreadySelected = false
-                        hasSelection = false
-                    } else {
-                        changeBackgroundColor(tile, Color.GREEN)
-
-                        //paint all options
-                        if (options.isNotEmpty()) {
-                            for (coordinate in options) {
-                                val c = coordinate?.first?.col
-                                val l = coordinate?.first?.line
-                                changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
-                            }
-                        }
-                        prevCoord = Pair(column, row)
-                        tile.isAlreadySelected = true
-                        hasSelection = true
-                    }
+                    getNewOptionsForPiece(row, column, tile)
                 }
-
 
                 Log.v("App", row.toString() + " : " + column)
                 //}
@@ -140,6 +116,48 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tiles[column][row] = tile
 
         }
+    }
+
+    private fun getNewOptionsForPiece(row: Int, column: Int, tile: Tile) {
+        options = getAvailableOptions(row, column)
+
+        if (tile.isAlreadySelected) {
+            //options = getAvailableOptions(row, column)
+            for (coordinate in options) {
+                val c = coordinate?.first?.col
+                val l = coordinate?.first?.line
+
+                setOriginalColor(l!!, c!!, tiles[c][l]!!)
+            }
+            setOriginalColor(row, column, tile)
+            tile.isAlreadySelected = false
+            hasSelection = false
+        } else {
+            if(tiles[column][row]?.piecesType != null)
+                changeBackgroundColor(tile, Color.GREEN)
+
+            //paint all options
+            if (options.isNotEmpty()) {
+                for (coordinate in options) {
+                    val c = coordinate?.first?.col
+                    val l = coordinate?.first?.line
+                    changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
+                }
+            }
+            prevCoord = Pair(column, row)
+            tile.isAlreadySelected = true
+            hasSelection = true
+        }
+    }
+
+    private fun setOriginalColorToAllOptions() {
+        //set background color back to normal in all options
+        for (position in options)
+            setOriginalColor(
+                position!!.first.col,
+                position.first.line,
+                tiles[position.first.col][position.first.line]!!
+            )
     }
 
     private fun setOriginalColor(row: Int, column: Int, tile: Tile) {
