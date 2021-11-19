@@ -78,7 +78,10 @@ class Bishop(
                     ), false
                 )
             )
-            else list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+            else {
+                list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+                break
+            }
             colDirection += colDir
             lineDirection += lineDir
         }

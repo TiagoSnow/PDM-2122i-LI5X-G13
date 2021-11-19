@@ -84,7 +84,62 @@ class King(
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        //move-se para todos os lados. Somente uma casa
+
+        var allOptionsKing = getAllAvailableOptions()
+
+        var allEnemyOptions = getAllAvailableOptionsFromEnemy()
+
+        return allOptionsKing
+
+    }
+
+    private fun getAllAvailableOptionsFromEnemy(): MutableList<Pair<Coord, Boolean>?> {
         TODO("Not yet implemented")
+    }
+
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+
+        //up
+        list.addAll(searchKingDirection(col, line-1))
+
+        //left
+        list.addAll(searchKingDirection(col-1, line))
+
+        //right
+        list.addAll(searchKingDirection(col+1, line))
+
+        //down
+        list.addAll(searchKingDirection(col, line+1))
+
+        //diagonal up/left
+        list.addAll(searchKingDirection(col-1, line-1))
+
+        //diagonal up/right
+        list.addAll(searchKingDirection(col+1, line-1))
+
+        //diagonal down/left
+        list.addAll(searchKingDirection(col-1, line+1))
+
+        //diagonal down/right
+        list.addAll(searchKingDirection(col+1, line+1))
+
+        return list
+    }
+
+    private fun searchKingDirection(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?> {
+        if(col !in 0..7 || line !in 0..7) {
+            return mutableListOf()
+        }
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        if (board[col][line]?.army != army) {
+            if (board[col][line] == null)
+                list.add(Pair(Coord(col, line), false))
+            else
+                list.add(Pair(Coord(col, line), true))
+        }
+        return list
     }
 
 }
