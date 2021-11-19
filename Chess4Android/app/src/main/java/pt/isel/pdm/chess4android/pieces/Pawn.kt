@@ -85,4 +85,40 @@ class Pawn(
         return list
     }
 
+    fun searchRouteToEat(): MutableList<Pair<Coord, Boolean>?>{
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        var pair: Pair<Coord, Boolean>?
+        if(army == Army.WHITE) {
+            pair = searchDirection(col - 1, line - 1)        //up left
+            if(pair != null) {
+                list.add((pair))
+            }
+            pair = searchDirection(col + 1, line - 1)       //up right
+            if(pair != null) {
+                list.add((pair))
+            }
+        }
+        else {
+            pair = searchDirection(col - 1, line + 1)        //down left
+            if(pair != null) {
+                list.add((pair))
+            }
+            pair = searchDirection(col + 1, line + 1)       //down right
+            if(pair != null) {
+                list.add((pair))
+            }
+        }
+        return list
+    }
+
+    private fun searchDirection(col: Int, line: Int) : Pair<Coord, Boolean>? {
+        if(col !in 0..7 || line !in 0..7) {
+            return null
+        }
+        if (board[col][line] == null) {
+            return Pair(Coord(col, line), false)
+        }
+        return null
+    }
+
 }
