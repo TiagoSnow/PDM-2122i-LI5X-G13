@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Knight(override var army: Army) : Piece() {
+class Knight(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.KNIGHT
 
@@ -22,7 +27,6 @@ class Knight(override var army: Army) : Piece() {
         removePiece(startPositions.first, startPositions.second)
         putPiece(col, line, this)
     }
-
 
     private fun searchKnight(col: Int, line: Int, army: Army): Pair<Int, Int> {
         if (col + 2 in 0..7) {
@@ -93,5 +97,154 @@ class Knight(override var army: Army) : Piece() {
     }
 
 
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        var list = mutableListOf<Pair<Coord, Boolean>?>()
 
+        //up
+        if (line - 2 in 0..7) {
+            if (col + 1 in 0..7) {
+                if (board[col + 1][line - 2] == null) list.add(
+                    Pair(
+                        Coord(col + 1, line - 2),
+                        false
+                    )
+                )
+                else if (board[col + 1][line - 2]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col + 1,
+                            line - 2
+                        ), true
+                    )
+                )
+            }
+            if (col - 1 in 0..7) {
+                if (board[col - 1][line - 2] == null) list.add(
+                    Pair(
+                        Coord(col - 1, line - 2),
+                        false
+                    )
+                )
+                else if (board[col - 1][line - 2]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col - 1,
+                            line - 2
+                        ), true
+                    )
+                )
+            }
+        }
+
+        //down
+        if (line + 2 in 0..7) {
+            if (col + 1 in 0..7) {
+                if (board[col + 1][line + 2] == null) list.add(
+                    Pair(
+                        Coord(col + 1, line + 2),
+                        false
+                    )
+                )
+                else if (board[col + 1][line + 2]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col + 1,
+                            line + 2
+                        ), true
+                    )
+                )
+            }
+
+
+            if (col - 1 in 0..7) {
+                if (board[col - 1][line + 2] == null) list.add(
+                    Pair(
+                        Coord(col - 1, line + 2),
+                        false
+                    )
+                )
+                else if (board[col - 1][line + 2]?.army != army) list.add(
+                    Pair(
+                        Coord(col - 1, line + 2),
+                        true
+                    )
+                )
+
+            }
+        }
+
+        //left
+        if (col - 2 in 0..7) {
+            if (line + 1 in 0..7) {
+                if (board[col - 2][line + 1] == null) list.add(
+                    Pair(
+                        Coord(col - 2, line + 1),
+                        false
+                    )
+                )
+                else if (board[col - 2][line + 1]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col - 2,
+                            line + 1
+                        ), true
+                    )
+                )
+            }
+            if (line - 1 in 0..7) {
+                if (board[col - 2][line - 1] == null) list.add(
+                    Pair(
+                        Coord(col - 2, line - 1),
+                        false
+                    )
+                )
+                else if (board[col - 2][line - 1]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col - 2,
+                            line - 1
+                        ), true
+                    )
+                )
+            }
+        }
+
+        //right
+        if (col + 2 in 0..7) {
+            if (line + 1 in 0..7) {
+                if (board[col + 2][line + 1] == null) list.add(
+                    Pair(
+                        Coord(col + 2, line + 1),
+                        false
+                    )
+                )
+                else if (board[col + 2][line + 1]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col + 2,
+                            line + 1
+                        ), true
+                    )
+                )
+            }
+            if (line - 1 in 0..7) {
+                if (board[col + 2][line - 1] == null) list.add(
+                    Pair(
+                        Coord(col + 2, line - 1),
+                        false
+                    )
+                )
+                else if (board[col + 2][line - 1]?.army != army) list.add(
+                    Pair(
+                        Coord(
+                            col + 2,
+                            line - 1
+                        ), true
+                    )
+                )
+            }
+        }
+
+        return list
+    }
 }

@@ -3,7 +3,13 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Rook(override var army: Army) : Piece() {
+class Rook(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
+
 
     override var piece = PiecesType.ROOK
 
@@ -57,7 +63,6 @@ class Rook(override var army: Army) : Piece() {
         putPiece(colDest, lineDest, this)
     }
 
-
     private fun searchRook(colDest: Int, lineDest: Int, army: Army): Pair<Int, Int> {
         var colFrom = 0
         var lineFrom = 0
@@ -66,7 +71,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest + i,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -78,7 +83,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest,
                     lineDest - i,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest
@@ -91,7 +96,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest + i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest + i
@@ -103,7 +108,7 @@ class Rook(override var army: Army) : Piece() {
                     colDest - i,
                     lineDest,
                     army,
-                    pt.isel.pdm.chess4android.PiecesType.ROOK
+                    PiecesType.ROOK
                 )
             ) {
                 colFrom = colDest - i
@@ -113,6 +118,7 @@ class Rook(override var army: Army) : Piece() {
         }
         return Pair(colFrom, lineFrom)
     }
+
     private fun searchRookInSameCol(
         colFrom: Int,
         colDest: Int,
@@ -130,4 +136,107 @@ class Rook(override var army: Army) : Piece() {
         } else lineDest
     }
 
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        //anda para todos os lados
+
+        //procura nas casas mais proximas
+        return getAllAvailableOptions()
+
+        //se a tile à frente tiver vazia adicionamos ao array
+        //se tiver à frente uma piece da mesma cor, return
+        //se tiver à frente uma piece de cor diferente, adiciona ao array com flag
+    }
+
+    private fun searchRouteLine(direction: Int): MutableList<Pair<Coord, Boolean>?> {
+        var array = mutableListOf<Pair<Coord, Boolean>?>()
+
+        if (line > direction) {     //up
+            for (lineAux in (line - 1) downTo direction) {
+                val position = board[col][lineAux]
+                if (position == null) {
+                    array.add(Pair(Coord(col, lineAux), false))
+                }
+
+                if (position is Piece) {
+                    if (position.army == army)
+                        break
+                    else {
+                        array.add(Pair(Coord(col, lineAux), true))
+                        break
+                    }
+                }
+            }
+        } else {              //down
+            for (lineAux in (line + 1)..direction) {
+                val position = board[col][lineAux]
+                if (position == null) {
+                    array.add(Pair(Coord(col, lineAux), false))
+                }
+
+                if (position is Piece) {
+                    if (position.army == army)
+                        break
+                    else {
+                        array.add(Pair(Coord(col, lineAux), true))
+                        break
+                    }
+                }
+            }
+        }
+        return array
+    }
+
+    private fun searchRouteColumn(direction: Int): MutableList<Pair<Coord, Boolean>?> {
+        var array = mutableListOf<Pair<Coord, Boolean>?>()
+
+        if (col > direction) {     //left
+            for (colAux in (col - 1) downTo 0) {
+                val position = board[colAux][line]
+                if (position == null) {
+                    array.add(Pair(Coord(colAux, line), false))
+                }
+                if (position is Piece) {
+                    if (position.army == army)
+                        break
+                    else {
+                        array.add(Pair(Coord(colAux, line), true))
+                        break
+                    }
+                }
+            }
+        } else {                      //right
+            for (colAux in (col + 1)..direction) {
+                val position = board[colAux][line]
+                if (position == null) {
+                    array.add(Pair(Coord(colAux, line), false))
+                }
+                if (position is Piece) {
+                    if (position.army == army)
+                        break
+                    else {
+                        array.add(Pair(Coord(colAux, line), true))
+                        break
+                    }
+                }
+            }
+        }
+        return array
+    }
+
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+
+        val listUp = searchRouteLine(0)             //up
+        val listLeft = searchRouteColumn(0)       //left
+        val listRight = searchRouteColumn(7)        //right
+        val listDown = searchRouteLine(7)         //down
+
+
+        list.addAll(listUp)
+        list.addAll(listLeft)
+        list.addAll(listRight)
+        list.addAll(listDown)
+
+        return list
+    }
 }

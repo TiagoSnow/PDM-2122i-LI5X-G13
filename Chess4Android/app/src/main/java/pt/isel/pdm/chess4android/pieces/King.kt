@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class King(override var army: Army) : Piece() {
+class King(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.KING
 
@@ -76,6 +81,10 @@ class King(override var army: Army) : Piece() {
             )     //diagonal down right
 
         return Pair(-1, -1);
+    }
+
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        TODO("Not yet implemented")
     }
 
 }

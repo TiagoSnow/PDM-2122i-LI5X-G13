@@ -1,5 +1,6 @@
 package pt.isel.pdm.chess4android
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -18,9 +19,17 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel.getPuzzleOfDay()
         viewModel.dataOfDay.observe(this) {
-        viewModel.updateBoard(
-                "e4 e5 h4 f6 Rh3 h6 a4 Rh7 Raa3 d6 Rhc3 g6 Rc5 f5 Rac3 h5 R3c4 d5 d4 c6 Rxc6 Bc5 R4xc5 Rh8 Rd6 Rh7 Rdxd5")
+            viewModel.updateBoard(
+                "e4 e5 h4 f6 Rh3 h6 a4 Rh7 Raa3 d6 Rhc3 g6 Rc5 f5 Rac3 h5 R3c4 d5 d4 c6 Rxc6 Bc5 R4xc5 Rh8 Rd6 Rh7 Rdxd5"
+            )
             binding.boardView.updateView(viewModel.board)
+
         }
+        /*binding.boardView.setOnClickListener() {
+
+            startActivity(Intent(this, AboutActivity::class.java))
+        }*/
     }
+
+
 }

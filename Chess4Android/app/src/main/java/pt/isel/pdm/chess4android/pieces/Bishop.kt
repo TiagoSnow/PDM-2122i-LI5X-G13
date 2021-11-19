@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Bishop(override var army: Army) : Piece() {
+class Bishop(
+    override var army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override var piece = PiecesType.BISHOP
 
@@ -14,7 +19,7 @@ class Bishop(override var army: Army) : Piece() {
         for (c in 0..MAX_BOARD_VAL) {
             initLineAux = if (initLineAux == 0) 1 else 0
             for (l in initLineAux until 8 step 2)
-                if (board[c][l]?.second == PiecesType.BISHOP && board[c][l]?.first == army) {
+                if (board[c][l]?.piece == PiecesType.BISHOP && board[c][l]?.army == army) {
                     startColPosition = c
                     startLinePosition = l
                     break
@@ -38,5 +43,47 @@ class Bishop(override var army: Army) : Piece() {
         removePiece(startPositions.first, startPositions.second)
         putPiece(col, line, this)
     }
+
+    override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
+        return getAllAvailableOptions()
+    }
+
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+
+        val listDigUL = searchRouteDiagonal(-1, -1)     //diagonal up/left
+        val listDigUR = searchRouteDiagonal(+1, -1)   //diagonal up/right
+        val listDL = searchRouteDiagonal(-1, +1)  //diagonal down/left
+        val listDR = searchRouteDiagonal(+1, +1)   //diagonal down/right
+
+        list.addAll(listDigUL)
+        list.addAll(listDigUR)
+        list.addAll(listDL)
+        list.addAll(listDR)
+
+        return list
+    }
+
+    private fun searchRouteDiagonal(colDir: Int, lineDir: Int): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        var colDirection = colDir
+        var lineDirection = lineDir
+
+        while (col + colDirection in 0..7 && line + lineDirection in 0..7 && board[col + colDirection][line + lineDirection]?.army != army) {
+            if (board[col + colDirection][line + lineDirection] == null) list.add(
+                Pair(
+                    Coord(
+                        col + colDirection,
+                        line + lineDirection
+                    ), false
+                )
+            )
+            else list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+            colDirection += colDir
+            lineDirection += lineDir
+        }
+        return list
+    }
+
 
 }
