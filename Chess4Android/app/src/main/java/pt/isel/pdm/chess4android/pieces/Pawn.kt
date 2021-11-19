@@ -3,7 +3,12 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
-class Pawn(override val army: Army, override var board: Array<Array<Piece?>>, override var col: Int, override var line: Int) : Piece() {
+class Pawn(
+    override val army: Army,
+    override var board: Array<Array<Piece?>>,
+    override var col: Int,
+    override var line: Int
+) : Piece() {
 
     override val piece = PiecesType.PAWN
 
@@ -45,27 +50,20 @@ class Pawn(override val army: Army, override var board: Array<Array<Piece?>>, ov
     }
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
-        var list = mutableListOf<Pair<Coord, Boolean>?>()
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        val currPiece = board[col][line]
+        val isWhite = currPiece?.army == Army.WHITE
 
-        // front and back
-        if (board[col][line]?.army == Army.WHITE && line == 6 && line - 1 in 0..7) {
-            for (lineAux in line - 1 downTo line - 2) {
-                if (board[col][lineAux]?.army == army) {
-                    break
-                }
-                list.add(Pair(Coord(col, lineAux), false))
-            }
-        } else if (board[col][line - 1] == null && board[col][line]?.army == Army.WHITE && line - 1 in 0..7) {
-            list.add(Pair(Coord(col, line - 1), false))
-        } else if (line == 1 && board[col][line]?.army == Army.BLACK && line + 1 in 0..7) {
-            for (lineAux in line + 1 until line + 3) {
-                if (board[col][lineAux]?.army == army) {
-                    break
-                }
-                list.add(Pair(Coord(col, lineAux), false))
-            }
-        } else if (board[col][line + 1] == null && board[col][line]?.army == Army.BLACK && line + 1 in 0..7)
-            list.add(Pair(Coord(col, line + 1), false))
+        //if movement is up or down
+        val moveAux = if (isWhite) -1 else 1
+        // line in which pawn can move 2 spaces
+        val moveTwo = if (isWhite) 6 else 1
+
+        if (line + moveAux in 1..6 && board[col][line + moveAux] == null)
+            list.add(Pair(Coord(col, line + moveAux), false))
+
+        if (line == moveTwo && board[col][line + moveAux * 2] == null)
+            list.add(Pair(Coord(col, line + moveAux * 2), false))
 
         //to eat diagonal
         if (board[col][line]?.army == Army.WHITE && col + 1 in 0..7 && col - 1 in 0..7 && line - 1 in 0..7) {

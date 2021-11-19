@@ -29,7 +29,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
-
+    private var hasSelection = false
     private lateinit var board: Array<Array<Piece?>>
 
     private val brush = Paint().apply {
@@ -60,6 +60,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     )
 
     init {
+
         rowCount = side
         columnCount = side
         repeat(side * side) {
@@ -73,57 +74,65 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             )
 
             tile.setOnClickListener {
-                onTileClickedListener?.invoke(tile, row, column)
+                if (!hasSelection || tile.isAlreadySelected) {
+                    onTileClickedListener?.invoke(tile, row, column)
 
-                val options = getAvailableOptions(row, column)
+                    var options = getAvailableOptions(row, column)
 
-                if(tile.isAlreadySelected) {
-                    for(coordinate in options) {
-                        val c = coordinate?.first?.col
-                        val l = coordinate?.first?.line
-
-                        setOriginalColor(l!!, c!!, tiles[c][l]!!)
-                    }
-                    setOriginalColor(row, column, tile)
-                    tile.isAlreadySelected = false
-                }
-                else {
-                    changeBackgroundColor(tile, Color.GREEN)
-
-                    //pintar todas as opções
-                    if(!options.isEmpty()) {
-                        for(coordinate in options) {
+                    if (tile.isAlreadySelected) {
+                        //options = getAvailableOptions(row, column)
+                        for (coordinate in options) {
                             val c = coordinate?.first?.col
                             val l = coordinate?.first?.line
 
-                            changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
+                            setOriginalColor(l!!, c!!, tiles[c][l]!!)
                         }
+                        setOriginalColor(row, column, tile)
+                        tile.isAlreadySelected = false
+                        hasSelection = false
+                    } else {
+                        changeBackgroundColor(tile, Color.GREEN)
+
+                        //paint all options
+                        if (options.isNotEmpty()) {
+                            for (coordinate in options) {
+                                val c = coordinate?.first?.col
+                                val l = coordinate?.first?.line
+
+                                changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
+                            }
+                        }
+                        tile.isAlreadySelected = true
+                        hasSelection = true
                     }
 
-                    tile.isAlreadySelected = true
+                    Log.v("App", row.toString() + " : " + column)
                 }
 
-
-                Log.v("App", row.toString() + " : "+ column)
             }
-
-
             addView(tile)
             tiles[column][row] = tile
+
         }
     }
 
     private fun setOriginalColor(row: Int, column: Int, tile: Tile) {
         when ((row + column) % 2) {
-            0 -> changeBackgroundColor(tile, ctx.resources.getColor(R.color.chess_board_white, null))
+            0 -> changeBackgroundColor(
+                tile,
+                ctx.resources.getColor(R.color.chess_board_white, null)
+            )
 
-            1 -> changeBackgroundColor(tile, ctx.resources.getColor(R.color.chess_board_black, null))
+            1 -> changeBackgroundColor(
+                tile,
+                ctx.resources.getColor(R.color.chess_board_black, null)
+            )
         }
     }
 
     private fun getAvailableOptions(row: Int, column: Int): MutableList<Pair<Coord, Boolean>?> {
         val piece = board[column][row]
-        if(piece != null)
+        if (piece != null)
             return piece.searchRoute()
 
         return mutableListOf()
@@ -135,7 +144,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     var onTileClickedListener: TileTouchListener? = null
-
 
 
     override fun dispatchDraw(canvas: Canvas) {
@@ -151,7 +159,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         for (column in 0..7) {
             for (line in 0..7) {
                 val piece = board[column][line]
-                if(piece != null)
+                if (piece != null)
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else
                     tiles[column][line]?.piecesType = null
