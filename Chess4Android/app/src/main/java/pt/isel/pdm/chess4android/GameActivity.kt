@@ -20,7 +20,7 @@ class GameActivity : AppCompatActivity() {
         viewModel.getPuzzleOfDay()
         viewModel.dataOfDay.observe(this) {
             viewModel.updateBoard(
-                "e4 a6 d4 h6 f4 b6 g4 c6 c4 d6 Ke2 g6 e5 dxe5 c5 e4"
+                "e4 e5 h4 f6 Rh3 h6 a4 Rh7 Raa3 d6 Rhc3 Nc6 d4 Nxd4"
             )
             binding.boardView.updateView(viewModel.board)
 
