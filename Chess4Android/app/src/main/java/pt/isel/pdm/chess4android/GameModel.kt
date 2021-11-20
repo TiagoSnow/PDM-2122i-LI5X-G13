@@ -1,6 +1,8 @@
 package pt.isel.pdm.chess4android
 
 import pt.isel.pdm.chess4android.pieces.*
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class GameModel() {
 
@@ -60,7 +62,12 @@ class GameModel() {
             val army = getArmy(armyFlag)
             when (move[0]) {
                 'R' -> {
-                    val rook = Rook(army, board, 0, 0)      //this coordinates is only to initialize the object. Coordinates will be updated at the end of the function
+                    val rook = Rook(
+                        army,
+                        board,
+                        0,
+                        0
+                    )      //this coordinates is only to initialize the object. Coordinates will be updated at the end of the function
                     rook.movePGN(move)
                 }
                 'B' -> {
@@ -94,6 +101,74 @@ class GameModel() {
         }
         newArmyToPlay = getArmy(armyFlag)
         return board
+    }
+
+    fun check(column: Int, line: Int): MutableList<Pair<Coord, Boolean>?> {
+        val selectedPiece = board[column][line]
+        val newOptions = selectedPiece!!.searchRoute()
+        for (option in newOptions) {
+            val coord = option!!.first
+            val possibleKing = board[coord.col][coord.line]
+            if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
+                return getRouteToKing(selectedPiece, possibleKing, newOptions)
+            }
+        }
+        return mutableListOf()
+    }
+
+    private fun getRouteToKing(
+        selectedPiece: Piece,
+        king: Piece,
+        newOptions: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
+
+        var list = mutableListOf<Pair<Coord, Boolean>?>()
+        val kingCoord = Coord(king.col, king.line)
+
+        val allOptionsWithDistances =
+            getAllDistancesFromOptions(newOptions, selectedPiece).sortedBy { pair -> pair.second }
+
+        var distancesToKingList = mutableListOf<Pair<Coord, Double>?>()
+        var distance = allOptionsWithDistances[0].second
+        while (distance != allOptionsWithDistances.last().second) {
+            for (pair in allOptionsWithDistances) {
+                if (pair.second == distance) {
+                    distancesToKingList.add(
+                        Pair(
+                            pair.first,
+                            distanceBetweenTwoPositions(pair.first, kingCoord)
+                        )
+                    )
+                } else {
+                    distance = pair.second
+                    break
+                }
+            }
+            distancesToKingList.sortedBy { pair -> pair?.second }
+            list.add(Pair(distancesToKingList[0]!!.first, false))
+        }
+        return list
+    }
+
+    private fun getAllDistancesFromOptions(
+        newOptions: MutableList<Pair<Coord, Boolean>?>,
+        selectedPiece: Piece
+    ): MutableSet<Pair<Coord, Double>> {
+        var list = mutableSetOf<Pair<Coord, Double>>()
+        val firstPosition = Coord(selectedPiece.col, selectedPiece.line)
+        for (option in newOptions) {
+            val currCoord = option!!.first
+            list.add(Pair(currCoord, distanceBetweenTwoPositions(firstPosition, currCoord)))
+        }
+        return list
+    }
+
+    private fun distanceBetweenTwoPositions(initPosition: Coord, endPosition: Coord): Double {
+        //(squareRoot(pow(x2-x1) + pow(y2-y1)))
+        return sqrt(
+            (endPosition.col.toDouble() - initPosition.col).pow(2.0) +
+                    (endPosition.line.toDouble() - initPosition.line).pow(2.0)
+        )
     }
 
     fun getArmy(armyFlag: Boolean): Army {

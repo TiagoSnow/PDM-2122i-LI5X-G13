@@ -124,155 +124,19 @@ class Knight(
         return Pair(-1, -1)
     }
 
-
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
-        var list = mutableListOf<Pair<Coord, Boolean>?>()
-
-        //up
-        if (line - 2 in 0..7) {
-            if (col + 1 in 0..7) {
-                if (board[col + 1][line - 2] == null) list.add(
-                    Pair(
-                        Coord(col + 1, line - 2),
-                        false
-                    )
-                )
-                else if (board[col + 1][line - 2]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col + 1,
-                            line - 2
-                        ), true
-                    )
-                )
-            }
-            if (col - 1 in 0..7) {
-                if (board[col - 1][line - 2] == null) list.add(
-                    Pair(
-                        Coord(col - 1, line - 2),
-                        false
-                    )
-                )
-                else if (board[col - 1][line - 2]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col - 1,
-                            line - 2
-                        ), true
-                    )
-                )
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        for (dir in KnightDir.values()) {
+            val x = col + dir.x
+            val y = line + dir.y
+            if (x in 0..7 && y in 0..7) {
+                if (board[x][y] == null)
+                    list.add(Pair(Coord(x, y), false))
+                else if (board[x][y]?.army != army)
+                    list.add(Pair(Coord(x, y), true))
             }
         }
-
-        //down
-        if (line + 2 in 0..7) {
-            if (col + 1 in 0..7) {
-                if (board[col + 1][line + 2] == null) list.add(
-                    Pair(
-                        Coord(col + 1, line + 2),
-                        false
-                    )
-                )
-                else if (board[col + 1][line + 2]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col + 1,
-                            line + 2
-                        ), true
-                    )
-                )
-            }
-
-
-            if (col - 1 in 0..7) {
-                if (board[col - 1][line + 2] == null) list.add(
-                    Pair(
-                        Coord(col - 1, line + 2),
-                        false
-                    )
-                )
-                else if (board[col - 1][line + 2]?.army != army) list.add(
-                    Pair(
-                        Coord(col - 1, line + 2),
-                        true
-                    )
-                )
-
-            }
-        }
-
-        //left
-        if (col - 2 in 0..7) {
-            if (line + 1 in 0..7) {
-                if (board[col - 2][line + 1] == null) list.add(
-                    Pair(
-                        Coord(col - 2, line + 1),
-                        false
-                    )
-                )
-                else if (board[col - 2][line + 1]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col - 2,
-                            line + 1
-                        ), true
-                    )
-                )
-            }
-            if (line - 1 in 0..7) {
-                if (board[col - 2][line - 1] == null) list.add(
-                    Pair(
-                        Coord(col - 2, line - 1),
-                        false
-                    )
-                )
-                else if (board[col - 2][line - 1]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col - 2,
-                            line - 1
-                        ), true
-                    )
-                )
-            }
-        }
-
-        //right
-        if (col + 2 in 0..7) {
-            if (line + 1 in 0..7) {
-                if (board[col + 2][line + 1] == null) list.add(
-                    Pair(
-                        Coord(col + 2, line + 1),
-                        false
-                    )
-                )
-                else if (board[col + 2][line + 1]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col + 2,
-                            line + 1
-                        ), true
-                    )
-                )
-            }
-            if (line - 1 in 0..7) {
-                if (board[col + 2][line - 1] == null) list.add(
-                    Pair(
-                        Coord(col + 2, line - 1),
-                        false
-                    )
-                )
-                else if (board[col + 2][line - 1]?.army != army) list.add(
-                    Pair(
-                        Coord(
-                            col + 2,
-                            line - 1
-                        ), true
-                    )
-                )
-            }
-        }
-
         return list
     }
+
 }

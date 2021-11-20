@@ -7,9 +7,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.*
+import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 
@@ -22,13 +24,14 @@ typealias TileTouchListener = (tile: Tile, row: Int, column: Int) -> Unit
 @SuppressLint("ClickableViewAccessibility")
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
 
+    private lateinit var game: GameModel
     private val side = 8
-
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
     private lateinit var board: Array<Array<Piece?>>
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
+    private var checkOptions: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
 
@@ -72,7 +75,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 side,
                 piecesImages
             )
-
             tile.setOnClickListener {
                 onTileClickedListener?.invoke(tile, row, column)
 
@@ -111,6 +113,17 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 )
                                 tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
 
+                                checkOptions = game.check(column, row)
+                                if(checkOptions.isNotEmpty()){
+                                    for (tile in checkOptions) {
+                                        val tileCoord= tile?.first!!
+                                        changeBackgroundColor(tiles[tileCoord.col][tileCoord.col]!!, Color.rgb(173, 182, 163))
+                                    }
+                                //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                                //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+
+                                }
+
                                 options = mutableListOf()
                                 newArmyToPlay = invertArmy()
                                 return@setOnClickListener
@@ -130,6 +143,15 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     }
 
                     if (board[column][row] != null) {
+
+
+                        //if(isCheck){
+                            //getAvailableOptions(row, column)
+                            //percorrer as options
+                                //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                                //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                        //}
+
                         if(board[column][row]?.army != newArmyToPlay)
                             return@setOnClickListener
                         //Aparecimento dos Caminhos Possíveis
@@ -187,6 +209,10 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
     }
 
+    fun setup(gameModel: GameModel) {
+        this.game = gameModel
+    }
+
     private fun invertArmy(): Army {
         return if(newArmyToPlay == Army.WHITE) { Army.BLACK } else { Army.WHITE }
     }
@@ -239,7 +265,10 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army) {
+    fun updateView(
+        board: Array<Array<Piece?>>,
+        newArmyToPlay: Army
+    ) {
         this.board = board
         this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {

@@ -26,6 +26,7 @@ class Pawn(
                     break
                 }
             }
+            removePiece(startColumn, startingPoint)
         } else {
             col = move[0] - 'a'
             line = 8 - move[1].digitToInt()
@@ -39,9 +40,8 @@ class Pawn(
                 checkIfPieceExists(col, 6, army, piece) -> startingPoint = 6
             } else
                 startingPoint = if (army == Army.WHITE) line + 1 else line - 1
+            removePiece(col, startingPoint)
         }
-
-        removePiece(col, startingPoint)
         putPiece(col, line, this)
     }
 
