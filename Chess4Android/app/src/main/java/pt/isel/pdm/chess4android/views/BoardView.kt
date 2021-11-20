@@ -29,10 +29,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
-    private var hasSelection = false
     private lateinit var board: Array<Array<Piece?>>
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
-    private var prevCoord: Pair<Int, Int>? = null
+    private var prevCoord: Coord? = null
 
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
@@ -78,34 +77,99 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tile.setOnClickListener {
                 //if (!hasSelection || tile.isAlreadySelected) {
                 onTileClickedListener?.invoke(tile, row, column)
-                if (options.isNotEmpty()) {
-                    for (position in options) {
-                        if (position!!.first.col == column && position!!.first.line == row) {
-                            //atualizar model
-                            val pieceType = board[prevCoord!!.first][prevCoord!!.second]
-                            board[prevCoord!!.first][prevCoord!!.second] = null
-                            board[column][row] = pieceType
 
-                            //atualizar View
-                            var previousTile = tiles[prevCoord!!.first][prevCoord!!.second]
-                            previousTile?.piecesType = null
-                            previousTile?.isAlreadySelected = false
+                //Apaga as options independentemente do sitio do próximo clique
+                setOriginalColorToAllOptions()
 
-                            tiles[column][row]?.piecesType =
-                                Pair(pieceType!!.army, pieceType!!.piece)
+                if (tile.isAlreadySelected) {
 
-                            //set background color back to normal in the tile that the piece was
-                            setOriginalColor(prevCoord!!.first, prevCoord!!.second, previousTile!!)
-                            setOriginalColorToAllOptions()
-                            options = mutableListOf()
-                            return@setOnClickListener
+                    setOriginalColor(row, column, tile)
+                    tile.isAlreadySelected = false
+                } else {
+                    if (options.isNotEmpty()) {
+                        for (option in options) {
+                            //Caso encontre uma option no clique
+                            if (option?.first?.col == column && option.first.line == row) {
+                                val movedPiece = board[prevCoord!!.col][prevCoord!!.line]
+
+                                //Atualizar coords da peça nova
+                                movedPiece?.col = column
+                                movedPiece?.line = row
+
+                                //Model
+                                board[column][row] = movedPiece
+                                board[prevCoord!!.col][prevCoord!!.line] = null
+
+                                //View
+                                tiles[column][row]?.piecesType =
+                                    Pair(movedPiece!!.army, movedPiece.piece)
+                                tiles[prevCoord!!.col][prevCoord!!.line]?.piecesType = null
+
+                                //remover a seleção da peça antiga
+                                setOriginalColor(
+                                    prevCoord!!.line,
+                                    prevCoord!!.col,
+                                    tiles[prevCoord!!.col][prevCoord!!.line]!!
+                                )
+                                tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+
+                                options = mutableListOf()
+                                return@setOnClickListener
+                            }
                         }
                     }
-                    setOriginalColor(prevCoord!!.first, prevCoord!!.second, tiles[prevCoord!!.first][prevCoord!!.second]!!)
-                    setOriginalColorToAllOptions()
-                    getNewOptionsForPiece(row, column, tile)
-                } else {
-                    getNewOptionsForPiece(row, column, tile)
+
+                    if (board[column][row] != null) {
+
+                        //Aparecimento dos Caminhos Possíveis
+                        options = getAvailableOptions(row, column)
+                        for (path in options) {
+                            changeBackgroundColor(
+                                tiles[path!!.first.col][path!!.first.line]!!,
+                                Color.RED
+                            )
+                        }
+
+                        if (prevCoord == null)
+                            prevCoord = Coord(column, row)
+                        else {
+                            //remover a seleção da peça antiga && Verificação de colisao de options
+                            var flag = false
+                            for (option in options) {
+                                if (option?.first?.col == prevCoord!!.col && option?.first?.line == prevCoord!!.line) {
+                                    flag = true
+                                    break
+                                }
+                            }
+                            if (!flag) {
+                                setOriginalColor(
+                                    prevCoord!!.line,
+                                    prevCoord!!.col,
+                                    tiles[prevCoord!!.col][prevCoord!!.line]!!
+                                )
+                            }
+                            tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                        }
+                        prevCoord?.col = column
+                        prevCoord?.line = row
+
+                        //Colocar cor verde na atual
+                        changeBackgroundColor(tile, Color.GREEN)
+                        tile.isAlreadySelected = true
+                    } else {
+                        //remover a seleção no clique da peça vazia
+                        setOriginalColor(
+                            prevCoord!!.line,
+                            prevCoord!!.col,
+                            tiles[prevCoord!!.col][prevCoord!!.line]!!
+                        )
+                        tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                        tile.isAlreadySelected = true
+                        prevCoord?.col = column
+                        prevCoord?.line = row
+
+                    }
+
                 }
 
                 Log.v("App", row.toString() + " : " + column)
@@ -115,38 +179,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             addView(tile)
             tiles[column][row] = tile
 
-        }
-    }
-
-    private fun getNewOptionsForPiece(row: Int, column: Int, tile: Tile) {
-        options = getAvailableOptions(row, column)
-
-        if (tile.isAlreadySelected) {
-            //options = getAvailableOptions(row, column)
-            for (coordinate in options) {
-                val c = coordinate?.first?.col
-                val l = coordinate?.first?.line
-
-                setOriginalColor(l!!, c!!, tiles[c][l]!!)
-            }
-            setOriginalColor(row, column, tile)
-            tile.isAlreadySelected = false
-            hasSelection = false
-        } else {
-            if(tiles[column][row]?.piecesType != null)
-                changeBackgroundColor(tile, Color.GREEN)
-
-            //paint all options
-            if (options.isNotEmpty()) {
-                for (coordinate in options) {
-                    val c = coordinate?.first?.col
-                    val l = coordinate?.first?.line
-                    changeBackgroundColor(tiles[c!!][l!!]!!, Color.RED)
-                }
-            }
-            prevCoord = Pair(column, row)
-            tile.isAlreadySelected = true
-            hasSelection = true
         }
     }
 
