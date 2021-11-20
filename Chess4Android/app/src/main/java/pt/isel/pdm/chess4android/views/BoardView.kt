@@ -76,18 +76,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tile.setOnClickListener {
                 onTileClickedListener?.invoke(tile, row, column)
 
-                if(board[column][row]?.army != newArmyToPlay && board[column][row] != null) {
-                    //Clean all options selection
-                    setOriginalColorToAllOptions()
-                    //Clean prior selected piece color
-                    setOriginalColor(prevCoord!!.line, prevCoord!!.col, tiles[prevCoord!!.col][prevCoord!!.line]!!)
-                    //Clean prior selected piece
-                    tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
-                    //Clean all available options
-                    options = mutableListOf()
-                    return@setOnClickListener
-                }
-
                 //Apaga as options independentemente do sitio do próximo clique
                 setOriginalColorToAllOptions()
 
@@ -128,10 +116,22 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 return@setOnClickListener
                             }
                         }
+                        if(board[column][row]?.army != newArmyToPlay && board[column][row] != null) {
+                            //Clean all options selection
+                            setOriginalColorToAllOptions()
+                            //Clean prior selected piece color
+                            setOriginalColor(prevCoord!!.line, prevCoord!!.col, tiles[prevCoord!!.col][prevCoord!!.line]!!)
+                            //Clean prior selected piece
+                            tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                            //Clean all available options
+                            options = mutableListOf()
+                            return@setOnClickListener
+                        }
                     }
 
                     if (board[column][row] != null) {
-
+                        if(board[column][row]?.army != newArmyToPlay)
+                            return@setOnClickListener
                         //Aparecimento dos Caminhos Possíveis
                         options = getAvailableOptions(row, column)
                         for (path in options) {
@@ -178,14 +178,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         tile.isAlreadySelected = true
                         prevCoord?.col = column
                         prevCoord?.line = row
-
                     }
                 }
                 Log.v("App", row.toString() + " : " + column)
             }
             addView(tile)
             tiles[column][row] = tile
-
         }
     }
 

@@ -54,50 +54,32 @@ class Pawn(
         val currPiece = board[col][line]
         val isWhite = currPiece?.army == Army.WHITE
 
-        list.addAll(verticalOptions(isWhite))
+        //if movement is up or down
+        val lineDir = if (isWhite) -1 else 1
+        // line in which pawn can move 2 spaces
+        val moveTwo = if (isWhite) 6 else 1
 
-        //to eat diagonal
-        if (isWhite) {
-            if (line - 1 in 0..7) {
-                if (col + 1 in 0..7) {
-                    if (board[col + 1][line - 1]?.army != army && board[col + 1][line - 1] != null)
-                        list.add(Pair(Coord(col + 1, line - 1), true))
-                }
-                if (col - 1 in 0..7) {
-                    if (board[col - 1][line - 1]?.army != army && board[col - 1][line - 1] != null)
-                        list.add(Pair(Coord(col - 1, line - 1), true))
-                }
+        //check if pieces that can be captured exist
+        if (line + lineDir in 0..7) {
+            if (board[col][line + lineDir] == null){
+                list.add(Pair(Coord(col, line + lineDir), false))
+                if (line == moveTwo && board[col][line + lineDir * 2] == null)
+                    list.add(Pair(Coord(col, line + lineDir * 2), false))
             }
-        } else if (line + 1 in 0..7) {
-            if (col + 1 in 0..7) {
-                if (board[col + 1][line + 1]?.army != army && board[col + 1][line + 1] != null)
-                    list.add(Pair(Coord(col + 1, line + 1), true))
-            }
-            if (col - 1 in 0..7) {
-                if (board[col - 1][line + 1]?.army != army && board[col - 1][line + 1] != null)
-                    list.add(Pair(Coord(col - 1, line + 1), true))
-            }
+            checkCapture(col + 1, line + lineDir, currPiece?.army, list)
+            checkCapture(col - 1, line + lineDir, currPiece?.army, list)
         }
         return list
     }
 
-    private fun verticalOptions(isWhite: Boolean): MutableList<Pair<Coord, Boolean>?> {
-        val list = mutableListOf<Pair<Coord, Boolean>?>()
-        //if movement is up or down
-        val moveAux = if (isWhite) -1 else 1
-        // line in which pawn can move 2 spaces
-        val moveTwo = if (isWhite) 6 else 1
-
-        if (line + moveAux in 0..7 && board[col][line + moveAux] is Piece) {
-            return mutableListOf()
-        }
-        if (line + moveAux in 0..7 && board[col][line + moveAux] == null)
-            list.add(Pair(Coord(col, line + moveAux), false))
-
-        if (line == moveTwo && board[col][line + moveAux * 2] == null)
-            list.add(Pair(Coord(col, line + moveAux * 2), false))
-
-        return list
+    private fun checkCapture(
+        col: Int,
+        line: Int,
+        army: Army?,
+        list: MutableList<Pair<Coord, Boolean>?>
+    ) {
+        if (col in 0..7 && board[col][line] != null && board[col][line]?.army != army)
+            list.add((Pair(Coord(col, line), true)))
     }
 
     fun searchRouteToEat(): MutableList<Pair<Coord, Boolean>?> {
