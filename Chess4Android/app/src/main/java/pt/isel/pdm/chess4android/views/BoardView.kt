@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.widget.GridLayout
@@ -22,7 +21,6 @@ typealias TileTouchListener = (tile: Tile, row: Int, column: Int) -> Unit
 
 @SuppressLint("ClickableViewAccessibility")
 class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx, attrs) {
-    // var model = GameActivityViewModel.
 
     private val side = 8
 
@@ -32,6 +30,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private lateinit var board: Array<Array<Piece?>>
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
     private var prevCoord: Coord? = null
+    private var newArmyToPlay: Army = Army.WHITE
 
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
@@ -75,14 +74,24 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             )
 
             tile.setOnClickListener {
-                //if (!hasSelection || tile.isAlreadySelected) {
                 onTileClickedListener?.invoke(tile, row, column)
+
+                if(board[column][row]?.army != newArmyToPlay && board[column][row] != null) {
+                    //Clean all options selection
+                    setOriginalColorToAllOptions()
+                    //Clean prior selected piece color
+                    setOriginalColor(prevCoord!!.line, prevCoord!!.col, tiles[prevCoord!!.col][prevCoord!!.line]!!)
+                    //Clean prior selected piece
+                    tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                    //Clean all available options
+                    options = mutableListOf()
+                    return@setOnClickListener
+                }
 
                 //Apaga as options independentemente do sitio do próximo clique
                 setOriginalColorToAllOptions()
 
                 if (tile.isAlreadySelected) {
-
                     setOriginalColor(row, column, tile)
                     tile.isAlreadySelected = false
                     options = mutableListOf()
@@ -93,15 +102,15 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                             if (option?.first?.col == column && option.first.line == row) {
                                 val movedPiece = board[prevCoord!!.col][prevCoord!!.line]
 
-                                //Atualizar coords da peça nova
+                                //Atualizar coords da peça movida
                                 movedPiece?.col = column
                                 movedPiece?.line = row
 
-                                //Model
+                                //Atualizar model
                                 board[column][row] = movedPiece
                                 board[prevCoord!!.col][prevCoord!!.line] = null
 
-                                //View
+                                //Atualizar view
                                 tiles[column][row]?.piecesType =
                                     Pair(movedPiece!!.army, movedPiece.piece)
                                 tiles[prevCoord!!.col][prevCoord!!.line]?.piecesType = null
@@ -115,6 +124,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
 
                                 options = mutableListOf()
+                                newArmyToPlay = invertArmy()
                                 return@setOnClickListener
                             }
                         }
@@ -170,17 +180,17 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         prevCoord?.line = row
 
                     }
-
                 }
-
                 Log.v("App", row.toString() + " : " + column)
-                //}
-
             }
             addView(tile)
             tiles[column][row] = tile
 
         }
+    }
+
+    private fun invertArmy(): Army {
+        return if(newArmyToPlay == Army.WHITE) { Army.BLACK } else { Army.WHITE }
     }
 
     private fun setOriginalColorToAllOptions() {
@@ -231,8 +241,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView(board: Array<Array<Piece?>>) {
+    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army) {
         this.board = board
+        this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
                 val piece = board[column][line]

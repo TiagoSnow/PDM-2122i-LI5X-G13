@@ -35,4 +35,15 @@ abstract class Piece {
 
     abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>  //pode ser de Piece???
 
+    fun check(): Boolean {
+        val newOptions = searchRoute()
+        for (option in newOptions) {
+            val coord = option!!.first
+            val piece = board[coord.col][coord.line]
+            if(piece?.army != this.army && piece?.piece == PiecesType.KING) {
+                return true
+            }
+        }
+        return false
+    }
 }

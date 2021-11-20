@@ -4,6 +4,7 @@ import pt.isel.pdm.chess4android.pieces.*
 
 class GameModel() {
 
+    var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
     fun beginBoard() {
@@ -91,6 +92,7 @@ class GameModel() {
             }
             armyFlag = !armyFlag
         }
+        newArmyToPlay = getArmy(armyFlag)
         return board
     }
 
