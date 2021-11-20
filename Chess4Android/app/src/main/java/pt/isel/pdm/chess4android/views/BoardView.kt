@@ -85,6 +85,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
                     setOriginalColor(row, column, tile)
                     tile.isAlreadySelected = false
+                    options = mutableListOf()
                 } else {
                     if (options.isNotEmpty()) {
                         for (option in options) {

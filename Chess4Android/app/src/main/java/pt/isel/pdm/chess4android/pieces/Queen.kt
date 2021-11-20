@@ -33,7 +33,7 @@ class Queen(
         var startColPosition = 0
         var startLinePosition = 0
         for (c in 0..7) {
-            for (l in 0..8) {
+            for (l in 0..7) {
                 if (board[c][l]?.piece == PiecesType.QUEEN && board[c][l]?.army == army) {
                     startColPosition = c
                     startLinePosition = l

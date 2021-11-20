@@ -12,7 +12,7 @@ abstract class Piece {
     abstract var col: Int
     abstract var line: Int
 
-    abstract val piece: PiecesType
+    abstract var piece: PiecesType
     abstract val army: Army
     abstract fun movePGN(move: String)
 
