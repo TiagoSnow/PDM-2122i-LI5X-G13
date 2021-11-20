@@ -128,24 +128,42 @@ class GameModel() {
         val allOptionsWithDistances =
             getAllDistancesFromOptions(newOptions, selectedPiece).sortedBy { pair -> pair.second }
 
-        var distancesToKingList = mutableListOf<Pair<Coord, Double>?>()
+        var optionsToKingList = mutableListOf<Pair<Coord, Double>?>()
         var distance = allOptionsWithDistances[0].second
         while (distance != allOptionsWithDistances.last().second) {
             for (pair in allOptionsWithDistances) {
                 if (pair.second == distance) {
-                    distancesToKingList.add(
+                    optionsToKingList.add(
                         Pair(
                             pair.first,
                             distanceBetweenTwoPositions(pair.first, kingCoord)
                         )
                     )
-                } else {
+                } else if(pair.second > distance){
                     distance = pair.second
                     break
                 }
             }
-            distancesToKingList.sortedBy { pair -> pair?.second }
-            list.add(Pair(distancesToKingList[0]!!.first, false))
+
+            var best = optionsToKingList[0]
+            var bestColDistance = distanceBetweenTwoPositions(Coord(best!!.first.col, 0), Coord(king.col, 0))
+            var bestLineDistance = distanceBetweenTwoPositions(Coord(0, best.first.line), Coord(0, king.line))
+            for (option in optionsToKingList) {
+                val opCoord = option!!.first
+                val opDist = option.second
+                if(opDist <= best!!.second) {
+                    val colDistance = distanceBetweenTwoPositions(Coord(opCoord.col, 0), Coord(king.col, 0))
+                    val lineDistance = distanceBetweenTwoPositions(Coord(0, opCoord.line), Coord(0, king.line))
+                    if((colDistance < bestColDistance || lineDistance < bestLineDistance)) {
+                        best = option
+                        bestColDistance = colDistance
+                        bestLineDistance = lineDistance
+                    }
+                }
+            }
+
+            list.add(Pair(best!!.first, false))
+            optionsToKingList = mutableListOf()
         }
         return list
     }
