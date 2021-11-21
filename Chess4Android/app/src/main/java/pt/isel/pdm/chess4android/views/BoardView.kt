@@ -96,10 +96,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     val piece = game.getPiece(column, row)
                     if (options.isNotEmpty()) {
                         for (option in options) {
-                            //Caso encontre uma option no clique
                             if (option?.first?.col == column && option.first.line == row) {
                                 movePiece(column, row)
-                                //limpar a cor e valores do checkPair
                                 if (checkPair != null) {
                                     setOriginalColor(
                                         checkPair!!.first.line,
@@ -115,7 +113,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 }
 
                                 checkOptions = game.check(column, row)
-                                //debug
                                 if (checkOptions.isNotEmpty()) {
                                     for (tile in checkOptions) {
                                         val tileCoord = tile
@@ -171,9 +168,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                     }
                                 }
                             }
-                            //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                            //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                        } else {
+                          } else {
                             if (game.stopPieceFromMoving(piece)) {
                                 options = mutableListOf()
                             } else {

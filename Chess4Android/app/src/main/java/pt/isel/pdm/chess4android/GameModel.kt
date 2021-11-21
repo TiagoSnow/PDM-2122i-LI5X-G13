@@ -33,24 +33,41 @@ class GameModel() {
         }
     }
 
-    private fun castlingLeft() {
-        //update Rook
-        board[0][0] = null
-        board[3][0] = Rook(Army.BLACK, board, 3, 0)
-
-        //update King
-        board[4][0] = null
-        board[2][0] = King(Army.BLACK, board, 2, 0)
+    private fun castlingLeft(armyFlag: Boolean) {
+        if(armyFlag) {
+            board[0][7] = null
+            board[3][7] = Rook(Army.WHITE, board, 3, 7)
+            //update King
+            board[4][7] = null
+            board[2][7] = King(Army.WHITE, board, 2, 7)
+        }
+        else {
+            board[0][0] = null
+            board[3][0] = Rook(Army.BLACK, board, 3, 0)
+            //update King
+            board[4][0] = null
+            board[2][0] = King(Army.BLACK, board, 2, 0)
+        }
     }
 
-    private fun castlingRight() {
-        //update Rook
-        board[7][7] = null
-        board[5][7] = Rook(Army.WHITE, board, 5, 7)
+    private fun castlingRight(armyFlag: Boolean) {
+        if(armyFlag){
+            board[7][7] = null
+            board[5][7] = Rook(Army.WHITE, board, 5, 7)
 
-        //update King
-        board[4][7] = null
-        board[6][7] = King(Army.WHITE, board, 6, 7)
+            //update King
+            board[4][7] = null
+            board[6][7] = King(Army.WHITE, board, 6, 7)
+        }
+        else {
+            //update Rook
+            board[7][0] = null
+            board[5][0] = Rook(Army.BLACK, board, 5, 0)
+
+            //update King
+            board[4][0] = null
+            board[6][0] = King(Army.BLACK, board, 6, 0)
+        }
     }
 
     var lastPGNMoveCol = 0
@@ -101,9 +118,9 @@ class GameModel() {
                 }
                 'O' -> {
                     if (move.length == 5)
-                        castlingLeft()
+                        castlingLeft(armyFlag)
                     else
-                        castlingRight()
+                        castlingRight(armyFlag)
                 }
                 else -> {
                     val pawn = Pawn(army, board, 0, 0)

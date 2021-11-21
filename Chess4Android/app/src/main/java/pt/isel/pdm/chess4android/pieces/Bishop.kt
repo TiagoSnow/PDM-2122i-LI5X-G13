@@ -3,6 +3,13 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
+enum class BishopDir(val x: Int, val y: Int) {
+    UP_LEFT(-1, -1),
+    UP_RIGHT(1, -1),
+    DOWN_LEFT(-1, 1),
+    DOWN_RIGHT(1, 1),
+}
+
 class Bishop(
     override var army: Army,
     override var board: Array<Array<Piece?>>,
@@ -48,19 +55,12 @@ class Bishop(
         return getAllAvailableOptions()
     }
 
-     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
         val list = mutableListOf<Pair<Coord, Boolean>?>()
-
-        val listDigUL = searchRouteDiagonal(-1, -1)     //diagonal up/left
-        val listDigUR = searchRouteDiagonal(+1, -1)   //diagonal up/right
-        val listDL = searchRouteDiagonal(-1, +1)  //diagonal down/left
-        val listDR = searchRouteDiagonal(+1, +1)   //diagonal down/right
-
-        list.addAll(listDigUL)
-        list.addAll(listDigUR)
-        list.addAll(listDL)
-        list.addAll(listDR)
-
+        for (dir in BishopDir.values()) {
+            val route = searchRouteDiagonal(dir.x, dir.y)
+            list.addAll(route)
+        }
         return list
     }
 

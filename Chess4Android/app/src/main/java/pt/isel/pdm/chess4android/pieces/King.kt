@@ -3,11 +3,23 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.PiecesType
 
+enum class KingDir(val x: Int, val y: Int) {
+    UP(0, -1),
+    LEFT(-1, 0),
+    DOWN(0, 1),
+    RIGHT(1, 0),
+    UP_LEFT(-1, -1),
+    UP_RIGHT(1, -1),
+    DOWN_LEFT(-1, 1),
+    DOWN_RIGHT(1, 1),
+}
+
 class King(
     override var army: Army,
     override var board: Array<Array<Piece?>>,
     override var col: Int,
     override var line: Int
+
 ) : Piece() {
 
     override var piece = PiecesType.KING
@@ -30,56 +42,13 @@ class King(
     }
 
     private fun searchKing(col: Int, line: Int, army: Army): Pair<Int, Int> {
-        val piece = pt.isel.pdm.chess4android.PiecesType.KING
-
-        if (col - 1 in 0..7 && line - 1 in 0..7)
-            if (checkIfPieceExists(col - 1, line - 1, army, piece)) return Pair(
-                col - 1,
-                line - 1
-            )      //diagonal up left
-
-        if ((col in 0..7) && line - 1 in 0..7)
-            if (checkIfPieceExists(col, line - 1, army, piece)) return Pair(
-                col,
-                line - 1
-            )              //up
-
-        if (col + 1 in 0..7 && line - 1 in 0..7)
-            if (checkIfPieceExists(col + 1, line - 1, army, piece)) return Pair(
-                col + 1,
-                line - 1
-            )      //diagonal up right
-
-        if (col - 1 in 0..7 && line in 0..7)
-            if (checkIfPieceExists(col - 1, line, army, piece)) return Pair(
-                col - 1,
-                line
-            )              //left
-
-        if (col + 1 in 0..7 && line in 0..7)
-            if (checkIfPieceExists(col + 1, line, army, piece)) return Pair(
-                col + 1,
-                line
-            )              //right
-
-        if (col - 1 in 0..7 && line + 1 in 0..7)
-            if (checkIfPieceExists(col - 1, line + 1, army, piece)) return Pair(
-                col - 1,
-                line + 1
-            )      //diagonal down left
-
-        if ((col in 0..7) && line + 1 in 0..7)
-            if (checkIfPieceExists(col, line + 1, army, piece)) return Pair(
-                col,
-                line + 1
-            )             //down
-
-        if (col + 1 in 0..7 && line + 1 in 0..7)
-            if (checkIfPieceExists(col + 1, line + 1, army, piece)) return Pair(
-                col + 1,
-                line + 1
-            )     //diagonal down right
-
+        for (dir in KingDir.values()) {
+            if (col + dir.x in 0..7 && line + dir.y in 0..7)
+                if (checkIfPieceExists(col + dir.x, line + dir.y, army, piece)) return Pair(
+                    col + dir.x,
+                    line + dir.y
+                )
+        }
         return Pair(-1, -1);
     }
 
@@ -166,70 +135,20 @@ class King(
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
         val list = mutableListOf<Pair<Coord, Boolean>?>()
-
-        //up
-        var pair = searchKingDirection(col, line - 1)
-        if (pair != null) {
-            list.add(pair)
+        for (dir in KingDir.values()) {
+            val pair = searchKingDirection(col + dir.x, line + dir.y)
+            if (pair != null) {
+                list.add(pair)
+            }
         }
-
-        //left
-        pair = searchKingDirection(col - 1, line)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //right
-        pair = searchKingDirection(col + 1, line)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //down
-        pair = searchKingDirection(col, line + 1)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //diagonal up/left
-        pair = searchKingDirection(col - 1, line - 1)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //diagonal up/right
-        pair = searchKingDirection(col + 1, line - 1)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //diagonal down/left
-        pair = searchKingDirection(col - 1, line + 1)
-        if (pair != null) {
-            list.add(pair)
-        }
-
-        //diagonal down/right
-        pair = searchKingDirection(col + 1, line + 1)
-        if (pair != null) {
-            list.add(pair)
-        }
-
         return list
     }
 
     fun standardMoves(): MutableList<Pair<Coord, Boolean>?> {
         val list = mutableListOf<Pair<Coord, Boolean>?>()
-        list.add(Pair(Coord(col, line - 1), false))
-        list.add(Pair(Coord(col - 1, line), false))
-        list.add(Pair(Coord(col + 1, line), false))
-        list.add(Pair(Coord(col, line + 1), false))
-        list.add(Pair(Coord(col - 1, line - 1), false))
-        list.add(Pair(Coord(col + 1, line - 1), false))
-        list.add(Pair(Coord(col - 1, line + 1), false))
-        list.add(Pair(Coord(col + 1, line + 1), false))
+        for (dir in KingDir.values())
+            list.add(Pair(Coord(col + dir.x, line + dir.y), false))
         return list
-
     }
 
     private fun searchKingDirection(col: Int, line: Int): Pair<Coord, Boolean>? {
