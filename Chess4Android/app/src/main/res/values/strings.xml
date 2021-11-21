@@ -3,4 +3,9 @@
     <string name="puzzle_of_day">Puzzle of Day</string>
     <string name="about">About</string>
     <string name="chessroyale">ChessRoyale</string>
+    <string name="authors">Authors</string>
+    <string name="credits">Credits</string>
+    <string name="authors_text">Made by:\n46033 - Marco Duarte\n46052 - Daniel Caseiro\n46067 - Tiago Neves\nClass:LI5XD \nGroup: 13</string>
+    <string name="credits_text">The source of the daily puzzles where obtain from:</string>
+    <string name="api_lichess">API Lichess</string>
 </resources>

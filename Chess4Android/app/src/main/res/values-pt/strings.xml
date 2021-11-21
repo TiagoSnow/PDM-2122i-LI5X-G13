@@ -4,4 +4,9 @@
     <string name="puzzle_of_day">Puzzle do Dia</string>
     <string name="about">Acerca</string>
     <string name="chessroyale">ChessRoyale</string>
+    <string name="credits">Créditos</string>
+    <string name="authors">Autores</string>
+    <string name="authors_text">Feito por:\n46033 - Marco Duarte\n46052 - Daniel Caseiro\n46067 - Tiago Neves\nTurma:LI5XD\nGrupo: 13</string>
+    <string name="credits_text">A fonte dos puzzles diários de xadrez são da autoria:</string>
+    <string name="api_lichess">API Lichess</string>
 </resources>
