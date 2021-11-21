@@ -33,6 +33,6 @@ abstract class Piece {
         board[col][line] = null
     }
 
-    abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>  //pode ser de Piece???
+    abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>
 
 }

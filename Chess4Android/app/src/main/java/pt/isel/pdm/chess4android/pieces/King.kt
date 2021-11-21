@@ -94,7 +94,10 @@ class King(
 
     }
 
-    fun interception(allOptionsKing: MutableList<Pair<Coord, Boolean>?>, allEnemyOptions: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
+    fun interception(
+        allOptionsKing: MutableList<Pair<Coord, Boolean>?>,
+        allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
         var listAux = mutableListOf<Pair<Coord, Boolean>?>()
         for (option in allOptionsKing) {
             for (enemyOptions in allEnemyOptions) {
@@ -102,7 +105,7 @@ class King(
                     listAux.add(option)
             }
         }
-        if(listAux.size != 0) {
+        if (listAux.size != 0) {
             for (pair in listAux) {
                 allOptionsKing.remove(pair)
             }
@@ -110,10 +113,14 @@ class King(
         return allOptionsKing
     }
 
-    private fun pairIsEqual(kingOption: Pair<Coord, Boolean>?, enemyOption: Pair<Coord, Boolean>?): Boolean {
+    private fun pairIsEqual(
+        kingOption: Pair<Coord, Boolean>?,
+        enemyOption: Pair<Coord, Boolean>?
+    ): Boolean {
         if (kingOption!!.first.col == enemyOption!!.first.col &&
             kingOption.first.line == enemyOption.first.line &&
-            kingOption.second == enemyOption.second) {
+            kingOption.second == enemyOption.second
+        ) {
             return true
         }
         return false
@@ -147,11 +154,11 @@ class King(
         listAux: MutableSet<Pair<Coord, Boolean>?>
     ): MutableSet<Pair<Coord, Boolean>?> {
         //first Time
-        if(listAux.size == 0) {
+        if (listAux.size == 0) {
             return interceptionList.toMutableSet()
         }
 
-        if(interceptionList.size < listAux.size) {
+        if (interceptionList.size < listAux.size) {
             return interceptionList.toMutableSet()
         }
         return listAux
@@ -162,53 +169,67 @@ class King(
 
         //up
         var pair = searchKingDirection(col, line - 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //left
         pair = searchKingDirection(col - 1, line)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //right
         pair = searchKingDirection(col + 1, line)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //down
         pair = searchKingDirection(col, line + 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //diagonal up/left
         pair = searchKingDirection(col - 1, line - 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //diagonal up/right
         pair = searchKingDirection(col + 1, line - 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //diagonal down/left
         pair = searchKingDirection(col - 1, line + 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         //diagonal down/right
         pair = searchKingDirection(col + 1, line + 1)
-        if(pair != null) {
+        if (pair != null) {
             list.add(pair)
         }
 
         return list
+    }
+
+    fun standardMoves(): MutableList<Pair<Coord, Boolean>?> {
+        val list = mutableListOf<Pair<Coord, Boolean>?>()
+        list.add(Pair(Coord(col, line - 1), false))
+        list.add(Pair(Coord(col - 1, line), false))
+        list.add(Pair(Coord(col + 1, line), false))
+        list.add(Pair(Coord(col, line + 1), false))
+        list.add(Pair(Coord(col - 1, line - 1), false))
+        list.add(Pair(Coord(col + 1, line - 1), false))
+        list.add(Pair(Coord(col - 1, line + 1), false))
+        list.add(Pair(Coord(col + 1, line + 1), false))
+        return list
+
     }
 
     private fun searchKingDirection(col: Int, line: Int): Pair<Coord, Boolean>? {

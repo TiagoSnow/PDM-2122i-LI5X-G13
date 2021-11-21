@@ -39,7 +39,7 @@ class GameActivityViewModel(
     }
 
     var gameModel: GameModel = GameModel()
-    fun updateBoard(pgn: String): MutableList<Pair<Coord, Boolean>> {
+    fun updateBoard(pgn: String): MutableList<Coord> {
         //REMOVER ESTE BOARD????????
         gameModel.placePieces(pgn, board)
         return gameModel.check(gameModel.lastPGNMoveCol, gameModel.lastPGNMoveLine)

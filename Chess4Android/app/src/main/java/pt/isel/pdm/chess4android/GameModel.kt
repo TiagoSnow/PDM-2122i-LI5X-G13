@@ -1,17 +1,16 @@
 package pt.isel.pdm.chess4android
 
 import pt.isel.pdm.chess4android.pieces.*
-import kotlin.math.absoluteValue
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class GameModel() {
 
-    private var pieceThatMadeCheck: Piece? = null
+    private var pieceChecking: Piece? = null
+    private var checkingFrom: Coord? = null
+    private var isInCheck = false
     var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
-    fun beginBoard() {
+    private fun beginBoard() {
         //colocar as peças no estado inicial
         fillHalfBoard(0, getArmy(false))
         fillHalfBoard(7, getArmy(true))
@@ -114,135 +113,79 @@ class GameModel() {
                 }
             }
             armyFlag = !armyFlag
-            /*if(lst.lastIndex == lst.indexOf(move)) {
-
-            }*/
         }
         newArmyToPlay = getArmy(armyFlag)
     }
 
-    fun check(column: Int, line: Int): MutableList<Pair<Coord, Boolean>> {
+    fun check(column: Int, line: Int): MutableList<Coord> {
         val selectedPiece = board[column][line]
-        val allOptions = selectedPiece!!.searchRoute()
-        for (option in allOptions) {
-            val coord = option!!.first
-            val possibleKing = board[coord.col][coord.line]
-            if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
-                updatePieceBeganCheck(selectedPiece)
-                return getRouteToKing(selectedPiece, possibleKing, allOptions)
-            }
-        }
-        updatePieceBeganCheck(null)
-        return mutableListOf()
-    }
-
-    private fun getRouteToKing(
-        selectedPiece: Piece,
-        king: Piece,
-        newOptions: MutableList<Pair<Coord, Boolean>?>
-    ): MutableList<Pair<Coord, Boolean>> {
-
-        var listAux = mutableListOf<Pair<Coord, Double>>()
-        var list = mutableListOf<Pair<Coord, Boolean>>()
-        val selectedCoord = Coord(selectedPiece.col, selectedPiece.line)
-        val kingCoord = Coord(king.col, king.line)
-        val distanceSelectedToKing = distanceBetweenTwoPositions(selectedCoord, kingCoord)
-
-        for (option in newOptions) {
-            val currCoord = option!!.first
-            val currDist = distanceBetweenTwoPositions(currCoord, kingCoord)
-            if(currDist <= distanceSelectedToKing)
-                listAux.add(Pair(currCoord, currDist))
-        }
-
-        if(selectedPiece is Knight) {
-            listAux.sortBy { pair -> pair.second }
-            list.add(Pair(listAux[0].first, false))
-            return list
-        }
-
-        if(selectedPiece is Rook) {
-            for (pair in listAux) {
-                list.add(Pair(pair.first, false))
-            }
-            return list
-        }
-
-        var distanceInsertedToSelect = distanceSelectedToKing
-        var pair = chooseBestOptionFromList(listAux, king)
-        while(pair!!.second <= distanceInsertedToSelect) {
-            listAux.remove(pair)
-            list.add(Pair(pair.first, false))
-            distanceInsertedToSelect = pair.second
-            pair = chooseBestOptionFromList(listAux, king)
-            if(pair == null) return list
-        }
-        return list
-    }
-
-    private fun chooseBestOptionFromList(listAux: MutableList<Pair<Coord, Double>>, king: Piece): Pair<Coord, Double>? {
-        if(listAux.isEmpty()) return null
-        var best = listAux[0]
-        var bestColDist = distanceBetweenTwoPositions(Coord(best.first.col,0), Coord(king.col,0))
-        var bestLineDist = distanceBetweenTwoPositions(Coord(0,best.first.line), Coord(0,king.line))
-
-        for (option in listAux) {
-            val opCoord = option.first
-            val opDist = option.second
-            if (opDist < best.second) {
-                val colDist = distanceBetweenTwoPositions(Coord(opCoord.col,0), Coord(king.col,0))
-                val lineDist = distanceBetweenTwoPositions(Coord(0,opCoord.line), Coord(0,king.line))
-                if ((colDist - lineDist).absoluteValue <= (bestColDist - bestLineDist).absoluteValue) {
-                    best = option
-                    bestColDist = colDist
-                    bestLineDist = lineDist
+        val allOptions = selectedPiece?.searchRoute()
+        allOptions?.removeIf { x -> !x!!.second }
+        val toRet = mutableListOf<Coord>()
+        if (allOptions != null) {
+            for (option in allOptions) {
+                val coord = option!!.first
+                val possibleKing = board[coord.col][coord.line]
+                if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
+                    updateCheckingPiece(selectedPiece)
+                    checkingFrom = Coord(column, line)
+                    toRet.add(Coord(possibleKing.col, possibleKing.line))
+                    toRet.add(Coord(column, line))
+                    isInCheck = true
+                    //addPathToKing(Pair(column, line), coord, possibleKing.army == Army.WHITE)
                 }
             }
         }
-        return best
+        return toRet
     }
 
-    private fun distanceBetweenTwoPositions(initPosition: Coord, endPosition: Coord): Double {
-        return sqrt(
-            (endPosition.col.toDouble() - initPosition.col).pow(2.0) +
-                    (endPosition.line.toDouble() - initPosition.line).pow(2.0)
-        )
-    }
-
-    fun getArmy(armyFlag: Boolean): Army {
+    private fun getArmy(armyFlag: Boolean): Army {
         return if (armyFlag)
             Army.WHITE
         else
             Army.BLACK
     }
 
-    fun getOptionsToBlockCheck(col: Int, line: Int, checkOptions: MutableList<Pair<Coord, Boolean>>): MutableList<Pair<Coord, Boolean>?> {
-        val selectedPiece = board[col][line]
-        val allOptions = selectedPiece!!.searchRoute()
-        var interceptionList = mutableListOf<Pair<Coord, Boolean>?>()
-        for (option in allOptions) {
-            val optionCoord = option!!.first
-            if(pieceThatMadeCheck!!.col == optionCoord.col && pieceThatMadeCheck!!.line == optionCoord.line) {
-                interceptionList.add(Pair(Coord(pieceThatMadeCheck!!.col, pieceThatMadeCheck!!.line), true))
-            } else {
-                for (checkOption in checkOptions) {
-                    val checkCoord = checkOption.first
-                    if(selectedPiece is King){
-                        if (optionCoord.col != checkCoord.col && optionCoord.line != checkCoord.line) {
-                            interceptionList.add(option)
-                        }
-                    }
-                    else if (optionCoord.col == checkCoord.col && optionCoord.line == checkCoord.line) {
-                        interceptionList.add(option)
+    fun getPiece(column: Int, row: Int): Piece? {
+        return board[column][row]
+    }
+
+    private fun updateCheckingPiece(selectedPiece: Piece?) {
+        pieceChecking = selectedPiece
+
+    }
+
+    fun getOptionsToBlockCheck(
+        piece: Piece,
+        checkOptions: MutableList<Coord>
+    ): MutableList<Pair<Coord, Boolean>?> {
+        val paths = piece.searchRoute()
+        val pathsChecking = pieceChecking?.searchRoute()!!
+        val king: King = board[checkOptions[0].col][checkOptions[0].line] as King
+        val kingMoves = king.standardMoves()
+        val toRet = mutableListOf<Pair<Coord, Boolean>?>()
+        for (option in paths) {
+            if (option!!.second && pieceChecking == board[option.first.col][option.first.line]) {
+                toRet.add(option)
+            }
+            for (blockOption in kingMoves) {
+                if (option.first.col == blockOption!!.first.col &&
+                    option.first.line == blockOption.first.line
+                ) {
+                    for (checking in pathsChecking) {
+                        if (option.first.col == checking!!.first.col &&
+                            option.first.line == checking.first.line
+                        )
+                            if (option.first.col == king.col &&
+                                option.first.col == checkOptions[1].col ||
+                                option.first.line == king.line &&
+                                option.first.line == checkOptions[1].line
+                            )
+                                toRet.add(option)
                     }
                 }
             }
         }
-        return interceptionList
-    }
-
-    fun updatePieceBeganCheck(selectedPiece: Piece?) {
-        pieceThatMadeCheck = selectedPiece
-
+        return toRet
     }
 }

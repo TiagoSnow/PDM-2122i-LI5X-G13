@@ -28,7 +28,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         Array(LINES) { null }
     }
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
-    private var checkOptions: MutableList<Pair<Coord, Boolean>> = mutableListOf()
+    private var checkOptions: MutableList<Coord> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
 
@@ -82,33 +82,29 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     tile.isAlreadySelected = false
                     options = mutableListOf()
                 } else {
+                    val piece = game.getPiece(column, row)
                     if (options.isNotEmpty()) {
                         for (option in options) {
                             //Caso encontre uma option no clique
                             if (option?.first?.col == column && option.first.line == row) {
                                 movePiece(column, row)
-
-                                checkOptions = mutableListOf()
-
-                                deselectPreviousPiece()
-
                                 checkOptions = game.check(column, row)
                                 //debug
-                                if(checkOptions.isNotEmpty()){
+                                if (checkOptions.isNotEmpty()) {
                                     for (tile in checkOptions) {
-                                        val tileCoord= tile.first
-                                        changeBackgroundColor(tiles[tileCoord.col][tileCoord.line]!!, Color.rgb(173, 182, 163))
+                                        val tileCoord = tile
+                                        changeBackgroundColor(
+                                            tiles[tileCoord.col][tileCoord.line]!!,
+                                            Color.RED
+                                        )
                                     }
                                 }
-
-
-
                                 options = mutableListOf()
                                 newArmyToPlay = invertArmy()
                                 return@setOnClickListener
                             }
                         }
-                        if(game.board[column][row]?.army != newArmyToPlay && game.board[column][row] != null) {
+                        if (piece != null && piece.army != newArmyToPlay) {
                             //Clean all options selection
                             setOriginalColorToAllOptions()
                             deselectPreviousPiece()
@@ -118,30 +114,30 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         }
                     }
 
-                    if (game.board[column][row] != null) {
-                        if(game.board[column][row]?.army != newArmyToPlay)
+                    if (piece != null ) {
+
+                        if (piece.army != newArmyToPlay)
                             return@setOnClickListener
 
-                        if(checkOptions.isNotEmpty()) {
-                            options = game.getOptionsToBlockCheck(column, row, checkOptions)
-                            if(options.isNotEmpty()) {
+                        if (checkOptions.isNotEmpty()) {
+                            options = game.getOptionsToBlockCheck(piece, checkOptions)
+                            if (options.isNotEmpty()) {
                                 for (path in options) {
                                     changeBackgroundColor(
                                         tiles[path!!.first.col][path.first.line]!!,
-                                        Color.RED
+                                        Color.GREEN
                                     )
                                 }
                             }
                             //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
                             //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                        }
-                        else {
+                        } else {
                             //Aparecimento dos Caminhos Possíveis
-                            options = getAvailableOptions(row, column)
+                            options = getAvailableOptions(piece)
                             for (path in options) {
                                 changeBackgroundColor(
                                     tiles[path!!.first.col][path.first.line]!!,
-                                    Color.RED
+                                    Color.GREEN
                                 )
                             }
                         }
@@ -168,10 +164,13 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         prevCoord?.col = column
                         prevCoord?.line = row
 
-                        //Colocar cor verde na atual
-                        changeBackgroundColor(tile, Color.GREEN)
+                        //Colocar cor na atual
+                        changeBackgroundColor(tile, Color.DKGRAY)
                         tile.isAlreadySelected = true
                     } else {
+                        if (prevCoord == null){
+                            prevCoord = Coord(column,row)
+                        }
                         deselectPreviousPiece()
                         tile.isAlreadySelected = true
                         prevCoord?.col = column
@@ -205,6 +204,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     private fun deselectPreviousPiece() {
+
         //remover a seleção da peça antiga
         setOriginalColor(
             prevCoord!!.line,
@@ -215,13 +215,16 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
 
-
     fun setup(gameModel: GameModel) {
         this.game = gameModel
     }
 
     private fun invertArmy(): Army {
-        return if(newArmyToPlay == Army.WHITE) { Army.BLACK } else { Army.WHITE }
+        return if (newArmyToPlay == Army.WHITE) {
+            Army.BLACK
+        } else {
+            Army.WHITE
+        }
     }
 
     private fun setOriginalColorToAllOptions() {
@@ -248,12 +251,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
     }
 
-    private fun getAvailableOptions(row: Int, column: Int): MutableList<Pair<Coord, Boolean>?> {
-        val piece = game.board[column][row]
-        if (piece != null)
-            return piece.searchRoute()
-
-        return mutableListOf()
+    private fun getAvailableOptions(piece: Piece): MutableList<Pair<Coord, Boolean>?> {
+        return piece.searchRoute()
     }
 
     fun changeBackgroundColor(tile: Tile, color: Int) {
@@ -273,13 +272,13 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(
-        checkOptions: MutableList<Pair<Coord, Boolean>>
+        checkOptions: MutableList<Coord>
     ) {
         this.newArmyToPlay = game.newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
                 val piece = game.board[column][line]
-                    if (piece != null)
+                if (piece != null)
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else
                     tiles[column][line]?.piecesType = null

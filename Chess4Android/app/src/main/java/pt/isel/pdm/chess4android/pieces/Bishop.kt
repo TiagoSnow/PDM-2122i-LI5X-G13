@@ -48,7 +48,7 @@ class Bishop(
         return getAllAvailableOptions()
     }
 
-    private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
+     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
         val list = mutableListOf<Pair<Coord, Boolean>?>()
 
         val listDigUL = searchRouteDiagonal(-1, -1)     //diagonal up/left
@@ -87,6 +87,4 @@ class Bishop(
         }
         return list
     }
-
-
 }

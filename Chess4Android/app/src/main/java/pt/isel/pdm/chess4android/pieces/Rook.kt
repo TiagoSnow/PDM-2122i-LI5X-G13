@@ -137,14 +137,7 @@ class Rook(
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
-        //anda para todos os lados
-
-        //procura nas casas mais proximas
         return getAllAvailableOptions()
-
-        //se a tile à frente tiver vazia adicionamos ao array
-        //se tiver à frente uma piece da mesma cor, return
-        //se tiver à frente uma piece de cor diferente, adiciona ao array com flag
     }
 
     private fun searchRouteLine(direction: Int): MutableList<Pair<Coord, Boolean>?> {
