@@ -31,6 +31,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var checkOptions: MutableList<Coord> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
+    private var checkPair: Pair<Coord, Coord>? = null
 
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
@@ -79,6 +80,16 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
                 if (tile.isAlreadySelected) {
                     setOriginalColor(row, column, tile)
+                    if (checkPair != null) {
+                        changeBackgroundColor(
+                            tiles[checkPair!!.first.col][checkPair!!.first.line]!!,
+                            Color.RED
+                        )
+                        changeBackgroundColor(
+                            tiles[checkPair!!.second.col][checkPair!!.second.line]!!,
+                            Color.RED
+                        )
+                    }
                     tile.isAlreadySelected = false
                     options = mutableListOf()
                 } else {
@@ -88,6 +99,21 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                             //Caso encontre uma option no clique
                             if (option?.first?.col == column && option.first.line == row) {
                                 movePiece(column, row)
+                                //limpar a cor e valores do checkPair
+                                if (checkPair != null) {
+                                    setOriginalColor(
+                                        checkPair!!.first.line,
+                                        checkPair!!.first.col,
+                                        tiles[checkPair!!.first.col][checkPair!!.first.line]!!
+                                    )
+                                    setOriginalColor(
+                                        checkPair!!.second.line,
+                                        checkPair!!.second.col,
+                                        tiles[checkPair!!.second.col][checkPair!!.second.line]!!
+                                    )
+                                    checkPair = null
+                                }
+
                                 checkOptions = game.check(column, row)
                                 //debug
                                 if (checkOptions.isNotEmpty()) {
@@ -98,13 +124,25 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                             Color.RED
                                         )
                                     }
+                                    checkPair = Pair(checkOptions[0], checkOptions[1])
                                 }
+                                deselectPreviousPiece()
                                 options = mutableListOf()
                                 newArmyToPlay = invertArmy()
                                 return@setOnClickListener
                             }
                         }
                         if (piece != null && piece.army != newArmyToPlay) {
+                            if (checkPair != null) {
+                                changeBackgroundColor(
+                                    tiles[checkPair!!.first.col][checkPair!!.first.line]!!,
+                                    Color.RED
+                                )
+                                changeBackgroundColor(
+                                    tiles[checkPair!!.second.col][checkPair!!.second.line]!!,
+                                    Color.RED
+                                )
+                            }
                             //Clean all options selection
                             setOriginalColorToAllOptions()
                             deselectPreviousPiece()
@@ -114,14 +152,33 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         }
                     }
 
-                    if (piece != null ) {
+                    if (piece != null) {
 
                         if (piece.army != newArmyToPlay)
                             return@setOnClickListener
 
                         if (checkOptions.isNotEmpty()) {
-                            options = game.getOptionsToBlockCheck(piece, checkOptions)
-                            if (options.isNotEmpty()) {
+                            if (game.stopPieceFromMoving(piece)) {
+                                options = mutableListOf()
+                            } else {
+                                options = game.getOptionsToBlockCheck(piece, checkOptions)
+                                if (options.isNotEmpty()) {
+                                    for (path in options) {
+                                        changeBackgroundColor(
+                                            tiles[path!!.first.col][path.first.line]!!,
+                                            Color.GREEN
+                                        )
+                                    }
+                                }
+                            }
+                            //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                            //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                        } else {
+                            if (game.stopPieceFromMoving(piece)) {
+                                options = mutableListOf()
+                            } else {
+                                //Aparecimento dos Caminhos Possíveis
+                                options = getAvailableOptions(piece)
                                 for (path in options) {
                                     changeBackgroundColor(
                                         tiles[path!!.first.col][path.first.line]!!,
@@ -129,18 +186,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                     )
                                 }
                             }
-                            //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                            //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                        } else {
-                            //Aparecimento dos Caminhos Possíveis
-                            options = getAvailableOptions(piece)
-                            for (path in options) {
-                                changeBackgroundColor(
-                                    tiles[path!!.first.col][path.first.line]!!,
-                                    Color.GREEN
-                                )
-                            }
                         }
+
                         if (prevCoord == null)
                             prevCoord = Coord(column, row)
                         else {
@@ -168,8 +215,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         changeBackgroundColor(tile, Color.DKGRAY)
                         tile.isAlreadySelected = true
                     } else {
-                        if (prevCoord == null){
-                            prevCoord = Coord(column,row)
+                        if (prevCoord == null) {
+                            prevCoord = Coord(column, row)
                         }
                         deselectPreviousPiece()
                         tile.isAlreadySelected = true

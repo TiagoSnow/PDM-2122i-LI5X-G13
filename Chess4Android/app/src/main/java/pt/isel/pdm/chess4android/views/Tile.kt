@@ -27,7 +27,7 @@ class Tile(
     private val ctx: Context,
     private val type: Army,
     private val tilesPerSide: Int,
-    private val images: Map<Pair<Army, PiecesType>, VectorDrawableCompat?>,
+    public val images: Map<Pair<Army, PiecesType>, VectorDrawableCompat?>,
     initialPiecesType: Pair<Army, PiecesType>? = null,
 ) : View(ctx) {
 

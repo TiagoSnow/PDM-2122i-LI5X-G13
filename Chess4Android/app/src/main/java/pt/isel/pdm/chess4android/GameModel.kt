@@ -164,6 +164,7 @@ class GameModel() {
         val king: King = board[checkOptions[0].col][checkOptions[0].line] as King
         val kingMoves = king.standardMoves()
         val toRet = mutableListOf<Pair<Coord, Boolean>?>()
+        if (piece is King) return paths
         for (option in paths) {
             if (option!!.second && pieceChecking == board[option.first.col][option.first.line]) {
                 toRet.add(option)
@@ -187,5 +188,29 @@ class GameModel() {
             }
         }
         return toRet
+    }
+
+
+    fun stopPieceFromMoving(piece: Piece): Boolean {
+        //true -> não se pode mexer
+        //false -> pode-se mexer
+        for (col in 0..7) {
+            for (line in 0..7) {
+                if (board[col][line]?.army == newArmyToPlay && board[col][line] != pieceChecking) {
+                    board[piece.col][piece.line] = null
+                    var path = board[col][line]?.searchRoute()
+                    if (path != null) {
+                        for (option in path) {
+                            if (board[option!!.first.col][option.first.line] is King) {
+                                board[piece.col][piece.line] = piece
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        board[piece.col][piece.line] = piece
+        return false
     }
 }
