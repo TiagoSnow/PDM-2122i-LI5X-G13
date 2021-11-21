@@ -7,6 +7,7 @@ import kotlin.math.sqrt
 
 class GameModel() {
 
+    private var pieceThatMadeCheck: Piece? = null
     var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
@@ -53,7 +54,7 @@ class GameModel() {
         board[6][7] = King(Army.WHITE, board, 6, 7)
     }
 
-    fun placePieces(pgn: String, board: Array<Array<Piece?>>): Array<Array<Piece?>> {
+    fun placePieces(pgn: String, board: Array<Array<Piece?>>) {
         this.board = board
         beginBoard()
         var armyFlag = true
@@ -100,17 +101,16 @@ class GameModel() {
             armyFlag = !armyFlag
         }
         newArmyToPlay = getArmy(armyFlag)
-        return board
     }
 
     fun check(column: Int, line: Int): MutableList<Pair<Coord, Boolean>> {
         val selectedPiece = board[column][line]
-        val newOptions = selectedPiece!!.searchRoute()
-        for (option in newOptions) {
+        val allOptions = selectedPiece!!.searchRoute()
+        for (option in allOptions) {
             val coord = option!!.first
             val possibleKing = board[coord.col][coord.line]
             if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
-                return getRouteToKing(selectedPiece, possibleKing, newOptions)
+                return getRouteToKing(selectedPiece, possibleKing, allOptions)
             }
         }
         return mutableListOf()
@@ -135,9 +135,17 @@ class GameModel() {
                 listAux.add(Pair(currCoord, currDist))
         }
 
-        if(listAux.size == 2) {
+        if(selectedPiece is Knight) {
+            listAux.sortBy { pair -> pair.second }
             list.add(Pair(listAux[0].first, false))
-            list.add(Pair(listAux[1].first, false))
+            return list
+        }
+
+        if(selectedPiece is Rook) {
+            for (pair in listAux) {
+                list.add(Pair(pair.first, false))
+            }
+            return list
         }
 
         var distanceInsertedToSelect = distanceSelectedToKing
@@ -149,7 +157,6 @@ class GameModel() {
             pair = chooseBestOptionFromList(listAux, king)
             if(pair == null) return list
         }
-
         return list
     }
 
@@ -165,7 +172,7 @@ class GameModel() {
             if (opDist < best.second) {
                 val colDist = distanceBetweenTwoPositions(Coord(opCoord.col,0), Coord(king.col,0))
                 val lineDist = distanceBetweenTwoPositions(Coord(0,opCoord.line), Coord(0,king.line))
-                if ((colDist - lineDist) < (bestColDist - bestLineDist).absoluteValue) {
+                if ((colDist - lineDist).absoluteValue < (bestColDist - bestLineDist).absoluteValue) {
                     best = option
                     bestColDist = colDist
                     bestLineDist = lineDist
@@ -187,5 +194,35 @@ class GameModel() {
             Army.WHITE
         else
             Army.BLACK
+    }
+
+    fun getOptionsToBlockCheck(col: Int, line: Int, checkOptions: MutableList<Pair<Coord, Boolean>>): MutableList<Pair<Coord, Boolean>?> {
+        val selectedPiece = board[col][line]
+        val allOptions = selectedPiece!!.searchRoute()
+        var interceptionList = mutableListOf<Pair<Coord, Boolean>?>()
+        for (option in allOptions) {
+            val optionCoord = option!!.first
+            if(pieceThatMadeCheck!!.col == optionCoord.col && pieceThatMadeCheck!!.line == optionCoord.line) {
+                interceptionList.add(Pair(Coord(pieceThatMadeCheck!!.col, pieceThatMadeCheck!!.line), true))
+            } else {
+                for (checkOption in checkOptions) {
+                    val checkCoord = checkOption.first
+                    if (optionCoord.col == checkCoord.col && optionCoord.line == checkCoord.line) {
+                        interceptionList.add(option)
+                    }
+                }
+            }
+        }
+        return interceptionList
+    }
+
+    fun updatePieceBeganCheck(coord: Coord?) {
+        if(coord != null) {
+            pieceThatMadeCheck = board[coord.col][coord.line]!!
+        }
+        else {
+            pieceThatMadeCheck = null
+        }
+
     }
 }

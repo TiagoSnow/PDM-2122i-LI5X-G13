@@ -7,11 +7,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.*
-import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 
@@ -29,7 +27,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
-    private lateinit var board: Array<Array<Piece?>>
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
     private var checkOptions: MutableList<Pair<Coord, Boolean>> = mutableListOf()
     private var prevCoord: Coord? = null
@@ -63,7 +60,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     )
 
     init {
-
         rowCount = side
         columnCount = side
         repeat(side * side) {
@@ -90,86 +86,73 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         for (option in options) {
                             //Caso encontre uma option no clique
                             if (option?.first?.col == column && option.first.line == row) {
-                                val movedPiece = board[prevCoord!!.col][prevCoord!!.line]
+                                movePiece(column, row)
 
-                                //Atualizar coords da peça movida
-                                movedPiece?.col = column
-                                movedPiece?.line = row
+                                checkOptions = mutableListOf()
+                                game.updatePieceBeganCheck(null)
 
-                                //Atualizar model
-                                board[column][row] = movedPiece
-                                board[prevCoord!!.col][prevCoord!!.line] = null
-
-                                //Atualizar view
-                                tiles[column][row]?.piecesType =
-                                    Pair(movedPiece!!.army, movedPiece.piece)
-                                tiles[prevCoord!!.col][prevCoord!!.line]?.piecesType = null
-
-                                //remover a seleção da peça antiga
-                                setOriginalColor(
-                                    prevCoord!!.line,
-                                    prevCoord!!.col,
-                                    tiles[prevCoord!!.col][prevCoord!!.line]!!
-                                )
-                                tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                                deselectPreviousPiece()
 
                                 checkOptions = game.check(column, row)
                                 if(checkOptions.isNotEmpty()){
+                                    game.updatePieceBeganCheck(Coord(column, row))
+                                }
+                                /*debug
+                                if(checkOptions.isNotEmpty()){
                                     for (tile in checkOptions) {
-                                        val tileCoord= tile?.first!!
+                                        val tileCoord= tile.first
                                         changeBackgroundColor(tiles[tileCoord.col][tileCoord.line]!!, Color.rgb(173, 182, 163))
                                     }
-                                //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                                //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-
-                                }
-
+                                }*/
                                 options = mutableListOf()
                                 newArmyToPlay = invertArmy()
                                 return@setOnClickListener
                             }
                         }
-                        if(board[column][row]?.army != newArmyToPlay && board[column][row] != null) {
+                        if(game.board[column][row]?.army != newArmyToPlay && game.board[column][row] != null) {
                             //Clean all options selection
                             setOriginalColorToAllOptions()
-                            //Clean prior selected piece color
-                            setOriginalColor(prevCoord!!.line, prevCoord!!.col, tiles[prevCoord!!.col][prevCoord!!.line]!!)
-                            //Clean prior selected piece
-                            tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                            deselectPreviousPiece()
                             //Clean all available options
                             options = mutableListOf()
                             return@setOnClickListener
                         }
                     }
 
-                    if (board[column][row] != null) {
-
-
-                        //if(isCheck){
-                            //getAvailableOptions(row, column)
-                            //percorrer as options
-                                //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                                //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
-                        //}
-
-                        if(board[column][row]?.army != newArmyToPlay)
+                    if (game.board[column][row] != null) {
+                        if(game.board[column][row]?.army != newArmyToPlay)
                             return@setOnClickListener
-                        //Aparecimento dos Caminhos Possíveis
-                        options = getAvailableOptions(row, column)
-                        for (path in options) {
-                            changeBackgroundColor(
-                                tiles[path!!.first.col][path!!.first.line]!!,
-                                Color.RED
-                            )
-                        }
 
+                        if(checkOptions.isNotEmpty()) {
+                            options = game.getOptionsToBlockCheck(column, row, checkOptions)
+                            if(options.isNotEmpty()) {
+                                for (path in options) {
+                                    changeBackgroundColor(
+                                        tiles[path!!.first.col][path.first.line]!!,
+                                        Color.RED
+                                    )
+                                }
+                            }
+                            //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                            //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check
+                        }
+                        else {
+                            //Aparecimento dos Caminhos Possíveis
+                            options = getAvailableOptions(row, column)
+                            for (path in options) {
+                                changeBackgroundColor(
+                                    tiles[path!!.first.col][path.first.line]!!,
+                                    Color.RED
+                                )
+                            }
+                        }
                         if (prevCoord == null)
                             prevCoord = Coord(column, row)
                         else {
                             //remover a seleção da peça antiga && Verificação de colisao de options
                             var flag = false
                             for (option in options) {
-                                if (option?.first?.col == prevCoord!!.col && option?.first?.line == prevCoord!!.line) {
+                                if (option?.first?.col == prevCoord!!.col && option.first.line == prevCoord!!.line) {
                                     flag = true
                                     break
                                 }
@@ -190,16 +173,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         changeBackgroundColor(tile, Color.GREEN)
                         tile.isAlreadySelected = true
                     } else {
-                        //remover a seleção no clique da peça vazia
-                        setOriginalColor(
-                            prevCoord!!.line,
-                            prevCoord!!.col,
-                            tiles[prevCoord!!.col][prevCoord!!.line]!!
-                        )
-                        tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+                        deselectPreviousPiece()
                         tile.isAlreadySelected = true
                         prevCoord?.col = column
                         prevCoord?.line = row
+                        //Clean all available options
+                        options = mutableListOf()
                     }
                 }
                 Log.v("App", row.toString() + " : " + column)
@@ -208,6 +187,35 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tiles[column][row] = tile
         }
     }
+
+    private fun movePiece(column: Int, row: Int) {
+        val movedPiece = game.board[prevCoord!!.col][prevCoord!!.line]
+
+        //Atualizar coords da peça movida
+        movedPiece?.col = column
+        movedPiece?.line = row
+
+        //Atualizar model
+        game.board[column][row] = movedPiece
+        game.board[prevCoord!!.col][prevCoord!!.line] = null
+
+        //Atualizar view
+        tiles[column][row]?.piecesType =
+            Pair(movedPiece!!.army, movedPiece.piece)
+        tiles[prevCoord!!.col][prevCoord!!.line]?.piecesType = null
+    }
+
+    private fun deselectPreviousPiece() {
+        //remover a seleção da peça antiga
+        setOriginalColor(
+            prevCoord!!.line,
+            prevCoord!!.col,
+            tiles[prevCoord!!.col][prevCoord!!.line]!!
+        )
+        tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+    }
+
+
 
     fun setup(gameModel: GameModel) {
         this.game = gameModel
@@ -242,7 +250,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     private fun getAvailableOptions(row: Int, column: Int): MutableList<Pair<Coord, Boolean>?> {
-        val piece = board[column][row]
+        val piece = game.board[column][row]
         if (piece != null)
             return piece.searchRoute()
 
@@ -266,15 +274,13 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(
-        board: Array<Array<Piece?>>,
         newArmyToPlay: Army
     ) {
-        this.board = board
         this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
-                val piece = board[column][line]
-                if (piece != null)
+                val piece = game.board[column][line]
+                    if (piece != null)
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else
                     tiles[column][line]?.piecesType = null

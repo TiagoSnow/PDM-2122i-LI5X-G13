@@ -39,7 +39,7 @@ class GameActivityViewModel(
 
     var gameModel: GameModel = GameModel()
     fun updateBoard(pgn: String) {
-        board = gameModel.placePieces(pgn, board)
+        gameModel.placePieces(pgn, board)
     }
 
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
