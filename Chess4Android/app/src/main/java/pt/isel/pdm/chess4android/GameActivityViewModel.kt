@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
+import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,8 +39,10 @@ class GameActivityViewModel(
     }
 
     var gameModel: GameModel = GameModel()
-    fun updateBoard(pgn: String) {
+    fun updateBoard(pgn: String): MutableList<Pair<Coord, Boolean>> {
+        //REMOVER ESTE BOARD????????
         gameModel.placePieces(pgn, board)
+        return gameModel.check(gameModel.lastPGNMoveCol, gameModel.lastPGNMoveLine)
     }
 
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)

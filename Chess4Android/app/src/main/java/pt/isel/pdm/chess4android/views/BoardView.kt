@@ -89,21 +89,20 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 movePiece(column, row)
 
                                 checkOptions = mutableListOf()
-                                game.updatePieceBeganCheck(null)
 
                                 deselectPreviousPiece()
 
                                 checkOptions = game.check(column, row)
-                                if(checkOptions.isNotEmpty()){
-                                    game.updatePieceBeganCheck(Coord(column, row))
-                                }
-                                /*debug
+                                //debug
                                 if(checkOptions.isNotEmpty()){
                                     for (tile in checkOptions) {
                                         val tileCoord= tile.first
                                         changeBackgroundColor(tiles[tileCoord.col][tileCoord.line]!!, Color.rgb(173, 182, 163))
                                     }
-                                }*/
+                                }
+
+
+
                                 options = mutableListOf()
                                 newArmyToPlay = invertArmy()
                                 return@setOnClickListener
@@ -274,9 +273,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     fun updateView(
-        newArmyToPlay: Army
+        checkOptions: MutableList<Pair<Coord, Boolean>>
     ) {
-        this.newArmyToPlay = newArmyToPlay
+        this.newArmyToPlay = game.newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
                 val piece = game.board[column][line]
@@ -286,6 +285,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     tiles[column][line]?.piecesType = null
             }
         }
+        this.checkOptions = checkOptions
     }
 
     companion object {

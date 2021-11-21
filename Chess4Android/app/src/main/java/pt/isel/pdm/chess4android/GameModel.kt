@@ -54,6 +54,9 @@ class GameModel() {
         board[6][7] = King(Army.WHITE, board, 6, 7)
     }
 
+    var lastPGNMoveCol = 0
+    var lastPGNMoveLine = 0
+
     fun placePieces(pgn: String, board: Array<Array<Piece?>>) {
         this.board = board
         beginBoard()
@@ -70,22 +73,32 @@ class GameModel() {
                         0
                     )      //this coordinates is only to initialize the object. Coordinates will be updated at the end of the function
                     rook.movePGN(move)
+                    lastPGNMoveCol = rook.col
+                    lastPGNMoveLine = rook.line
                 }
                 'B' -> {
                     val bishop = Bishop(army, board, 0, 0)
                     bishop.movePGN(move)
+                    lastPGNMoveCol = bishop.col
+                    lastPGNMoveLine = bishop.line
                 }
                 'Q' -> {
                     val queen = Queen(army, board, 0, 0)
                     queen.movePGN(move)
+                    lastPGNMoveCol = queen.col
+                    lastPGNMoveLine = queen.line
                 }
                 'N' -> {
                     val knight = Knight(army, board, 0, 0)
                     knight.movePGN(move)
+                    lastPGNMoveCol = knight.col
+                    lastPGNMoveLine = knight.line
                 }
                 'K' -> {
                     val king = King(army, board, 0, 0)
                     king.movePGN(move)
+                    lastPGNMoveCol = king.col
+                    lastPGNMoveLine = king.line
                 }
                 'O' -> {
                     if (move.length == 5)
@@ -96,9 +109,14 @@ class GameModel() {
                 else -> {
                     val pawn = Pawn(army, board, 0, 0)
                     pawn.movePGN(move)
+                    lastPGNMoveCol = pawn.col
+                    lastPGNMoveLine = pawn.line
                 }
             }
             armyFlag = !armyFlag
+            /*if(lst.lastIndex == lst.indexOf(move)) {
+
+            }*/
         }
         newArmyToPlay = getArmy(armyFlag)
     }
@@ -110,9 +128,11 @@ class GameModel() {
             val coord = option!!.first
             val possibleKing = board[coord.col][coord.line]
             if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
+                updatePieceBeganCheck(selectedPiece)
                 return getRouteToKing(selectedPiece, possibleKing, allOptions)
             }
         }
+        updatePieceBeganCheck(null)
         return mutableListOf()
     }
 
@@ -172,7 +192,7 @@ class GameModel() {
             if (opDist < best.second) {
                 val colDist = distanceBetweenTwoPositions(Coord(opCoord.col,0), Coord(king.col,0))
                 val lineDist = distanceBetweenTwoPositions(Coord(0,opCoord.line), Coord(0,king.line))
-                if ((colDist - lineDist).absoluteValue < (bestColDist - bestLineDist).absoluteValue) {
+                if ((colDist - lineDist).absoluteValue <= (bestColDist - bestLineDist).absoluteValue) {
                     best = option
                     bestColDist = colDist
                     bestLineDist = lineDist
@@ -207,7 +227,12 @@ class GameModel() {
             } else {
                 for (checkOption in checkOptions) {
                     val checkCoord = checkOption.first
-                    if (optionCoord.col == checkCoord.col && optionCoord.line == checkCoord.line) {
+                    if(selectedPiece is King){
+                        if (optionCoord.col != checkCoord.col && optionCoord.line != checkCoord.line) {
+                            interceptionList.add(option)
+                        }
+                    }
+                    else if (optionCoord.col == checkCoord.col && optionCoord.line == checkCoord.line) {
                         interceptionList.add(option)
                     }
                 }
@@ -216,13 +241,8 @@ class GameModel() {
         return interceptionList
     }
 
-    fun updatePieceBeganCheck(coord: Coord?) {
-        if(coord != null) {
-            pieceThatMadeCheck = board[coord.col][coord.line]!!
-        }
-        else {
-            pieceThatMadeCheck = null
-        }
+    fun updatePieceBeganCheck(selectedPiece: Piece?) {
+        pieceThatMadeCheck = selectedPiece
 
     }
 }
