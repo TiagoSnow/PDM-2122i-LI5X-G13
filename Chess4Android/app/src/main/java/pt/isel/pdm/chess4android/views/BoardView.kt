@@ -31,7 +31,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
     private lateinit var board: Array<Array<Piece?>>
     private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
-    private var checkOptions: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
+    private var checkOptions: MutableList<Pair<Coord, Boolean>> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
 
@@ -117,7 +117,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                                 if(checkOptions.isNotEmpty()){
                                     for (tile in checkOptions) {
                                         val tileCoord= tile?.first!!
-                                        changeBackgroundColor(tiles[tileCoord.col][tileCoord.col]!!, Color.rgb(173, 182, 163))
+                                        changeBackgroundColor(tiles[tileCoord.col][tileCoord.line]!!, Color.rgb(173, 182, 163))
                                     }
                                 //mover uma peça que mate a peça que nos colocou em check, mas que não liberte o caminho para um novo check
                                 //mover uma peça que bloqueie a peça que nos colocou em check, mas que não liberte o caminho para um novo check

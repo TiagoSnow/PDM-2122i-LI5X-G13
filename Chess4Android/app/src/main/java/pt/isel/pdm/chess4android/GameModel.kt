@@ -1,6 +1,7 @@
 package pt.isel.pdm.chess4android
 
 import pt.isel.pdm.chess4android.pieces.*
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -11,7 +12,6 @@ class GameModel() {
 
     fun beginBoard() {
         //colocar as peças no estado inicial
-
         fillHalfBoard(0, getArmy(false))
         fillHalfBoard(7, getArmy(true))
 
@@ -103,7 +103,7 @@ class GameModel() {
         return board
     }
 
-    fun check(column: Int, line: Int): MutableList<Pair<Coord, Boolean>?> {
+    fun check(column: Int, line: Int): MutableList<Pair<Coord, Boolean>> {
         val selectedPiece = board[column][line]
         val newOptions = selectedPiece!!.searchRoute()
         for (option in newOptions) {
@@ -120,69 +120,62 @@ class GameModel() {
         selectedPiece: Piece,
         king: Piece,
         newOptions: MutableList<Pair<Coord, Boolean>?>
-    ): MutableList<Pair<Coord, Boolean>?> {
+    ): MutableList<Pair<Coord, Boolean>> {
 
-        var list = mutableListOf<Pair<Coord, Boolean>?>()
+        var listAux = mutableListOf<Pair<Coord, Double>>()
+        var list = mutableListOf<Pair<Coord, Boolean>>()
+        val selectedCoord = Coord(selectedPiece.col, selectedPiece.line)
         val kingCoord = Coord(king.col, king.line)
+        val distanceSelectedToKing = distanceBetweenTwoPositions(selectedCoord, kingCoord)
 
-        val allOptionsWithDistances =
-            getAllDistancesFromOptions(newOptions, selectedPiece).sortedBy { pair -> pair.second }
-
-        var optionsToKingList = mutableListOf<Pair<Coord, Double>?>()
-        var distance = allOptionsWithDistances[0].second
-        while (distance != allOptionsWithDistances.last().second) {
-            for (pair in allOptionsWithDistances) {
-                if (pair.second == distance) {
-                    optionsToKingList.add(
-                        Pair(
-                            pair.first,
-                            distanceBetweenTwoPositions(pair.first, kingCoord)
-                        )
-                    )
-                } else if(pair.second > distance){
-                    distance = pair.second
-                    break
-                }
-            }
-
-            var best = optionsToKingList[0]
-            var bestColDistance = distanceBetweenTwoPositions(Coord(best!!.first.col, 0), Coord(king.col, 0))
-            var bestLineDistance = distanceBetweenTwoPositions(Coord(0, best.first.line), Coord(0, king.line))
-            for (option in optionsToKingList) {
-                val opCoord = option!!.first
-                val opDist = option.second
-                if(opDist <= best!!.second) {
-                    val colDistance = distanceBetweenTwoPositions(Coord(opCoord.col, 0), Coord(king.col, 0))
-                    val lineDistance = distanceBetweenTwoPositions(Coord(0, opCoord.line), Coord(0, king.line))
-                    if((colDistance < bestColDistance || lineDistance < bestLineDistance)) {
-                        best = option
-                        bestColDistance = colDistance
-                        bestLineDistance = lineDistance
-                    }
-                }
-            }
-
-            list.add(Pair(best!!.first, false))
-            optionsToKingList = mutableListOf()
+        for (option in newOptions) {
+            val currCoord = option!!.first
+            val currDist = distanceBetweenTwoPositions(currCoord, kingCoord)
+            if(currDist <= distanceSelectedToKing)
+                listAux.add(Pair(currCoord, currDist))
         }
+
+        if(listAux.size == 2) {
+            list.add(Pair(listAux[0].first, false))
+            list.add(Pair(listAux[1].first, false))
+        }
+
+        var distanceInsertedToSelect = distanceSelectedToKing
+        var pair = chooseBestOptionFromList(listAux, king)
+        while(pair!!.second <= distanceInsertedToSelect) {
+            listAux.remove(pair)
+            list.add(Pair(pair.first, false))
+            distanceInsertedToSelect = pair.second
+            pair = chooseBestOptionFromList(listAux, king)
+            if(pair == null) return list
+        }
+
         return list
     }
 
-    private fun getAllDistancesFromOptions(
-        newOptions: MutableList<Pair<Coord, Boolean>?>,
-        selectedPiece: Piece
-    ): MutableSet<Pair<Coord, Double>> {
-        var list = mutableSetOf<Pair<Coord, Double>>()
-        val firstPosition = Coord(selectedPiece.col, selectedPiece.line)
-        for (option in newOptions) {
-            val currCoord = option!!.first
-            list.add(Pair(currCoord, distanceBetweenTwoPositions(firstPosition, currCoord)))
+    private fun chooseBestOptionFromList(listAux: MutableList<Pair<Coord, Double>>, king: Piece): Pair<Coord, Double>? {
+        if(listAux.isEmpty()) return null
+        var best = listAux[0]
+        var bestColDist = distanceBetweenTwoPositions(Coord(best.first.col,0), Coord(king.col,0))
+        var bestLineDist = distanceBetweenTwoPositions(Coord(0,best.first.line), Coord(0,king.line))
+
+        for (option in listAux) {
+            val opCoord = option.first
+            val opDist = option.second
+            if (opDist < best.second) {
+                val colDist = distanceBetweenTwoPositions(Coord(opCoord.col,0), Coord(king.col,0))
+                val lineDist = distanceBetweenTwoPositions(Coord(0,opCoord.line), Coord(0,king.line))
+                if ((colDist - lineDist) < (bestColDist - bestLineDist).absoluteValue) {
+                    best = option
+                    bestColDist = colDist
+                    bestLineDist = lineDist
+                }
+            }
         }
-        return list
+        return best
     }
 
     private fun distanceBetweenTwoPositions(initPosition: Coord, endPosition: Coord): Double {
-        //(squareRoot(pow(x2-x1) + pow(y2-y1)))
         return sqrt(
             (endPosition.col.toDouble() - initPosition.col).pow(2.0) +
                     (endPosition.line.toDouble() - initPosition.line).pow(2.0)
