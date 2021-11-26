@@ -19,10 +19,8 @@ class GameActivity : AppCompatActivity() {
         binding.boardView.setup(viewModel.gameModel)
         viewModel.getPuzzleOfDay()
         viewModel.dataOfDay.observe(this) {
-            val checkOptions = viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn)
+            val checkOptions = viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+",""))
             binding.boardView.updateView(checkOptions)
         }
     }
-
-
 }

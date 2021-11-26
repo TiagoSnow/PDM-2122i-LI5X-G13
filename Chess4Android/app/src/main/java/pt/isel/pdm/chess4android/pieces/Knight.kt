@@ -72,7 +72,6 @@ class Knight(
         //we are able to get the diference in line by this subtraction
         when (colPrev - colNext) {
             -1, 1 -> {
-                val pieceAux = board[colPrev][lineNext - 2]
                 return if (lineNext - 2 in 0..7 &&
                     checkIfPieceExists(colPrev, lineNext - 2, army, piece)
                 )
