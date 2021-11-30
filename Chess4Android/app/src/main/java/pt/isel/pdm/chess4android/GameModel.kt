@@ -3,12 +3,11 @@ package pt.isel.pdm.chess4android
 import pt.isel.pdm.chess4android.pieces.*
 
 class GameModel() {
-
     private var pieceChecking: Piece? = null
-    private var checkingFrom: Coord? = null
-    private var isInCheck = false
     var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
+
+    lateinit var solutions: ArrayList<Pair<Coord,Coord>>
 
     private fun beginBoard() {
         //colocar as peças no estado inicial
@@ -140,27 +139,6 @@ class GameModel() {
         newArmyToPlay = getArmy(armyFlag)
     }
 
-    fun check(column: Int, line: Int): MutableList<Coord> {
-        val selectedPiece = board[column][line]
-        val allOptions = selectedPiece?.searchRoute()
-        allOptions?.removeIf { x -> !x!!.second }
-        val toRet = mutableListOf<Coord>()
-        if (allOptions != null) {
-            for (option in allOptions) {
-                val coord = option!!.first
-                val possibleKing = board[coord.col][coord.line]
-                if (possibleKing?.army != selectedPiece.army && possibleKing?.piece == PiecesType.KING) {
-                    updateCheckingPiece(selectedPiece)
-                    checkingFrom = Coord(column, line)
-                    toRet.add(Coord(possibleKing.col, possibleKing.line))
-                    toRet.add(Coord(column, line))
-                    isInCheck = true
-                    //addPathToKing(Pair(column, line), coord, possibleKing.army == Army.WHITE)
-                }
-            }
-        }
-        return toRet
-    }
 
     private fun getArmy(armyFlag: Boolean): Army {
         return if (armyFlag)
@@ -175,44 +153,7 @@ class GameModel() {
 
     private fun updateCheckingPiece(selectedPiece: Piece?) {
         pieceChecking = selectedPiece
-
     }
-
-    fun getOptionsToBlockCheck(
-        piece: Piece,
-        checkOptions: MutableList<Coord>
-    ): MutableList<Pair<Coord, Boolean>?> {
-        val paths = piece.searchRoute()
-        val pathsChecking = pieceChecking?.searchRoute()!!
-        val king: King = board[checkOptions[0].col][checkOptions[0].line] as King
-        val kingMoves = king.standardMoves()
-        val toRet = mutableListOf<Pair<Coord, Boolean>?>()
-        if (piece is King) return paths
-        for (option in paths) {
-            if (option!!.second && pieceChecking == board[option.first.col][option.first.line]) {
-                toRet.add(option)
-            }
-            for (blockOption in kingMoves) {
-                if (option.first.col == blockOption!!.first.col &&
-                    option.first.line == blockOption.first.line
-                ) {
-                    for (checking in pathsChecking) {
-                        if (option.first.col == checking!!.first.col &&
-                            option.first.line == checking.first.line
-                        )
-                            if (option.first.col == king.col &&
-                                option.first.col == checkOptions[1].col ||
-                                option.first.line == king.line &&
-                                option.first.line == checkOptions[1].line
-                            )
-                                toRet.add(option)
-                    }
-                }
-            }
-        }
-        return toRet
-    }
-
 
     fun stopPieceFromMoving(piece: Piece): Boolean {
         //true -> não se pode mexer
@@ -235,5 +176,50 @@ class GameModel() {
         }
         board[piece.col][piece.line] = piece
         return false
+    }
+
+    fun getAvailableOption(col: Int, line: Int): Coord? {
+        if(solutions.isEmpty())
+            return null
+
+        val sol = solutions[0]
+        val prevCoord = sol.first
+        if(prevCoord.col == col && prevCoord.line == line) {
+            solutions.remove(sol)
+            return sol.second
+        }
+        return null
+    }
+
+    fun convertSolutions(solution: ArrayList<String>) {
+        solutions = arrayListOf()
+        var prevCol: Int
+        var prevLine: Int
+        var newCol: Int
+        var newLine: Int
+        for (s in solution) {
+            prevCol = s[0] - 'a'
+            prevLine = 8 - s[1].digitToInt()
+            newCol = s[2] - 'a'
+            newLine = 8 - s[3].digitToInt()
+            solutions.add(Pair(Coord(prevCol, prevLine), Coord(newCol, newLine)))
+        }
+    }
+
+    fun movePiece(prevCoord: Coord?, newCoord: Coord?) {
+        val prevCol = prevCoord!!.col
+        val prevLine = prevCoord.line
+        val newCol = newCoord!!.col
+        val newLine = newCoord.line
+
+        val movedPiece = board[prevCol][prevLine]
+
+        //Atualizar coords da peça movida
+        movedPiece?.col = newCol
+        movedPiece?.line = newLine
+
+        //Atualizar model
+        board[newCol][newLine] = movedPiece
+        board[prevCol][prevLine] = null
     }
 }

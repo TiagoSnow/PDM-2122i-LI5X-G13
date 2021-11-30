@@ -10,6 +10,7 @@ import pt.isel.pdm.chess4android.pieces.Piece
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.ArrayList
 
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
 
@@ -40,6 +41,22 @@ class GameActivityViewModel(
     fun updateBoard(pgn: String): MutableList<Coord> {
         gameModel.placePieces(pgn)
         return gameModel.check(gameModel.lastPGNMoveCol, gameModel.lastPGNMoveLine)
+    }
+
+    fun getAvailableOption(col: Int, line: Int): Coord? {
+        return gameModel.getAvailableOption(col, line)
+    }
+
+    fun updateSolutions(solution: ArrayList<String>) {
+        gameModel.convertSolutions(solution)
+    }
+
+    fun movePiece(prevCoord: Coord?, newCoord: Coord?) {
+        gameModel.movePiece(prevCoord, newCoord)
+    }
+
+    fun getPiece(newCoord: Coord?): Piece? {
+        return gameModel.getPiece(newCoord!!.col, newCoord.line)
     }
 
     val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)

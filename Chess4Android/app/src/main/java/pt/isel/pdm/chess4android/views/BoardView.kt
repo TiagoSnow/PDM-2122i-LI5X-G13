@@ -27,7 +27,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var tiles: Array<Array<Tile?>> = Array(COLUMNS) {
         Array(LINES) { null }
     }
-    private var options: MutableList<Pair<Coord, Boolean>?> = mutableListOf()
+    private var options: MutableList<Coord?> = mutableListOf()
     private var checkOptions: MutableList<Coord> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
@@ -60,7 +60,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         createImageEntry(Army.BLACK, PiecesType.KING, R.drawable.ic_black_king),
     )
 
+    var listener: BoardClickListener?
+
     init {
+
+        listener = null
+
         rowCount = side
         columnCount = side
         repeat(side * side) {
@@ -75,6 +80,41 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tile.setOnClickListener {
                 onTileClickedListener?.invoke(tile, row, column)
 
+                //Apaga as selected independentemente do sitio do próximo clique
+
+                setOriginalColorToAllOptions()
+
+                if (tile.isAlreadySelected) {
+                    setOriginalColor(row, column, tile)
+                    tile.isAlreadySelected = false
+                }
+                else {
+                    if (isTileAnOption(column, row)) {
+                        listener?.onMovement(prevCoord, options[0])
+                        options = mutableListOf()
+                        setPreviousColor()
+                    }
+                    else {
+                        if (prevCoord != null) {
+                            setPreviousColor()
+
+                        } else {
+                            prevCoord = Coord(column, row)
+                        }
+                        //Colocar cor na tile atual
+                        changeBackgroundColor(tile, Color.DKGRAY)
+                        tile.isAlreadySelected = true
+
+                        prevCoord?.col = column
+                        prevCoord?.line = row
+                    }
+                }
+
+                listener?.onTileClicked(column, row)
+
+
+
+/*
                 //Apaga as options independentemente do sitio do próximo clique
                 setOriginalColorToAllOptions()
 
@@ -220,7 +260,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         //Clean all available options
                         options = mutableListOf()
                     }
-                }
+                }*/
                 Log.v("App", row.toString() + " : " + column)
             }
             addView(tile)
@@ -228,21 +268,38 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
     }
 
-    private fun movePiece(column: Int, row: Int) {
-        val movedPiece = game.board[prevCoord!!.col][prevCoord!!.line]
+    private fun setPreviousColor() {
+        //Colocar cor original na tile anteriormente selecionada
+        setOriginalColor(
+            prevCoord!!.line,
+            prevCoord!!.col,
+            tiles[prevCoord!!.col][prevCoord!!.line]!!
+        )
+        tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
+    }
 
-        //Atualizar coords da peça movida
-        movedPiece?.col = column
-        movedPiece?.line = row
+    private fun isTileAnOption(column: Int, row: Int): Boolean {
+        for (option in options) {
+            if(option!!.col == column && option.line == row)
+                return true
+        }
+        return false
+    }
 
-        //Atualizar model
-        game.board[column][row] = movedPiece
-        game.board[prevCoord!!.col][prevCoord!!.line] = null
 
-        //Atualizar view
-        tiles[column][row]?.piecesType =
-            Pair(movedPiece!!.army, movedPiece.piece)
-        tiles[prevCoord!!.col][prevCoord!!.line]?.piecesType = null
+    fun setOnBoardClickedListener(listener: BoardClickListener){
+        this.listener = listener
+    }
+
+
+    fun movePiece(prevCoord: Coord?, newCoord: Coord?, movedPiece: Piece?) {
+        val prevCol = prevCoord!!.col
+        val prevLine = prevCoord.line
+        val newCol = newCoord!!.col
+        val newLine = newCoord.line
+
+        tiles[prevCol][prevLine]?.piecesType = null
+        tiles[newCol][newLine]?.piecesType = Pair(movedPiece!!.army, movedPiece.piece)
     }
 
     private fun deselectPreviousPiece() {
@@ -273,9 +330,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         //set background color back to normal in all options
         for (position in options)
             setOriginalColor(
-                position!!.first.col,
-                position.first.line,
-                tiles[position.first.col][position.first.line]!!
+                position!!.col,
+                position.line,
+                tiles[position.col][position.line]!!
             )
     }
 
@@ -327,6 +384,14 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             }
         }
         this.checkOptions = checkOptions
+    }
+
+    fun paintBoard(col: Int, line: Int) {
+        changeBackgroundColor(tiles[col][line]!!, Color.GREEN)
+    }
+
+    fun updateOptions(availableOption: Coord) {
+        options.add(availableOption)
     }
 
     companion object {
