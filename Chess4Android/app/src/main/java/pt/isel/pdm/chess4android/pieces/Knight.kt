@@ -22,6 +22,8 @@ class Knight(
 ) : Piece() {
 
     override var piece = PiecesType.KNIGHT
+    var colDest = 0
+    var lineDest = 0
 
     override fun movePGN(move: String) {
         var colDest: Int = 0
@@ -64,8 +66,12 @@ class Knight(
             }
         }
 
-        removePiece(startPositions.first, startPositions.second)
-        putPiece(colDest, lineDest, this)
+        col = startPositions.first
+        line = startPositions.second
+        this.colDest = colDest
+        this.lineDest = lineDest
+        /*removePiece(startPositions.first, startPositions.second)
+        putPiece(colDest, lineDest, this)*/
     }
 
     private fun getPrevLine(colPrev: Int, colNext: Int, lineNext: Int, army: Army): Int {
@@ -117,7 +123,7 @@ class Knight(
         for (dir in KnightDir.values()) {
             val x = col + dir.x
             val y = line + dir.y
-            if (x in 0..7 && y in 0..7 && checkIfPieceExists(x, y, army, piece))
+            if (x in 0..7 && y in 0..7 && x != this.col && y != this.line && checkIfPieceExists(x, y, army, piece))
                 return Pair(x, y)
         }
         return Pair(-1, -1)
@@ -136,6 +142,13 @@ class Knight(
             }
         }
         return list
+    }
+
+    fun updateBoard() {
+        removePiece(this.col, this.line)
+        this.col = this.colDest
+        this.line = this.lineDest
+        putPiece(this.col, this.line, this)
     }
 
 }

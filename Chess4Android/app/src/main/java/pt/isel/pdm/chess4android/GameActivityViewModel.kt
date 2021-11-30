@@ -19,8 +19,6 @@ class GameActivityViewModel(
 ) :
     AndroidViewModel(application) {
 
-    var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } } //ver se é campo ou não
-
     fun getPuzzleOfDay() {
         this.getApplication<PuzzleOfDayApplication>()
             .puzzleOfDayService
@@ -40,8 +38,7 @@ class GameActivityViewModel(
 
     var gameModel: GameModel = GameModel()
     fun updateBoard(pgn: String): MutableList<Coord> {
-        //REMOVER ESTE BOARD????????
-        gameModel.placePieces(pgn, board)
+        gameModel.placePieces(pgn)
         return gameModel.check(gameModel.lastPGNMoveCol, gameModel.lastPGNMoveLine)
     }
 

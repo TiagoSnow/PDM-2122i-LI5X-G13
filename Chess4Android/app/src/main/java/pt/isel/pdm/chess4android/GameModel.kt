@@ -73,8 +73,7 @@ class GameModel() {
     var lastPGNMoveCol = 0
     var lastPGNMoveLine = 0
 
-    fun placePieces(pgn: String, board: Array<Array<Piece?>>) {
-        this.board = board
+    fun placePieces(pgn: String) {
         beginBoard()
         var armyFlag = true
         val lst: List<String> = pgn.split(" ")
@@ -105,8 +104,15 @@ class GameModel() {
                     lastPGNMoveLine = queen.line
                 }
                 'N' -> {
-                    val knight = Knight(army, board, 0, 0)
+                    val knight = Knight(army, board, -1, -1)
                     knight.movePGN(move)
+                    updateCheckingPiece(knight)
+                    newArmyToPlay = getArmy(!armyFlag)
+                    if(stopPieceFromMoving(knight)) {
+                        knight.movePGN(move)
+                    }
+                    knight.updateBoard()
+                    newArmyToPlay = getArmy(!armyFlag)
                     lastPGNMoveCol = knight.col
                     lastPGNMoveLine = knight.line
                 }
