@@ -6,16 +6,22 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".PuzzleOfDayApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Chess4Android"
-        android:name=".PuzzleOfDayApplication">
+        android:theme="@style/Theme.Chess4Android">
+        <activity
+            android:name=".PreviewPuzzleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".history.HistoryActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,11 +29,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AboutActivity"
+            android:name=".about.AboutActivity"
             android:exported="false" />
         <activity
             android:name=".GameActivity"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

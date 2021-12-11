@@ -3,9 +3,9 @@ package pt.isel.pdm.chess4android
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.viewModels
+import pt.isel.pdm.chess4android.about.AboutActivity
 import pt.isel.pdm.chess4android.databinding.ActivityMainBinding
+import pt.isel.pdm.chess4android.history.HistoryActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +23,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.puzzleOfDayButton.setOnClickListener {
             startActivity(Intent(this, GameActivity::class.java))
+        }
+
+        binding.historyButton.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
     }

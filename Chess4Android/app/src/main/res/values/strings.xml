@@ -8,4 +8,7 @@
     <string name="authors_text">Made by:\n46033 - Marco Duarte\n46052 - Daniel Caseiro\n46067 - Tiago Neves\nClass:LI5XD \nGroup: 13</string>
     <string name="credits_text">The source of the daily puzzles where obtain from:</string>
     <string name="api_lichess">API Lichess</string>
+    <string name="status_unsolved">Not Solved</string>
+    <string name="status_solved">Solved</string>
+
 </resources>

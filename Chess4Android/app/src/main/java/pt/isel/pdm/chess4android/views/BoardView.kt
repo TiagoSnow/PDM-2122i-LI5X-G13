@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.*
+import pt.isel.pdm.chess4android.model.GameModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 
@@ -28,7 +29,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         Array(LINES) { null }
     }
     private var options: MutableList<Coord?> = mutableListOf()
-    private var checkOptions: MutableList<Coord> = mutableListOf()
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
     private var checkPair: Pair<Coord, Coord>? = null
@@ -370,9 +370,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView(
-        checkOptions: MutableList<Coord>
-    ) {
+    fun updateView() {
         this.newArmyToPlay = game.newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
@@ -383,7 +381,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     tiles[column][line]?.piecesType = null
             }
         }
-        this.checkOptions = checkOptions
     }
 
     fun paintBoard(col: Int, line: Int) {

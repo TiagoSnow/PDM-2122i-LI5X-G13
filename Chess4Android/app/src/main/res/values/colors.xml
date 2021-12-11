@@ -9,4 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chess_board_white">#FFE7CAB3</color>
     <color name="chess_board_black">#FF804F21</color>
+
+    <color name="list_item_background">#FFFFFF</color>
+    <color name="list_item_border">#edf0f6</color>
+    <color name="list_item_background_selected">#5EA1A3A3</color>
+    <color name="list_item_border_selected">#6F7070</color>
 </resources>

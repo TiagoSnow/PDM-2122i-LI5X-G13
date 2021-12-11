@@ -1,4 +1,4 @@
-package pt.isel.pdm.chess4android
+package pt.isel.pdm.chess4android.about
 
 import android.content.Intent
 import android.net.Uri
@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
+import pt.isel.pdm.chess4android.R
 import pt.isel.pdm.chess4android.databinding.ActivityAboutBinding
 
 private const val LINCHESS_URL = "https://lichess.org/api"
@@ -27,7 +28,7 @@ class AboutActivity : AppCompatActivity() {
             showPopupAuthors(R.layout.authors_popup)
         }
 
-        binding.creditsButton!!.setOnClickListener {
+        binding.creditsButton.setOnClickListener {
             showPopupCredits(R.layout.credits_popup)
         }
 

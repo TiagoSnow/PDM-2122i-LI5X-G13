@@ -1,5 +1,6 @@
-package pt.isel.pdm.chess4android
+package pt.isel.pdm.chess4android.model
 
+import pt.isel.pdm.chess4android.Army
 import pt.isel.pdm.chess4android.pieces.*
 
 class GameModel() {

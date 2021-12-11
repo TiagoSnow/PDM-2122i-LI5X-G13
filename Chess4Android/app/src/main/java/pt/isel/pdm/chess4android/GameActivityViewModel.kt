@@ -4,12 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import pt.isel.pdm.chess4android.model.GameModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.ArrayList
 
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
@@ -17,30 +16,41 @@ private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
 class GameActivityViewModel(
     application: Application,
     private val state: SavedStateHandle
-) :
-    AndroidViewModel(application) {
+) : AndroidViewModel(application) {
+
+    val dataOfDay: LiveData<PuzzleInfoDTO> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
+
+    /**
+     * The [LiveData] instance used to publish errors that occur while fetching the quote of day
+     */
+    private val _error: MutableLiveData<Throwable> = MutableLiveData()
+    val error: LiveData<Throwable> = _error
+
+    fun deletePuzzleEntity() {
+        val app = getApplication<PuzzleOfDayApplication>()
+        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
+        repo.asyncDelete() {
+        }
+    }
 
     fun getPuzzleOfDay() {
-        this.getApplication<PuzzleOfDayApplication>()
-            .puzzleOfDayService
-            .getPuzzle()
-            .enqueue(object : Callback<PuzzleInfo> {
-                override fun onResponse(call: Call<PuzzleInfo>, response: Response<PuzzleInfo>) {
-                    val puzzle = response.body()
-                    if (puzzle != null && response.isSuccessful)
-                        state.set(GAME_ACTIVITY_VIEW_STATE, puzzle)
-                }
-
-                override fun onFailure(call: Call<PuzzleInfo>, t: Throwable) {
-                    Log.e("APP", "onFailure", t)
-                }
-            })
+        Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Fetching ...")
+        val app = getApplication<PuzzleOfDayApplication>()
+        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
+        repo.fetchPuzzleOfDay { result ->
+            result.onSuccess {
+                state.set(GAME_ACTIVITY_VIEW_STATE, result.getOrNull())
+            }
+            result.onFailure {
+                _error.value = it
+            }
+        }
+        Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Returned from fetchQuoteOfDay")
     }
 
     var gameModel: GameModel = GameModel()
-    fun updateBoard(pgn: String): MutableList<Coord> {
+    fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
-        return gameModel.check(gameModel.lastPGNMoveCol, gameModel.lastPGNMoveLine)
     }
 
     fun getAvailableOption(col: Int, line: Int): Coord? {
@@ -58,8 +68,5 @@ class GameActivityViewModel(
     fun getPiece(newCoord: Coord?): Piece? {
         return gameModel.getPiece(newCoord!!.col, newCoord.line)
     }
-
-    val dataOfDay: LiveData<PuzzleInfo> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
-
 
 }
