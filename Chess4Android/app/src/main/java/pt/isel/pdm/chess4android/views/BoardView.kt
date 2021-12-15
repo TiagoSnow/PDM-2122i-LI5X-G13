@@ -308,11 +308,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
     }
 
-
-    fun setup(gameModel: GameModel) {
-        this.game = gameModel
-    }
-
     private fun invertArmy(): Army {
         return if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
@@ -365,11 +360,11 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView() {
-        this.newArmyToPlay = game.newArmyToPlay
+    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army) {
+        this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
-                val piece = game.board[column][line]
+                val piece = board[column][line]
                 if (piece != null)
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else

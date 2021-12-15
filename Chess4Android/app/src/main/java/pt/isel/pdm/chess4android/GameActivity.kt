@@ -18,7 +18,6 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.boardView.setup(viewModel.gameModel)
 
         //viewModel.deletePuzzleEntity()
 
@@ -26,7 +25,7 @@ class GameActivity : AppCompatActivity() {
 
         viewModel.dataOfDay.observe(this) {
             viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+",""))
-            binding.boardView.updateView()
+            binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay)
             viewModel.updateSolutions(viewModel.dataOfDay.value!!.puzzle.solution)
         }
         viewModel.error.observe(this) { displayError() }

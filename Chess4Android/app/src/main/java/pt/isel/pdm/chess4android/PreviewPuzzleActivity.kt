@@ -1,10 +1,8 @@
 package pt.isel.pdm.chess4android
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.databinding.ActivityPreviewPuzzleBinding
 
 private const val PUZZLE_EXTRA = "PreviewPuzzleActivity.Extra.Puzzle"
@@ -22,6 +20,6 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         setContentView(binding.root)
         val puzzle = intent.extras?.get(PUZZLE_EXTRA) as PuzzleInfoDTO
         viewModel.updateBoard(puzzle.game.pgn.replace("+",""))
-        binding.boardViewPreview.updateView()
+        binding.boardViewPreview.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay)
     }
 }
