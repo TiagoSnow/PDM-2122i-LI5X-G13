@@ -6,6 +6,18 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.pieces.Coord
+import android.app.Dialog
+import android.content.Intent
+
+import android.graphics.Color
+
+import android.widget.FrameLayout
+
+import android.graphics.drawable.ColorDrawable
+import android.view.View
+import android.view.Window
+import com.google.android.material.button.MaterialButton
+
 
 class GameActivity : AppCompatActivity() {
 
@@ -25,7 +37,7 @@ class GameActivity : AppCompatActivity() {
         viewModel.getPuzzleOfDay()
 
         viewModel.dataOfDay.observe(this) {
-            viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+",""))
+            viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+", ""))
             binding.boardView.updateView()
             viewModel.updateSolutions(viewModel.dataOfDay.value!!.puzzle.solution)
         }
@@ -45,7 +57,7 @@ class GameActivity : AppCompatActivity() {
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
             val availableOption = viewModel.getAvailableOption(col, line)
-            if(availableOption != null){
+            if (availableOption != null) {
                 binding.boardView.paintBoard(availableOption.col, availableOption.line)
                 binding.boardView.updateOptions(availableOption)
             }
@@ -62,9 +74,35 @@ class GameActivity : AppCompatActivity() {
         }
 
         override fun onCheckmate() {
-           /* if(viewModel.getSolutionsSize() == 0) {
+            //viewModel.getSolutionsSize(viewModel.dataOfDay.value?.puzzle?.solution!!) == 0
+            if (viewModel.gameModel.solutions.size == 0) {
                 //passar para nova activity que mostra a mesnagem a dizer checkmate
-            }*/
+                val dialog = Dialog(this@GameActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.cm_popup)
+                dialog.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
+                mDialogMenu.setOnClickListener(object : View.OnClickListener {
+                    override fun onClick(p0: View?) {
+                        //Toast.makeText(applicationContext, "Cancel", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@GameActivity, MainActivity::class.java))
+                        dialog.dismiss()
+                    }
+
+                })
+
+                val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
+                mDialogReset.setOnClickListener(object : View.OnClickListener {
+                    override fun onClick(p0: View?) {
+                        startActivity(Intent(this@GameActivity, GameActivity::class.java))
+                        dialog.dismiss()
+                    }
+                })
+
+                dialog.show()
+            }
         }
     }
 

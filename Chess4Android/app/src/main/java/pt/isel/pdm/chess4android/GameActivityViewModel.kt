@@ -69,4 +69,9 @@ class GameActivityViewModel(
         return gameModel.getPiece(newCoord!!.col, newCoord.line)
     }
 
+    fun getSolutionsSize(solution: ArrayList<String>): Int {
+        return solution.size
+    }
+
+
 }
