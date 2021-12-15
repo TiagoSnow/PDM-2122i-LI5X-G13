@@ -20,6 +20,7 @@ private fun <T> executeAndCollectResult(asyncAction: () -> T): Result<T> =
  * This is a teaching tool. It will soon be discarded.
  * The [asyncAction] result is published by calling, IN THE MAIN THREAD, the received [callback]
  */
+
 fun <T> callbackAfterAsync(callback: (Result<T>) -> Unit, asyncAction: () -> T) {
     val mainHandler = Handler(Looper.getMainLooper())
     ioExecutor.submit {
@@ -35,6 +36,7 @@ fun <T> callbackAfterAsync(callback: (Result<T>) -> Unit, asyncAction: () -> T) 
  * This is a teaching tool. It will soon be discarded.
  * The [asyncAction] result is published to the returned [LiveData] instance
  */
+
 fun <T> publishInLiveDataAfterAsync(asyncAction: () -> T): LiveData<Result<T>> {
     val toPublish = MutableLiveData<Result<T>>()
     ioExecutor.submit {

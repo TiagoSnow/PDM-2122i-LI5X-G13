@@ -195,32 +195,27 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                             return@setOnClickListener
 
                         if (checkOptions.isNotEmpty()) {
-                            if (game.stopPieceFromMoving(piece)) {
-                                options = mutableListOf()
-                            } else {
-                                options = game.getOptionsToBlockCheck(piece, checkOptions)
-                                if (options.isNotEmpty()) {
-                                    for (path in options) {
-                                        changeBackgroundColor(
-                                            tiles[path!!.first.col][path.first.line]!!,
-                                            Color.GREEN
-                                        )
-                                    }
-                                }
-                            }
-                          } else {
-                            if (game.stopPieceFromMoving(piece)) {
-                                options = mutableListOf()
-                            } else {
-                                //Aparecimento dos Caminhos Possíveis
-                                options = getAvailableOptions(piece)
+                            options = game.getOptionsToBlockCheck(piece, checkOptions)
+                            if (options.isNotEmpty()) {
                                 for (path in options) {
                                     changeBackgroundColor(
                                         tiles[path!!.first.col][path.first.line]!!,
                                         Color.GREEN
                                     )
                                 }
+
                             }
+                        } else {
+
+                            //Aparecimento dos Caminhos Possíveis
+                            options = getAvailableOptions(piece)
+                            for (path in options) {
+                                changeBackgroundColor(
+                                    tiles[path!!.first.col][path.first.line]!!,
+                                    Color.GREEN
+                                )
+                            }
+
                         }
 
                         if (prevCoord == null)
@@ -261,7 +256,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                         options = mutableListOf()
                     }
                 }*/
-                Log.v("App", row.toString() + " : " + column)
+                Log.v("App", "$row : $column")
             }
             addView(tile)
             tiles[column][row] = tile
@@ -311,11 +306,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
             tiles[prevCoord!!.col][prevCoord!!.line]!!
         )
         tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
-    }
-
-
-    fun setup(gameModel: GameModel) {
-        this.game = gameModel
     }
 
     private fun invertArmy(): Army {
@@ -370,11 +360,11 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView() {
-        this.newArmyToPlay = game.newArmyToPlay
+    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army) {
+        this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
-                val piece = game.board[column][line]
+                val piece = board[column][line]
                 if (piece != null)
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else

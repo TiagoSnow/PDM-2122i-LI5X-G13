@@ -49,7 +49,7 @@ class Queen(
     }
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
-        var list = getAllAvailableOptionsBishop()
+        val list = getAllAvailableOptionsBishop()
         list.addAll(getAllAvailableOptionsRook())
         return list
     }
@@ -112,8 +112,7 @@ class Queen(
     }
 
     private fun searchRouteLine(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        var array = mutableListOf<Pair<Coord, Boolean>?>()
-
+        val array = mutableListOf<Pair<Coord, Boolean>?>()
         if (line > direction) {     //up
             for (lineAux in (line - 1) downTo direction) {
                 val position = board[col][lineAux]
@@ -151,7 +150,7 @@ class Queen(
     }
 
     private fun searchRouteColumn(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        var array = mutableListOf<Pair<Coord, Boolean>?>()
+        val array = mutableListOf<Pair<Coord, Boolean>?>()
 
         if (col > direction) {     //left
             for (colAux in (col - 1) downTo 0) {

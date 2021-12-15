@@ -51,23 +51,16 @@ class GameModel() {
     }
 
     private fun castlingRight(armyFlag: Boolean) {
-        if(armyFlag){
-            board[7][7] = null
-            board[5][7] = Rook(Army.WHITE, board, 5, 7)
+        val yCoord = if (armyFlag) 7 else 0
+        val army = if (armyFlag) Army.WHITE else Army.BLACK
 
-            //update King
-            board[4][7] = null
-            board[6][7] = King(Army.WHITE, board, 6, 7)
-        }
-        else {
-            //update Rook
-            board[7][0] = null
-            board[5][0] = Rook(Army.BLACK, board, 5, 0)
+        board[7][yCoord] = null
+        board[5][yCoord] = Rook(army, board, 5, yCoord)
 
-            //update King
-            board[4][0] = null
-            board[6][0] = King(Army.BLACK, board, 6, 0)
-        }
+        //update King
+        board[4][yCoord] = null
+        board[6][yCoord] = King(army, board, 6, yCoord)
+
     }
 
     var lastPGNMoveCol = 0
