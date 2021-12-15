@@ -94,7 +94,6 @@ class Pawn(
         if (pair != null) {
             list.add((pair))
         }
-
         return list
     }
 

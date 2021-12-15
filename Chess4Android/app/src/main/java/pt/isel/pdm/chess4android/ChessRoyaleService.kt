@@ -26,16 +26,16 @@ data class Puzzle(val id: String, var solution: ArrayList<String>) : Parcelable
 
 
 fun convertArrayToString(list: ArrayList<String>): String {
-    var l = list.toString()
-    var array = l.substring(1, l.length - 1)
+    val l = list.toString()
+    val array = l.substring(1, l.length - 1)
     return array
 }
 
 
 //"f3c3,c8b8,d1g4"
 fun convertStringToArray(solution: String): ArrayList<String> {
-    var s = solution.split(", ")
-    var array =  s as ArrayList<String>
+    val s = solution.split(", ")
+    val array =  s as ArrayList<String>
     return array
 }
 

@@ -63,15 +63,18 @@ class King(
 
     }
 
-    fun interception(
+    private fun interception(
         allOptionsKing: MutableList<Pair<Coord, Boolean>?>,
         allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
     ): MutableList<Pair<Coord, Boolean>?> {
+        //
         var listAux = mutableListOf<Pair<Coord, Boolean>?>()
         for (option in allOptionsKing) {
             for (enemyOptions in allEnemyOptions) {
-                if (pairIsEqual(option, enemyOptions))
+                if (pairIsEqual(option, enemyOptions)) {
                     listAux.add(option)
+                    break
+                }
             }
         }
         if (listAux.size != 0) {
@@ -86,13 +89,9 @@ class King(
         kingOption: Pair<Coord, Boolean>?,
         enemyOption: Pair<Coord, Boolean>?
     ): Boolean {
-        if (kingOption!!.first.col == enemyOption!!.first.col &&
-            kingOption.first.line == enemyOption.first.line &&
-            kingOption.second == enemyOption.second
-        ) {
-            return true
-        }
-        return false
+        return (kingOption!!.first.col == enemyOption!!.first.col &&
+                kingOption.first.line == enemyOption.first.line
+                )
     }
 
     private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableSet<Pair<Coord, Boolean>?> {
@@ -101,18 +100,17 @@ class King(
         for (col in 0..7) {
             for (line in 0..7) {
                 val curr = board[col][line]
-                if (curr !is King) {
-                    if (curr != null && curr.army != army) {
-                        if (curr is Pawn) {
-                            listAux = curr.searchRouteToEat()
-                        } else {
-                            listAux = curr.searchRoute()
-                        }
-                        if (listAux.size != 0) {
-                            list = updateList(interception(allOptionsKing, listAux), list)
-                        }
+                if (curr !is King && curr != null && curr.army != army) {
+                    listAux = if (curr is Pawn) {
+                        curr.searchRouteToEat()
+                    } else {
+                        curr.searchRoute()
+                    }
+                    if (listAux.size != 0) {
+                        list = updateList(interception(allOptionsKing, listAux), list)
                     }
                 }
+
             }
         }
         return list
@@ -123,11 +121,7 @@ class King(
         listAux: MutableSet<Pair<Coord, Boolean>?>
     ): MutableSet<Pair<Coord, Boolean>?> {
         //first Time
-        if (listAux.size == 0) {
-            return interceptionList.toMutableSet()
-        }
-
-        if (interceptionList.size < listAux.size) {
+        if (listAux.size == 0 && interceptionList.size < listAux.size) {
             return interceptionList.toMutableSet()
         }
         return listAux
