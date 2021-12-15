@@ -34,9 +34,6 @@ class ChessLogic {
         }
         return toRet
     }
-
-
-
     fun getOptionsToBlockCheck(
         piece: Piece,
         checkOptions: MutableList<Coord>
