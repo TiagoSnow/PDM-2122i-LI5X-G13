@@ -18,6 +18,8 @@ class GameActivityViewModel(
     private val state: SavedStateHandle
 ) : AndroidViewModel(application) {
 
+    private lateinit var currentPuzzleInfoDTO: PuzzleInfoDTO
+
     val dataOfDay: LiveData<PuzzleInfoDTO> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
 
     /**
@@ -39,6 +41,7 @@ class GameActivityViewModel(
         val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
         repo.fetchPuzzleOfDay { result ->
             result.onSuccess {
+                Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Returned success from fetchPuzzleOfDay")
                 state.set(GAME_ACTIVITY_VIEW_STATE, result.getOrNull())
             }
             result.onFailure {
@@ -71,6 +74,14 @@ class GameActivityViewModel(
 
     fun getSolutionsSize(solution: ArrayList<String>): Int {
         return solution.size
+    }
+
+    fun setCurrentPuzzleInfoDTO(puzzle: PuzzleInfoDTO) {
+        this.currentPuzzleInfoDTO = puzzle
+    }
+
+    fun getCurrentPuzzleInfoDTO(): PuzzleInfoDTO {
+        return currentPuzzleInfoDTO
     }
 
 

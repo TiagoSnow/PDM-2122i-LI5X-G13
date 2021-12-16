@@ -1,5 +1,6 @@
 package pt.isel.pdm.chess4android
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -48,8 +49,8 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         btPrevPlay.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 //startActivity(Intent(this@PreviewPuzzleActivity, GameActivity::class.java))
+                startActivity(buildIntent(this@PreviewPuzzleActivity, puzzle))
             }
-
         })
 
         val btPrevBack: Button = findViewById(R.id.btPrevBack)
@@ -70,4 +71,11 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         })
 
     }
+
+    fun buildIntent(origin: Activity, puzzleDto: PuzzleInfoDTO): Intent {
+        val puzzleDTO = Intent(origin, GameActivity::class.java)
+        puzzleDTO.putExtra(PUZZLE_EXTRA, puzzleDto)
+        return puzzleDTO
+    }
+
 }
