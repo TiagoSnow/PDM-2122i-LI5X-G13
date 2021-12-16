@@ -1,6 +1,7 @@
 package pt.isel.pdm.chess4android.views
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -360,7 +361,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         canvas.drawLine(width.toFloat(), 0f, width.toFloat(), height.toFloat(), brush)
     }
 
-    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army) {
+    fun updateView(board: Array<Array<Piece?>>, newArmyToPlay: Army, isPreview: Boolean) {
         this.newArmyToPlay = newArmyToPlay
         for (column in 0..7) {
             for (line in 0..7) {
@@ -369,6 +370,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     tiles[column][line]?.piecesType = Pair(piece.army, piece.piece)
                 else
                     tiles[column][line]?.piecesType = null
+                if (isPreview)
+                    tiles[column][line]?.setOnClickListener(null)
             }
         }
     }

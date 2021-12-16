@@ -7,54 +7,64 @@
     tools:context=".MainActivity"
     android:background="#ff888888">
 
-    <Button
-        android:id="@+id/puzzleOfDay_button"
+    <TextView
+        android:id="@+id/Royale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/puzzle_of_day"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:fontFamily="cursive"
+        android:text="Royale"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/puzzleOfDay_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.458" />
+        app:layout_constraintVertical_bias="0.713" />
+
+    <Button
+        android:id="@+id/puzzleOfDay_button"
+        android:layout_width="139dp"
+        android:layout_height="54dp"
+        android:text="@string/puzzle_of_day"
+        app:layout_constraintBottom_toTopOf="@+id/credits_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/credits_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="139dp"
+        android:layout_height="54dp"
         android:text="@string/about"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/history_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.557" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/history_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="139dp"
+        android:layout_height="54dp"
         android:text="History"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.66" />
+        app:layout_constraintVertical_bias="0.719" />
 
     <TextView
-        android:id="@+id/chessRoyaleText"
+        android:id="@+id/Chess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/chessroyale"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:fontFamily="cursive"
+        android:text="Chess"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.314" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -62,10 +72,23 @@
         android:layout_height="43dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.952"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.87"
-        app:srcCompat="@mipmap/portugal_flag_foreground" />
+        app:layout_constraintVertical_bias="0.976"
+        app:srcCompat="@mipmap/portugal_flag_foreground"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="56dp"
+        android:layout_height="58dp"
+        app:layout_constraintBottom_toTopOf="@+id/Royale"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_black_king" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

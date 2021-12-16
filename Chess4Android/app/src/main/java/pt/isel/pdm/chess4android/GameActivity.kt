@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.button.MaterialButton
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
+import pt.isel.pdm.chess4android.history.HistoryActivity
 import pt.isel.pdm.chess4android.pieces.Coord
 
 class GameActivity : AppCompatActivity() {
@@ -30,14 +32,27 @@ class GameActivity : AppCompatActivity() {
 
         viewModel.getPuzzleOfDay()
 
+
+        //Quando se entrar na GameActivity temos de ver se veio da MainActivity ou da HistoryActivity???
         viewModel.dataOfDay.observe(this) {
-            viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+",""))
-            binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay)
+            viewModel.updateBoard(viewModel.dataOfDay.value!!.game.pgn.replace("+", ""))
+            binding.boardView.updateView(
+                viewModel.gameModel.board,
+                viewModel.gameModel.newArmyToPlay,
+                false
+            )
             viewModel.updateSolutions(viewModel.dataOfDay.value!!.puzzle.solution)
         }
         viewModel.error.observe(this) { displayError() }
 
         binding.boardView.setOnBoardClickedListener(listener)
+
+        val btPermMenu: Button = findViewById(R.id.btPermMenu)
+        btPermMenu.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                startActivity(Intent(this@GameActivity, MainActivity::class.java))
+            }
+        })
     }
 
     /**
@@ -98,6 +113,8 @@ class GameActivity : AppCompatActivity() {
                 dialog.show()
             }
         }
+
+
     }
 
 }
