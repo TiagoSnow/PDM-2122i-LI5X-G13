@@ -133,10 +133,11 @@ class GameModel() {
         newArmyToPlay = getArmy(armyFlag)
     }
 
-    fun placeSolutionOnBoard() {
+    fun placeSolutionOnBoard(): Array<Array<Piece?>> {
         for(solution in solutions) {
             movePiece(solution.first, solution.second)
         }
+        return board
     }
 
     private fun getArmy(armyFlag: Boolean): Army {

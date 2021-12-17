@@ -75,8 +75,7 @@ class PuzzleOfDayRepository(
                         "Thread ${Thread.currentThread().name}: Getting today puzzle from local DB"
                     )
                     callback(Result.success(entity.toPuzzleInfoDTO()))
-                }
-                else {
+                } else {
                     asyncGetPuzzleOfDayFromAPI { apiResult ->
                         Log.v(
                             pt.isel.pdm.chess4android.history.APP_TAG,
@@ -149,7 +148,7 @@ class PuzzleOfDayRepository(
                             val puzzleInfoDTO = PuzzleInfoDTO(
                                 game = puzzle.game,
                                 puzzle = puzzle.puzzle,
-                                date =  LocalDate.now().toString(),
+                                date = LocalDate.now().toString(),
                                 status = "Não Resolvido"
 
                             )

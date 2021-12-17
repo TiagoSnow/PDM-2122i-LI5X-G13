@@ -47,45 +47,29 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         )
 
         val btPrevPlay: Button = findViewById(R.id.btPrevPlay)
-        btPrevPlay.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                //startActivity(Intent(this@PreviewPuzzleActivity, GameActivity::class.java))
-                startActivity(buildIntent(this@PreviewPuzzleActivity, puzzle))
-            }
-        })
+        btPrevPlay.setOnClickListener { //startActivity(Intent(this@PreviewPuzzleActivity, GameActivity::class.java))
+            startActivity(buildIntent(this@PreviewPuzzleActivity, puzzle))
+        }
 
         val btPrevBack: Button = findViewById(R.id.btPrevBack)
-        btPrevBack.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                startActivity(Intent(this@PreviewPuzzleActivity, HistoryActivity::class.java))
-            }
+        btPrevBack.setOnClickListener {
+            startActivity(
+                Intent(
+                    this@PreviewPuzzleActivity,
+                    HistoryActivity::class.java
+                )
+            )
+        }
 
-        })
-
-        val btPrevMenu: Button = findViewById(R.id.btPrevMenu)
-        btPrevMenu.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                //startActivity(Intent(this@PreviewPuzzleActivity, PreviewPuzzleActivity::class.java))
-                if(viewModel.showingSolution) {
-                    binding.boardViewPreview.updateView(
-                        viewModel.initialBoard,
-                        viewModel.gameModel.newArmyToPlay,
-                        true
-                    )
-                    viewModel.showingSolution = false
-                }
-                else {
-                    viewModel.placeSolutions()
-                    binding.boardViewPreview.updateView(
-                        viewModel.solutionBoard,
-                        viewModel.gameModel.newArmyToPlay,
-                        true
-                    )
-                    viewModel.showingSolution = true
-                }
-            }
-        })
-
+        val btPrevMenu: Button = findViewById(R.id.btSolution)
+        btPrevMenu.setOnClickListener {
+            binding.boardViewPreview.updateView(
+                viewModel.placeSolutions(),
+                viewModel.gameModel.newArmyToPlay,
+                true
+            )
+            btPrevMenu.setOnClickListener(null)
+        }
     }
 
     fun buildIntent(origin: Activity, puzzleDto: PuzzleInfoDTO): Intent {

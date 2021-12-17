@@ -88,14 +88,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 if (tile.isAlreadySelected) {
                     setOriginalColor(row, column, tile)
                     tile.isAlreadySelected = false
-                }
-                else {
+                } else {
                     if (isTileAnOption(column, row)) {
                         listener?.onMovement(prevCoord, options[0])
                         options = mutableListOf()
                         setPreviousColor()
-                    }
-                    else {
+                    } else {
                         if (prevCoord != null) {
                             setPreviousColor()
 
@@ -112,7 +110,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 }
 
                 listener?.onTileClicked(column, row)
-
 
 
 /*
@@ -276,14 +273,14 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
     private fun isTileAnOption(column: Int, row: Int): Boolean {
         for (option in options) {
-            if(option!!.col == column && option.line == row)
+            if (option!!.col == column && option.line == row)
                 return true
         }
         return false
     }
 
 
-    fun setOnBoardClickedListener(listener: BoardClickListener){
+    fun setOnBoardClickedListener(listener: BoardClickListener) {
         this.listener = listener
     }
 
