@@ -18,53 +18,22 @@ class PreviewPuzzleViewModel(
     private val state: SavedStateHandle
 ) : AndroidViewModel(application) {
 
-    val dataOfDay: LiveData<PuzzleInfoDTO> = state.getLiveData(GAME_ACTIVITY_VIEW_STATE)
-
-    private val _error: MutableLiveData<Throwable> = MutableLiveData()
-    val error: LiveData<Throwable> = _error
-
-    fun deletePuzzleEntity() {
-        val app = getApplication<PuzzleOfDayApplication>()
-        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
-        repo.asyncDelete() {
-        }
-    }
-
-    fun getPuzzleOfDay() {
-        Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Fetching ...")
-        val app = getApplication<PuzzleOfDayApplication>()
-        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
-        repo.fetchPuzzleOfDay { result ->
-            result.onSuccess {
-                state.set(GAME_ACTIVITY_VIEW_STATE, result.getOrNull())
-            }
-            result.onFailure {
-                _error.value = it
-            }
-        }
-        Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Returned from fetchQuoteOfDay")
-    }
-
+    var showingSolution: Boolean = false
     var gameModel: GameModel = GameModel()
+    var initialBoard: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
+    var solutionBoard: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
+
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
+        initialBoard = gameModel.board.clone()
     }
 
-    fun getAvailableOption(col: Int, line: Int): Coord? {
-        return gameModel.getAvailableOption(col, line)
+    fun placeSolutions() {
+        gameModel.placeSolutionOnBoard()
+        solutionBoard = gameModel.board.clone()
     }
 
     fun updateSolutions(solution: ArrayList<String>) {
         gameModel.convertSolutions(solution)
     }
-
-    fun movePiece(prevCoord: Coord?, newCoord: Coord?) {
-        gameModel.movePiece(prevCoord, newCoord)
-    }
-
-    fun getPiece(newCoord: Coord?): Piece? {
-        return gameModel.getPiece(newCoord!!.col, newCoord.line)
-    }
-
-
 }

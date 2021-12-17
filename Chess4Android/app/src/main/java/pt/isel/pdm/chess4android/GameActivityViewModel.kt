@@ -35,6 +35,21 @@ class GameActivityViewModel(
         }
     }
 
+//TO TEST
+    fun getAllPuzzleEntity() {
+        val app = getApplication<PuzzleOfDayApplication>()
+        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
+        repo.asyncGetAll() {
+        }
+    }
+
+    fun updatePuzzleEntity() {
+        val app = getApplication<PuzzleOfDayApplication>()
+        val repo = PuzzleOfDayRepository(app.puzzleOfDayService, app.historyDB.getHistoryPuzzleDao())
+        repo.asyncUpdate(currentPuzzleInfoDTO){
+        }
+    }
+
     fun getPuzzleOfDay() {
         Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Fetching ...")
         val app = getApplication<PuzzleOfDayApplication>()
@@ -83,6 +98,4 @@ class GameActivityViewModel(
     fun getCurrentPuzzleInfoDTO(): PuzzleInfoDTO {
         return currentPuzzleInfoDTO
     }
-
-
 }

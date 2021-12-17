@@ -35,6 +35,25 @@ class PuzzleOfDayRepository(
         })
     }
 
+    //TO TEST
+    fun asyncGetAll(callback: (Result<Unit>) -> Unit = { }) {
+        callbackAfterAsync(callback, asyncAction = {
+            val list = historyPuzzleDao.getAll()
+            for (puzzle in list) {
+                Log.v(APP_TAG, puzzle.id + ": " + puzzle.status)
+            }
+        })
+    }
+
+    fun asyncUpdate(puzzleInfoDTO: PuzzleInfoDTO, callback: (Result<Unit>) -> Unit = { }) {
+        callbackAfterAsync(callback, asyncAction = {
+            val puzzleEntity = historyPuzzleDao.getById(puzzleInfoDTO.date)
+            historyPuzzleDao.delete(puzzleEntity)
+            puzzleEntity.status = "Resolvido"
+            historyPuzzleDao.insert(puzzleEntity)
+        })
+    }
+
     /**
      * Asynchronously gets the puzzle of day, either from the local DB, if available, or from
      * the remote API.

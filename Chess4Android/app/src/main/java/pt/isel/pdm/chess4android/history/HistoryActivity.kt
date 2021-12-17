@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import pt.isel.pdm.chess4android.GameActivity
 import pt.isel.pdm.chess4android.PreviewPuzzleActivity
 import pt.isel.pdm.chess4android.PuzzleInfoDTO
 import pt.isel.pdm.chess4android.databinding.ActivityHistoryBinding
@@ -26,13 +27,21 @@ class HistoryActivity : AppCompatActivity() {
         // Get the list of puzzles, if we haven't fetched it yet
         (viewModel.history ?: viewModel.loadHistory()).observe(this) {
             binding.puzzleList.adapter = HistoryAdapter(it) { puzzleDto ->
-                startActivity(buildIntent(this, puzzleDto))
+                val pair = Pair(PreviewPuzzleActivity::class.java, GameActivity::class.java)
+                startActivity(buildIntent(this, puzzleDto, pair))
             }
         }
     }
 
-    fun buildIntent(origin: Activity, puzzleDto: PuzzleInfoDTO): Intent {
-        val puzzleDTO = Intent(origin, PreviewPuzzleActivity::class.java)
+    fun buildIntent(
+        origin: Activity,
+        puzzleDto: PuzzleInfoDTO,
+        pair: Pair<Class<PreviewPuzzleActivity>, Class<GameActivity>> ): Intent {
+        val puzzleDTO = if(puzzleDto.status == "Resolvido") {
+            Intent(origin, pair.first)
+        } else {
+            Intent(origin, pair.second)
+        }
         puzzleDTO.putExtra(PUZZLE_EXTRA, puzzleDto)
         return puzzleDTO
     }

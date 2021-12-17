@@ -16,7 +16,7 @@ class HistoryDataAccess {
         val name: String,
         val pgn: String,
         val solution: String,
-        val status: String,
+        var status: String,
         val timestamp: Date = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS))
     ) {
         fun isTodayPuzzle(): Boolean =
@@ -51,6 +51,9 @@ class HistoryDataAccess {
 
         @Query("SELECT * FROM history_puzzle ORDER BY id DESC LIMIT 100")
         fun getAll(): List<PuzzleEntity>
+
+        @Query("SELECT * FROM history_puzzle WHERE id = :id_puzzle")
+        fun getById(id_puzzle: String): PuzzleEntity
 
         @Query("SELECT * FROM history_puzzle ORDER BY id DESC LIMIT :count")
         fun getLast(count: Int): List<PuzzleEntity>

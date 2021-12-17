@@ -32,6 +32,8 @@ class GameActivity : AppCompatActivity() {
 
         //viewModel.deletePuzzleEntity()
 
+        viewModel.getAllPuzzleEntity()
+
         if(intent.extras != null) {
             getPuzzleFromHistory()
         }
@@ -103,6 +105,9 @@ class GameActivity : AppCompatActivity() {
         override fun onCheckmate() {
             //viewModel.getSolutionsSize(viewModel.dataOfDay.value?.puzzle?.solution!!) == 0
             if (viewModel.gameModel.solutions.size == 0) {
+
+                viewModel.updatePuzzleEntity()
+
                 //passar para nova activity que mostra a mesnagem a dizer checkmate
                 val dialog = Dialog(this@GameActivity)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

@@ -39,6 +39,7 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         setContentView(binding.root)
         val puzzle = intent.extras?.get(PUZZLE_EXTRA) as PuzzleInfoDTO
         viewModel.updateBoard(puzzle.game.pgn.replace("+", ""))
+        viewModel.updateSolutions(puzzle.puzzle.solution)
         binding.boardViewPreview.updateView(
             viewModel.gameModel.board,
             viewModel.gameModel.newArmyToPlay,
@@ -64,10 +65,25 @@ class PreviewPuzzleActivity : AppCompatActivity() {
         val btPrevMenu: Button = findViewById(R.id.btPrevMenu)
         btPrevMenu.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                startActivity(Intent(this@PreviewPuzzleActivity, MainActivity::class.java))
-
+                //startActivity(Intent(this@PreviewPuzzleActivity, PreviewPuzzleActivity::class.java))
+                if(viewModel.showingSolution) {
+                    binding.boardViewPreview.updateView(
+                        viewModel.initialBoard,
+                        viewModel.gameModel.newArmyToPlay,
+                        true
+                    )
+                    viewModel.showingSolution = false
+                }
+                else {
+                    viewModel.placeSolutions()
+                    binding.boardViewPreview.updateView(
+                        viewModel.solutionBoard,
+                        viewModel.gameModel.newArmyToPlay,
+                        true
+                    )
+                    viewModel.showingSolution = true
+                }
             }
-
         })
 
     }
