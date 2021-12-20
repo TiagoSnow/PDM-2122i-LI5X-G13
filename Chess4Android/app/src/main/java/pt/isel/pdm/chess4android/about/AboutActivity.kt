@@ -1,6 +1,7 @@
 package pt.isel.pdm.chess4android.about
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,11 +25,15 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val  mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
+
         binding.authorsButton.setOnClickListener {
+            mp.start()
             showPopupAuthors(R.layout.authors_popup)
         }
 
         binding.creditsButton.setOnClickListener {
+            mp.start()
             showPopupCredits(R.layout.credits_popup)
         }
 

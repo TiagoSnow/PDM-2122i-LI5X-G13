@@ -11,4 +11,9 @@
     <string name="api_lichess">API Lichess</string>
     <string name="status_unsolved">Não Resolvido</string>
     <string name="status_solved">Resolvido</string>
+    <string name="play">Jogar</string>
+    <string name="back">Voltar</string>
+    <string name="solution">Solução</string>
+    <string name="history">História</string>
+    <string name="reset">Reset</string>
 </resources>

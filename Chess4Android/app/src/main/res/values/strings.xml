@@ -10,5 +10,10 @@
     <string name="api_lichess">API Lichess</string>
     <string name="status_unsolved">Not Solved</string>
     <string name="status_solved">Solved</string>
+    <string name="play">Play</string>
+    <string name="back">Back</string>
+    <string name="solution">Solution</string>
+    <string name="history">History</string>
+    <string name="reset">Reset</string>
 
 </resources>

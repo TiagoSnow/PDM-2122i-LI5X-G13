@@ -2,6 +2,7 @@ package pt.isel.pdm.chess4android.history
 
 import android.animation.ValueAnimator
 import android.graphics.drawable.GradientDrawable
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,7 @@ class HistoryItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         puzzleNameView.text = puzzleInfoDTO.puzzle.id
         statusView.text = puzzleInfoDTO.status
         itemView.setOnClickListener {
+
             itemView.isClickable = false
             startAnimation {
                 action()

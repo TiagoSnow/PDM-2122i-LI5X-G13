@@ -1,6 +1,7 @@
 package pt.isel.pdm.chess4android
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import pt.isel.pdm.chess4android.about.AboutActivity
@@ -17,16 +18,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val  mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
+
         binding.creditsButton.setOnClickListener {
+            mp.start()
             startActivity(Intent(this, AboutActivity::class.java))
         }
 
         binding.puzzleOfDayButton.setOnClickListener {
+            mp.start()
             startActivity(Intent(this, GameActivity::class.java))
         }
 
         binding.historyButton.setOnClickListener {
+            mp.start()
             startActivity(Intent(this, HistoryActivity::class.java))
+        }
+
+        binding.imageButton.setOnClickListener {
+
         }
 
     }

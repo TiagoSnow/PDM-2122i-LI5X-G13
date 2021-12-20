@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -26,11 +27,16 @@ class GameActivity : AppCompatActivity() {
 
     private val viewModel: GameActivityViewModel by viewModels()
 
+    var mpM: MediaPlayer? = null
+    var  mp: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         //viewModel.deletePuzzleEntity()
+
+
 
         viewModel.getAllPuzzleEntity()
 
@@ -40,12 +46,15 @@ class GameActivity : AppCompatActivity() {
         else {
             getPuzzleOfDay()
         }
-
         binding.boardView.setOnBoardClickedListener(listener)
+        mpM = MediaPlayer.create(this, R.raw.moving_piece)
 
+        mp = MediaPlayer.create(this, R.raw.button_pressed)
         val btPermMenu: Button = findViewById(R.id.btPermMenu)
+
         btPermMenu.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
+                mp!!.start()
                 startActivity(Intent(this@GameActivity, MainActivity::class.java))
             }
         })
@@ -100,6 +109,7 @@ class GameActivity : AppCompatActivity() {
                 //atualizar a board
                 viewModel.movePiece(prevCoord, newCoord)
 
+                mpM!!.start()
                 //atualizar a view
                 binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
@@ -122,12 +132,14 @@ class GameActivity : AppCompatActivity() {
 
                 val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
                 mDialogMenu.setOnClickListener { //Toast.makeText(applicationContext, "Cancel", Toast.LENGTH_SHORT).show()
+                    mp!!.start()
                     startActivity(Intent(this@GameActivity, MainActivity::class.java))
                     dialog.dismiss()
                 }
 
                 val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
                 mDialogReset.setOnClickListener {
+                    mp!!.start()
                     startActivity(
                         buildIntent(
                             this@GameActivity,
