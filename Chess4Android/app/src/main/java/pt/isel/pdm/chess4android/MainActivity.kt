@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val svc = Intent(this, BackgroundSoundService::class.java)
+        startService(svc)
 
         val  mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
 
