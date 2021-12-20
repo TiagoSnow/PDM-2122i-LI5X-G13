@@ -70,6 +70,17 @@ class PreviewPuzzleActivity : AppCompatActivity() {
             )
             btPrevMenu.setOnClickListener(null)
         }
+
+        val btPrevMenu2: Button = findViewById(R.id.btPermMenu2)
+        btPrevMenu2.setOnClickListener {
+            startActivity(
+                Intent(
+                    this@PreviewPuzzleActivity,
+                    MainActivity::class.java
+                )
+            )
+        }
+
     }
 
     fun buildIntent(origin: Activity, puzzleDto: PuzzleInfoDTO): Intent {

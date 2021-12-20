@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PreviewPuzzleActivity">
+
+
+    <TextView
+        android:id="@+id/royale4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="64dp"
+        android:fontFamily="cursive"
+        android:text="Royale"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btPermMenu2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/btPermMenu2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/chess4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="Chess"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btPermMenu2"
+        app:layout_constraintEnd_toEndOf="@+id/btPermMenu2"
+        app:layout_constraintHorizontal_bias="0.18"
+        app:layout_constraintStart_toStartOf="@+id/btPermMenu2"
+        app:layout_constraintTop_toTopOf="@+id/btPermMenu2"
+        app:layout_constraintVertical_bias="0.571" />
+
+    <Button
+        android:id="@+id/btPermMenu2"
+        android:layout_width="238dp"
+        android:layout_height="62dp"
+        android:background="@android:color/transparent"
+        android:drawableTop="@drawable/ic_black_king"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.896"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.137"
+        tools:ignore="SpeakableTextPresentCheck"></Button>
+
+    <Button
+        android:id="@+id/btSolution"
+        android:layout_width="105dp"
+        android:layout_height="59dp"
+        android:src="@android:color/transparent"
+        app:backgroundTint="#3770d2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.821"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.838"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="6dp"
+        android:text="Solution"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btSolution"
+        app:layout_constraintEnd_toEndOf="@+id/btSolution"
+        app:layout_constraintStart_toStartOf="@+id/btSolution"
+        app:layout_constraintTop_toTopOf="@+id/btSolution" />
+
+    <pt.isel.pdm.chess4android.views.BoardView
+        android:id="@+id/boardViewPreview"
+        android:layout_width="381dp"
+        android:layout_height="382dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </pt.isel.pdm.chess4android.views.BoardView>
+
+    <Button
+        android:id="@+id/btPrevBack"
+        android:layout_width="105dp"
+        android:layout_height="59dp"
+        android:src="@android:color/transparent"
+        app:backgroundTint="#e60000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.821"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.619"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/btPrevPlay"
+        android:layout_width="107dp"
+        android:layout_height="59dp"
+        android:src="@android:color/transparent"
+        app:backgroundTint="#1cca36"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.823"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.409"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="6dp"
+        android:text="Play"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btPrevPlay"
+        app:layout_constraintEnd_toEndOf="@+id/btPrevPlay"
+        app:layout_constraintStart_toStartOf="@+id/btPrevPlay"
+        app:layout_constraintTop_toTopOf="@+id/btPrevPlay" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="6dp"
+        android:text="Back"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btPrevBack"
+        app:layout_constraintEnd_toEndOf="@+id/btPrevBack"
+        app:layout_constraintStart_toStartOf="@+id/btPrevBack"
+        app:layout_constraintTop_toTopOf="@+id/btPrevBack" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
