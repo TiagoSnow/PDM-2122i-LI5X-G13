@@ -14,4 +14,5 @@
     <color name="list_item_border">#edf0f6</color>
     <color name="list_item_background_selected">#5EA1A3A3</color>
     <color name="list_item_border_selected">#6F7070</color>
+    <color name="background_color">#ff888888</color>
 </resources>
