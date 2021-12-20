@@ -86,20 +86,25 @@ class GameActivity : AppCompatActivity() {
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
             val availableOption = viewModel.getAvailableOption(col, line)
-            if(availableOption != null){
+            if(availableOption != null) {
                 binding.boardView.paintBoard(availableOption.col, availableOption.line)
                 binding.boardView.updateOptions(availableOption)
+            }
+            else {
+                binding.boardView.resetOptions()
             }
         }
 
         override fun onMovement(prevCoord: Coord?, newCoord: Coord?) {
-            //atualizar a board
-            viewModel.movePiece(prevCoord, newCoord)
+            if(viewModel.removeOptionSelected(Pair(prevCoord, newCoord))) {
+                //atualizar a board
+                viewModel.movePiece(prevCoord, newCoord)
 
-            //atualizar a view
-            binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
+                //atualizar a view
+                binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
-            onCheckmate()
+                onCheckmate()
+            }
         }
 
         override fun onCheckmate() {

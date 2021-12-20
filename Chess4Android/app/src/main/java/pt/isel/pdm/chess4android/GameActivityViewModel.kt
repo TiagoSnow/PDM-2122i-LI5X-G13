@@ -98,4 +98,8 @@ class GameActivityViewModel(
     fun getCurrentPuzzleInfoDTO(): PuzzleInfoDTO {
         return currentPuzzleInfoDTO
     }
+
+    fun removeOptionSelected(pair: Pair<Coord?, Coord?>): Boolean {
+        return gameModel.removeOptionSelected(pair)
+    }
 }

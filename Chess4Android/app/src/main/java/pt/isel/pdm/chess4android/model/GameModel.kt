@@ -185,10 +185,14 @@ class GameModel() {
         val sol = solutions[0]
         val prevCoord = sol.first
         if(prevCoord.col == col && prevCoord.line == line) {
-            solutions.remove(sol)
+            //solutions.remove(sol)
             return sol.second
         }
         return null
+    }
+
+    fun removeOptionSelected(pair: Pair<Coord?, Coord?>): Boolean {
+        return solutions.remove(pair)
     }
 
     fun convertSolutions(solution: ArrayList<String>) {
