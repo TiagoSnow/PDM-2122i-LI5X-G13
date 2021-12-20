@@ -2,10 +2,11 @@ package pt.isel.pdm.chess4android
 
 import android.app.Application
 import androidx.room.Room
-import pt.isel.pdm.chess4android.history.HistoryDataAccess
+import androidx.work.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import pt.isel.pdm.chess4android.history.HistoryDataAccess.*
+import java.util.concurrent.TimeUnit
 
 const val APP_TAG = "PuzzleOfDay"
 
@@ -28,4 +29,28 @@ class PuzzleOfDayApplication: Application() {
             .build()
     }
 
+
+    /**
+     * Called each time the application process is loaded
+     */
+    override fun onCreate() {
+        super.onCreate()
+        val workRequest = PeriodicWorkRequestBuilder<DownloadDailyPuzzleWorker>(1, TimeUnit.DAYS)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .setRequiresBatteryNotLow(true)
+                    .setRequiresStorageNotLow(true)
+                    .build()
+            )
+            .build()
+
+        WorkManager
+            .getInstance(this)
+            .enqueueUniquePeriodicWork(
+                "DownloadDailyPuzzle",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+    }
 }
