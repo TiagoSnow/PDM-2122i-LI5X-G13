@@ -87,11 +87,12 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
                 if (tile.isAlreadySelected) {
                     setOriginalColor(row, column, tile)
+                    resetOptions()
                     tile.isAlreadySelected = false
                 } else {
                     if (isTileAnOption(column, row)) {
                         listener?.onMovement(prevCoord, options[0])
-                        options = mutableListOf()
+                        options.clear()
                         setPreviousColor()
                     } else {
                         if (prevCoord != null) {
@@ -109,7 +110,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     }
                     listener?.onTileClicked(column, row)
                 }
-                
+
                 Log.v("App", "$row : $column")
             }
             addView(tile)
