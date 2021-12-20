@@ -54,7 +54,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/btPrevMenu"
+        android:id="@+id/btSolution"
         android:layout_width="105dp"
         android:layout_height="59dp"
         android:layout_marginEnd="16dp"
@@ -72,14 +72,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="6dp"
-        android:text="Menu"
+        android:text="Solution"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/btPrevMenu"
-        app:layout_constraintEnd_toEndOf="@+id/btPrevMenu"
-        app:layout_constraintStart_toStartOf="@+id/btPrevMenu"
-        app:layout_constraintTop_toTopOf="@+id/btPrevMenu" />
+        app:layout_constraintBottom_toBottomOf="@+id/btSolution"
+        app:layout_constraintEnd_toEndOf="@+id/btSolution"
+        app:layout_constraintStart_toStartOf="@+id/btSolution"
+        app:layout_constraintTop_toTopOf="@+id/btSolution" />
 
     <pt.isel.pdm.chess4android.views.BoardView
         android:id="@+id/boardViewPreview"
@@ -101,7 +101,7 @@
         android:src="@android:color/transparent"
         app:backgroundTint="#e60000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btPrevMenu"
+        app:layout_constraintEnd_toStartOf="@+id/btSolution"
         app:layout_constraintStart_toEndOf="@+id/btPrevPlay"
         app:layout_constraintTop_toBottomOf="@+id/boardViewPreview"
         app:layout_constraintVertical_bias="0.504"

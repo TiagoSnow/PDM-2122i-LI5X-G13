@@ -33,11 +33,12 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 
-    fun buildIntent(
+    private fun buildIntent(
         origin: Activity,
         puzzleDto: PuzzleInfoDTO,
-        pair: Pair<Class<PreviewPuzzleActivity>, Class<GameActivity>> ): Intent {
-        val puzzleDTO = if(puzzleDto.status == "Resolvido") {
+        pair: Pair<Class<PreviewPuzzleActivity>, Class<GameActivity>>
+    ): Intent {
+        val puzzleDTO = if (puzzleDto.status == "Resolvido") {
             Intent(origin, pair.first)
         } else {
             Intent(origin, pair.second)

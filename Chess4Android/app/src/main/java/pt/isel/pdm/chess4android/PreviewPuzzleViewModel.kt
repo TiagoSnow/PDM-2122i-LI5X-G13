@@ -20,17 +20,13 @@ class PreviewPuzzleViewModel(
 
     var showingSolution: Boolean = false
     var gameModel: GameModel = GameModel()
-    var initialBoard: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
-    var solutionBoard: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
-        initialBoard = gameModel.board.clone()
     }
 
-    fun placeSolutions() {
-        gameModel.placeSolutionOnBoard()
-        solutionBoard = gameModel.board.clone()
+    fun placeSolutions(): Array<Array<Piece?>> {
+        return gameModel.placeSolutionOnBoard()
     }
 
     fun updateSolutions(solution: ArrayList<String>) {
