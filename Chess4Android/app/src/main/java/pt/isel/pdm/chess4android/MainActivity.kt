@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val svc = Intent(this, BackgroundSoundService::class.java)
+        startService(svc)
 
         val intent = intent
         flag = intent.getIntExtra(FLAG, 0)
