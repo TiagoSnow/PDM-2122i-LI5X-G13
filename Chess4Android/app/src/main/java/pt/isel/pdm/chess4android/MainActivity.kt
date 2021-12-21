@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var idiom = "_english"
-    private var idiomflag = 0
+    private var idiomLanguage = ""
     private var soundflag = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +35,16 @@ class MainActivity : AppCompatActivity() {
         startService(svc)
 
         val intent = intent
-        idiomflag = intent.getIntExtra(FLAG, 0)
 
-        idiomInit()
+        if(intent.getStringExtra(FLAG) == null) {
+            idiomInit()
+        }
+        else {
+            idiomLanguage = intent.getStringExtra(FLAG)!!
+            idiomChangeByIntent()
+        }
+
+
 
         val  mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
 
@@ -83,13 +90,37 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun idiomInit() {
-        if (idiomflag == 0) {
-            val drawable = getDrawable(R.mipmap.united_kingdom)
+        val curr_language = Locale.getDefault().language
+        val drawable: Drawable?
+
+        if(curr_language == "en") {
+            drawable = getDrawable(R.mipmap.united_kingdom)
             binding.imageButton.foreground = drawable
             setAppLocale("en")
             idiom = "_english"
-        } else if (idiomflag == 1) {
-            val drawable = getDrawable(R.mipmap.portugal_flag_foreground)
+            idiomLanguage = "en"
+        }
+        else {
+            drawable = getDrawable(R.mipmap.portugal_flag_foreground)
+            binding.imageButton.foreground = drawable
+            setAppLocale("pt")
+            idiom = "_portuguese"
+            idiomLanguage = "pt"
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun idiomChangeByIntent() {
+        val drawable: Drawable?
+
+        if(idiomLanguage == "en") {
+            drawable = getDrawable(R.mipmap.united_kingdom)
+            binding.imageButton.foreground = drawable
+            setAppLocale("en")
+            idiom = "_english"
+        }
+        else if(idiomLanguage == "pt") {
+            drawable = getDrawable(R.mipmap.portugal_flag_foreground)
             binding.imageButton.foreground = drawable
             setAppLocale("pt")
             idiom = "_portuguese"
@@ -103,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             binding.imageButton.foreground = drawable
             binding.imageButton.invalidateDrawable(drawable!!)
             setAppLocale("en")
-            idiomflag = 0
+            idiomLanguage = "en"
             startMain()
         } else {
             idiom = "_portuguese"
@@ -111,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             binding.imageButton.foreground = drawable
             binding.imageButton.invalidateDrawable(drawable!!)
             setAppLocale("pt")
-            idiomflag = 1
+            idiomLanguage = "pt"
             startMain()
         }
     }
@@ -126,7 +157,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startMain() {
         val main = Intent(this, MainActivity::class.java)
-        main.putExtra(FLAG, idiomflag)
+        main.putExtra(FLAG, idiomLanguage)
         startActivity(main)
     }
 
