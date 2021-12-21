@@ -10,6 +10,7 @@ import pt.isel.pdm.chess4android.history.HistoryActivity
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import java.util.*
 
@@ -23,16 +24,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var idiom = "_english"
-    private var flag = 0
+    private var idiomflag = 0
+    private var soundflag = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         val svc = Intent(this, BackgroundSoundService::class.java)
         startService(svc)
 
         val intent = intent
-        flag = intent.getIntExtra(FLAG, 0)
+        idiomflag = intent.getIntExtra(FLAG, 0)
 
         idiomInit()
 
@@ -57,16 +60,35 @@ class MainActivity : AppCompatActivity() {
             changeLanguage()
         }
 
+        binding.soundIcon!!.setOnClickListener{
+            val drawable: Drawable
+            if(soundflag){
+                drawable = getDrawable(R.mipmap.nosound_img)!!
+                binding.soundIcon!!.foreground = drawable
+                soundflag = false
+                //tirar o som
+                stopService(svc)
+            }
+            else{
+                drawable = getDrawable(R.mipmap.sound_img)!!
+                binding.soundIcon!!.foreground = drawable
+                soundflag = true
+                //meter som
+                startService(svc)
+            }
+        }
+
     }
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun idiomInit() {
-        if (flag == 0) {
+        if (idiomflag == 0) {
             val drawable = getDrawable(R.mipmap.united_kingdom)
             binding.imageButton.foreground = drawable
             setAppLocale("en")
             idiom = "_english"
-        } else if (flag == 1) {
+        } else if (idiomflag == 1) {
             val drawable = getDrawable(R.mipmap.portugal_flag_foreground)
             binding.imageButton.foreground = drawable
             setAppLocale("pt")
@@ -81,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             binding.imageButton.foreground = drawable
             binding.imageButton.invalidateDrawable(drawable!!)
             setAppLocale("en")
-            flag = 0
+            idiomflag = 0
             startMain()
         } else {
             idiom = "_portuguese"
@@ -89,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             binding.imageButton.foreground = drawable
             binding.imageButton.invalidateDrawable(drawable!!)
             setAppLocale("pt")
-            flag = 1
+            idiomflag = 1
             startMain()
         }
     }
@@ -104,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startMain() {
         val main = Intent(this, MainActivity::class.java)
-        main.putExtra(FLAG, flag)
+        main.putExtra(FLAG, idiomflag)
         startActivity(main)
     }
 
