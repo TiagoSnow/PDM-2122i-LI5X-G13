@@ -13,7 +13,7 @@
     <string name="play">Play</string>
     <string name="back">Back</string>
     <string name="solution">Solution</string>
-    <string name="history">History</string>
+    <string name="history">Puzzle History</string>
     <string name="reset">Reset</string>
 
 </resources>

@@ -58,6 +58,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, GameActivity::class.java))
         }
 
+        binding.multiplayerButton.setOnClickListener {
+            mp.start()
+            val multiplayerGame = Intent(this, GameActivity::class.java)
+            multiplayerGame.putExtra(MULTIPLAYER_EXTRA, "Multiplayer")
+            startActivity(multiplayerGame)
+        }
+
         binding.historyButton.setOnClickListener {
             mp.start()
             startActivity(Intent(this, HistoryActivity::class.java))

@@ -14,6 +14,6 @@
     <string name="play">Jogar</string>
     <string name="back">Voltar</string>
     <string name="solution">Solução</string>
-    <string name="history">História</string>
+    <string name="history">História de Puzzles</string>
     <string name="reset">Reset</string>
 </resources>

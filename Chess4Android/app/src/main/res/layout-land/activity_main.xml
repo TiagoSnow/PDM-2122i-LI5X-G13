@@ -72,6 +72,18 @@
         app:layout_constraintVertical_bias="0.641" />
 
     <Button
+        android:id="@+id/multiplayer_button"
+        android:layout_width="139dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="348dp"
+        android:text="Multiplayer"
+        app:layout_constraintBottom_toTopOf="@+id/puzzleOfDay_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
         android:id="@+id/credits_button"
         android:layout_width="180dp"
         android:layout_height="51dp"

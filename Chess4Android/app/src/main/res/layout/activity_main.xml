@@ -21,31 +21,41 @@
         app:layout_constraintVertical_bias="0.713" />
 
     <Button
-        android:id="@+id/puzzleOfDay_button"
+        android:id="@+id/multiplayer_button"
         android:layout_width="139dp"
         android:layout_height="54dp"
-        android:text="@string/puzzle_of_day"
-        app:layout_constraintBottom_toTopOf="@+id/credits_button"
+        android:layout_marginTop="348dp"
+        android:text="Multiplayer"
+        app:layout_constraintBottom_toTopOf="@+id/puzzleOfDay_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/puzzleOfDay_button"
+        android:layout_width="139dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="428dp"
+        android:text="@string/puzzle_of_day"
+        app:layout_constraintBottom_toTopOf="@+id/history_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/credits_button"
         android:layout_width="139dp"
         android:layout_height="54dp"
         android:text="@string/about"
-        app:layout_constraintBottom_toTopOf="@+id/history_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        tools:layout_editor_absoluteY="647dp" />
 
     <Button
         android:id="@+id/history_button"
         android:layout_width="139dp"
-        android:layout_height="54dp"
+        android:layout_height="60dp"
         android:text="@string/history"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

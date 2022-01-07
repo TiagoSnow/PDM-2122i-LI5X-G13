@@ -9,6 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import pt.isel.pdm.chess4android.model.GameModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
+import pt.isel.pdm.chess4android.views.BoardView
 import java.util.ArrayList
 
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
@@ -67,6 +68,12 @@ class GameActivityViewModel(
     }
 
     var gameModel: GameModel = GameModel()
+
+    fun beginBoard(boardView: BoardView) {
+        gameModel.beginBoard()
+        boardView.updateView(gameModel.board, gameModel.newArmyToPlay, false)
+    }
+
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
     }

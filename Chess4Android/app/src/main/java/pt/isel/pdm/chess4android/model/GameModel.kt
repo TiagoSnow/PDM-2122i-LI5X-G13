@@ -10,7 +10,7 @@ class GameModel() {
 
     lateinit var solutions: ArrayList<Pair<Coord,Coord>>
 
-    private fun beginBoard() {
+    fun beginBoard() {
         //colocar as peças no estado inicial
         fillHalfBoard(0, getArmy(false))
         fillHalfBoard(7, getArmy(true))
