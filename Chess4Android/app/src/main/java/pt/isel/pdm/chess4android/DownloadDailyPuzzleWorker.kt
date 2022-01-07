@@ -30,6 +30,4 @@ class DownloadDailyPuzzleWorker(appContext: Context, workerParams: WorkerParamet
             }
         }
     }
-
-
 }

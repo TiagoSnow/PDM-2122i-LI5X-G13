@@ -178,6 +178,10 @@ class GameModel() {
         return false
     }
 
+    fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
+        return board[col][line]?.searchRoute()
+    }
+
     fun getAvailableOption(col: Int, line: Int): Coord? {
         if(solutions.isEmpty())
             return null

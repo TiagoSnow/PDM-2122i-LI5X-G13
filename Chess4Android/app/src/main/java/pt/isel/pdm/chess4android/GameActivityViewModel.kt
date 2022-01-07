@@ -82,6 +82,10 @@ class GameActivityViewModel(
         return gameModel.getAvailableOption(col, line)
     }
 
+    fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
+        return gameModel.getAllOptions(col, line)
+    }
+
     fun updateSolutions(solution: ArrayList<String>) {
         gameModel.convertSolutions(solution)
     }

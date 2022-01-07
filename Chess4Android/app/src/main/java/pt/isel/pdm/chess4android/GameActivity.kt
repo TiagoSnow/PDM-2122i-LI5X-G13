@@ -29,25 +29,23 @@ class GameActivity : AppCompatActivity() {
     private val viewModel: GameActivityViewModel by viewModels()
 
     var mpM: MediaPlayer? = null
-    var  mp: MediaPlayer? = null
+    var mp: MediaPlayer? = null
     private var isMultiplayer: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if(intent.extras?.get(MULTIPLAYER_EXTRA) != "Multiplayer") {
+        if (intent.extras?.get(MULTIPLAYER_EXTRA) != "Multiplayer") {
             isMultiplayer = false
             viewModel.getAllPuzzleEntity()
 
-            if(intent.extras != null) {
+            if (intent.extras != null) {
                 getPuzzleFromHistory()
-            }
-            else {
+            } else {
                 getPuzzleOfDay()
             }
-        }
-        else {
+        } else {
             isMultiplayer = true
             viewModel.beginBoard(binding.boardView)
 
@@ -100,23 +98,34 @@ class GameActivity : AppCompatActivity() {
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
-            if(!isMultiplayer) {
+            if (!isMultiplayer) {
                 val availableOption = viewModel.getAvailableOption(col, line)
-                if(availableOption != null) {
+                if (availableOption != null) {
                     binding.boardView.paintBoard(availableOption.col, availableOption.line)
                     binding.boardView.updateOptions(availableOption)
-                }
-                else {
+                } else {
                     binding.boardView.resetOptions()
                 }
             } else {
-                //TODO: MOVER CONSUANTE OS SQUARES VÁLIDOS
+                val availableOptions = viewModel.getAllOptions(col, line)
+                if (availableOptions != null) {
+                    for (option in availableOptions) {
+                        if (option != null) {
+                            binding.boardView.paintBoard(option.first.col, option.first.line)
+                            binding.boardView.updateOptions(option.first)
+                        }
+                    }
+                } else {
+                    binding.boardView.resetOptions()
+                }
             }
 
         }
 
         override fun onMovement(prevCoord: Coord?, newCoord: Coord?) {
-            if(viewModel.removeOptionSelected(Pair(prevCoord, newCoord))) {
+            if (isMultiplayer ||
+                !isMultiplayer && viewModel.removeOptionSelected(Pair(prevCoord, newCoord))
+            ) {
                 //atualizar a board
                 viewModel.movePiece(prevCoord, newCoord)
 
@@ -129,7 +138,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         override fun onCheckmate() {
-            if(!isMultiplayer) {
+            if (!isMultiplayer) {
 
                 if (viewModel.gameModel.solutions.size == 0) {
 
@@ -163,8 +172,7 @@ class GameActivity : AppCompatActivity() {
 
                     dialog.show()
                 }
-            }
-            else {
+            } else {
                 //TODO: VER SE É CHECKMATE
             }
         }
