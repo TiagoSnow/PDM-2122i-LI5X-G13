@@ -150,6 +150,8 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
         tiles[prevCol][prevLine]?.piecesType = null
         tiles[newCol][newLine]?.piecesType = Pair(movedPiece!!.army, movedPiece.piece)
+        resetOptions()
+        setOriginalColorToAllOptions()
     }
 
     private fun deselectPreviousPiece() {
@@ -171,8 +173,10 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
     }
 
+    /**
+     * set background color back to normal in all options
+     */
     private fun setOriginalColorToAllOptions() {
-        //set background color back to normal in all options
         for (position in options)
             setOriginalColor(
                 position!!.col,
