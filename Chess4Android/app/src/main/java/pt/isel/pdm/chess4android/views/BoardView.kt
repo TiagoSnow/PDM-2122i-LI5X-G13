@@ -91,7 +91,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                     tile.isAlreadySelected = false
                 } else {
                     if (isTileAnOption(column, row)) {
-                        listener?.onMovement(prevCoord, options[0])
+                        listener?.onMovement(prevCoord, Coord(column, row))
                         options.clear()
                         setPreviousColor()
                     } else {
@@ -107,8 +107,9 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
                         prevCoord?.col = column
                         prevCoord?.line = row
+
+                        listener?.onTileClicked(column, row)
                     }
-                    listener?.onTileClicked(column, row)
                 }
 
                 Log.v("App", "$row : $column")
@@ -135,7 +136,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         }
         return false
     }
-
 
     fun setOnBoardClickedListener(listener: BoardClickListener) {
         this.listener = listener

@@ -9,7 +9,6 @@ import androidx.lifecycle.SavedStateHandle
 import pt.isel.pdm.chess4android.model.GameModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
-import pt.isel.pdm.chess4android.views.BoardView
 import java.util.ArrayList
 
 private const val GAME_ACTIVITY_VIEW_STATE = "GameActivity.ViewState"
@@ -69,21 +68,12 @@ class GameActivityViewModel(
 
     var gameModel: GameModel = GameModel()
 
-    fun beginBoard(boardView: BoardView) {
-        gameModel.beginBoard()
-        boardView.updateView(gameModel.board, gameModel.newArmyToPlay, false)
-    }
-
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
     }
 
-    fun getAvailableOption(col: Int, line: Int): Coord? {
-        return gameModel.getAvailableOption(col, line)
-    }
-
-    fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
-        return gameModel.getAllOptions(col, line)
+    fun getAvailableSolution(col: Int, line: Int): Coord? {
+        return gameModel.getAvailableSolution(col, line)
     }
 
     fun updateSolutions(solution: ArrayList<String>) {
@@ -110,7 +100,7 @@ class GameActivityViewModel(
         return currentPuzzleInfoDTO
     }
 
-    fun removeOptionSelected(pair: Pair<Coord?, Coord?>): Boolean {
-        return gameModel.removeOptionSelected(pair)
+    fun removeSolutionSelected(pair: Pair<Coord?, Coord?>): Boolean {
+        return gameModel.removeSolutionSelected(pair)
     }
 }

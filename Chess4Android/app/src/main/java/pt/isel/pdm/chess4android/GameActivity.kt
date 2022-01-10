@@ -17,8 +17,6 @@ import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.pieces.Coord
 
 private const val PUZZLE_EXTRA = "PreviewPuzzleActivity.Extra.Puzzle"
-const val MULTIPLAYER_EXTRA = "GameActivity.Multiplayer"
-
 
 class GameActivity : AppCompatActivity() {
 
@@ -30,26 +28,19 @@ class GameActivity : AppCompatActivity() {
 
     var mpM: MediaPlayer? = null
     var mp: MediaPlayer? = null
-    private var isMultiplayer: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if (intent.extras?.get(MULTIPLAYER_EXTRA) != "Multiplayer") {
-            isMultiplayer = false
-            viewModel.getAllPuzzleEntity()
+        viewModel.getAllPuzzleEntity()
 
-            if (intent.extras != null) {
-                getPuzzleFromHistory()
-            } else {
-                getPuzzleOfDay()
-            }
+        if (intent.extras != null) {
+            getPuzzleFromHistory()
         } else {
-            isMultiplayer = true
-            viewModel.beginBoard(binding.boardView)
-
+            getPuzzleOfDay()
         }
+
         binding.boardView.setOnBoardClickedListener(listener)
         mpM = MediaPlayer.create(this, R.raw.moving_piece)
 
@@ -98,34 +89,17 @@ class GameActivity : AppCompatActivity() {
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
-            if (!isMultiplayer) {
-                val availableOption = viewModel.getAvailableOption(col, line)
-                if (availableOption != null) {
-                    binding.boardView.paintBoard(availableOption.col, availableOption.line)
-                    binding.boardView.updateOptions(availableOption)
-                } else {
-                    binding.boardView.resetOptions()
-                }
+            val availableSolution = viewModel.getAvailableSolution(col, line)
+            if (availableSolution != null) {
+                binding.boardView.paintBoard(availableSolution.col, availableSolution.line)
+                binding.boardView.updateOptions(availableSolution)
             } else {
-                val availableOptions = viewModel.getAllOptions(col, line)
-                if (availableOptions != null) {
-                    for (option in availableOptions) {
-                        if (option != null) {
-                            binding.boardView.paintBoard(option.first.col, option.first.line)
-                            binding.boardView.updateOptions(option.first)
-                        }
-                    }
-                } else {
-                    binding.boardView.resetOptions()
-                }
+                binding.boardView.resetOptions()
             }
-
         }
 
         override fun onMovement(prevCoord: Coord?, newCoord: Coord?) {
-            if (isMultiplayer ||
-                !isMultiplayer && viewModel.removeOptionSelected(Pair(prevCoord, newCoord))
-            ) {
+            if (viewModel.removeSolutionSelected(Pair(prevCoord, newCoord))) {
                 //atualizar a board
                 viewModel.movePiece(prevCoord, newCoord)
 
@@ -138,42 +112,37 @@ class GameActivity : AppCompatActivity() {
         }
 
         override fun onCheckmate() {
-            if (!isMultiplayer) {
+            if (viewModel.gameModel.solutions.size == 0) {
 
-                if (viewModel.gameModel.solutions.size == 0) {
+                viewModel.updatePuzzleEntity()
 
-                    viewModel.updatePuzzleEntity()
+                //passar para nova activity que mostra a mesnagem a dizer checkmate
+                val dialog = Dialog(this@GameActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.cm_popup)
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                    //passar para nova activity que mostra a mesnagem a dizer checkmate
-                    val dialog = Dialog(this@GameActivity)
-                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                    dialog.setCancelable(false)
-                    dialog.setContentView(R.layout.cm_popup)
-                    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                    val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
-                    mDialogMenu.setOnClickListener { //Toast.makeText(applicationContext, "Cancel", Toast.LENGTH_SHORT).show()
-                        mp!!.start()
-                        startActivity(Intent(this@GameActivity, MainActivity::class.java))
-                        dialog.dismiss()
-                    }
-
-                    val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
-                    mDialogReset.setOnClickListener {
-                        mp!!.start()
-                        startActivity(
-                            buildIntent(
-                                this@GameActivity,
-                                viewModel.getCurrentPuzzleInfoDTO()
-                            )
-                        )
-                        dialog.dismiss()
-                    }
-
-                    dialog.show()
+                val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
+                mDialogMenu.setOnClickListener { //Toast.makeText(applicationContext, "Cancel", Toast.LENGTH_SHORT).show()
+                    mp!!.start()
+                    startActivity(Intent(this@GameActivity, MainActivity::class.java))
+                    dialog.dismiss()
                 }
-            } else {
-                //TODO: VER SE É CHECKMATE
+
+                val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
+                mDialogReset.setOnClickListener {
+                    mp!!.start()
+                    startActivity(
+                        buildIntent(
+                            this@GameActivity,
+                            viewModel.getCurrentPuzzleInfoDTO()
+                        )
+                    )
+                    dialog.dismiss()
+                }
+
+                dialog.show()
             }
         }
     }

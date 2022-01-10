@@ -12,6 +12,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
+import pt.isel.pdm.chess4android.multiplayer.MultiplayerActivity
 import java.util.*
 
 
@@ -60,9 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.multiplayerButton.setOnClickListener {
             mp.start()
-            val multiplayerGame = Intent(this, GameActivity::class.java)
-            multiplayerGame.putExtra(MULTIPLAYER_EXTRA, "Multiplayer")
-            startActivity(multiplayerGame)
+            startActivity(Intent(this, MultiplayerActivity::class.java))
         }
 
         binding.historyButton.setOnClickListener {

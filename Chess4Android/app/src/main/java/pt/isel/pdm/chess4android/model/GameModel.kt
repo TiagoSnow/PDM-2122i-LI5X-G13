@@ -9,7 +9,7 @@ class GameModel() {
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
 
     lateinit var solutions: ArrayList<Pair<Coord,Coord>>
-
+    private var options: MutableList<Pair<Coord, Boolean>?>? = null
     fun beginBoard() {
         //colocar as peças no estado inicial
         fillHalfBoard(0, getArmy(false))
@@ -179,10 +179,11 @@ class GameModel() {
     }
 
     fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
-        return board[col][line]?.searchRoute()
+        options = board[col][line]?.searchRoute()
+        return options
     }
 
-    fun getAvailableOption(col: Int, line: Int): Coord? {
+    fun getAvailableSolution(col: Int, line: Int): Coord? {
         if(solutions.isEmpty())
             return null
 
@@ -195,7 +196,7 @@ class GameModel() {
         return null
     }
 
-    fun removeOptionSelected(pair: Pair<Coord?, Coord?>): Boolean {
+    fun removeSolutionSelected(pair: Pair<Coord?, Coord?>): Boolean {
         return solutions.remove(pair)
     }
 
