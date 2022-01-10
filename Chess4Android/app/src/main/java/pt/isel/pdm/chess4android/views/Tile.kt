@@ -3,13 +3,11 @@ package pt.isel.pdm.chess4android.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.view.MotionEvent
 import android.view.View
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.PiecesType
+import pt.isel.pdm.chess4android.model.Army
+import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.R
 
 /**
@@ -27,7 +25,7 @@ class Tile(
     private val ctx: Context,
     private val type: Army,
     private val tilesPerSide: Int,
-    public val images: Map<Pair<Army, PiecesType>, VectorDrawableCompat?>,
+    val images: Map<Pair<Army, PiecesType>, VectorDrawableCompat?>,
     initialPiecesType: Pair<Army, PiecesType>? = null,
 ) : View(ctx) {
 

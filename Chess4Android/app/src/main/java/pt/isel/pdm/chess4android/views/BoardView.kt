@@ -1,7 +1,6 @@
 package pt.isel.pdm.chess4android.views
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -11,7 +10,9 @@ import android.util.Log
 import android.widget.GridLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import pt.isel.pdm.chess4android.*
+import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.GameModel
+import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 
@@ -64,9 +65,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     var listener: BoardClickListener?
 
     init {
-
         listener = null
-
         rowCount = side
         columnCount = side
         repeat(side * side) {
@@ -155,7 +154,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     }
 
     private fun deselectPreviousPiece() {
-
         //remover a seleção da peça antiga
         setOriginalColor(
             prevCoord!!.line,
@@ -165,13 +163,13 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         tiles[prevCoord!!.col][prevCoord!!.line]?.isAlreadySelected = false
     }
 
-    private fun invertArmy(): Army {
+    /*private fun invertArmy(): Army {
         return if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
             Army.WHITE
         }
-    }
+    }*/
 
     /**
      * set background color back to normal in all options
@@ -203,7 +201,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
         return piece.searchRoute()
     }
 
-    fun changeBackgroundColor(tile: Tile, color: Int) {
+    private fun changeBackgroundColor(tile: Tile, color: Int) {
         tile.setBackgroundColor(color)
         tile.brush.color = color
     }

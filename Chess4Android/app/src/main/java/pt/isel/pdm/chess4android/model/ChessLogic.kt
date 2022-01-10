@@ -1,6 +1,5 @@
 package pt.isel.pdm.chess4android.model
 
-import pt.isel.pdm.chess4android.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.King
 import pt.isel.pdm.chess4android.pieces.Piece

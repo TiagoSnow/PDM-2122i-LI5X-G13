@@ -3,7 +3,7 @@ package pt.isel.pdm.chess4android.multiplayer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import pt.isel.pdm.chess4android.model.GameModel
+import pt.isel.pdm.chess4android.model.MultiplayerModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.chess4android.views.BoardView
@@ -12,7 +12,7 @@ class MultiplayerActivityViewModel(application: Application,
 private val state: SavedStateHandle
 ) : AndroidViewModel(application) {
 
-    var gameModel: GameModel = GameModel()
+    var gameModel: MultiplayerModel = MultiplayerModel()
 
     fun beginBoard(boardView: BoardView) {
         gameModel.beginBoard()
@@ -20,7 +20,7 @@ private val state: SavedStateHandle
     }
 
     fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
-        return gameModel.getAllOptions(col, line)
+        return gameModel.getMoveOptions(col, line)
     }
 
     fun movePiece(prevCoord: Coord?, newCoord: Coord?) {

@@ -1,4 +1,4 @@
-package pt.isel.pdm.chess4android
+package pt.isel.pdm.chess4android.model
 
 enum class Army { WHITE, BLACK }
 enum class PiecesType {

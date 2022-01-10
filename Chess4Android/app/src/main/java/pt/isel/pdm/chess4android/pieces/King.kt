@@ -1,7 +1,7 @@
 package pt.isel.pdm.chess4android.pieces
 
-import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.PiecesType
+import pt.isel.pdm.chess4android.model.Army
+import pt.isel.pdm.chess4android.model.PiecesType
 
 enum class KingDir(val x: Int, val y: Int) {
     UP(0, -1),

@@ -47,12 +47,10 @@ class GameActivity : AppCompatActivity() {
         mp = MediaPlayer.create(this, R.raw.button_pressed)
         val btPermMenu: Button = findViewById(R.id.btPermMenu)
 
-        btPermMenu.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                mp!!.start()
-                startActivity(Intent(this@GameActivity, MainActivity::class.java))
-            }
-        })
+        btPermMenu.setOnClickListener {
+            mp!!.start()
+            startActivity(Intent(this@GameActivity, MainActivity::class.java))
+        }
     }
 
     private fun getPuzzleFromHistory() {
@@ -70,7 +68,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun updateModel(puzzle: PuzzleInfoDTO) {
         viewModel.setCurrentPuzzleInfoDTO(puzzle)
-        viewModel.updateBoard(puzzle.game.pgn.replace("+", ""))
+        viewModel.updateBoard(puzzle.game.pgn)
         binding.boardView.updateView(
             viewModel.gameModel.board,
             viewModel.gameModel.newArmyToPlay,

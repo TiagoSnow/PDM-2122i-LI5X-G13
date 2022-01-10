@@ -1,7 +1,7 @@
 package pt.isel.pdm.chess4android.pieces
 
-import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.PiecesType
+import pt.isel.pdm.chess4android.model.Army
+import pt.isel.pdm.chess4android.model.PiecesType
 
 class Pawn(
     override val army: Army,
@@ -32,14 +32,15 @@ class Pawn(
             line = 8 - move[1].digitToInt()
             if ((line == 3) && army == Army.BLACK ||
                 (line == 4) && army == Army.WHITE
-            ) when {
-                //mais clean?
-                checkIfPieceExists(col, 1, army, piece) -> startingPoint = 1
-                checkIfPieceExists(col, 2, army, piece) -> startingPoint = 2
-                checkIfPieceExists(col, 5, army, piece) -> startingPoint = 5
-                checkIfPieceExists(col, 6, army, piece) -> startingPoint = 6
-            } else
-                startingPoint = if (army == Army.WHITE) line + 1 else line - 1
+            )
+                startingPoint = when {
+                    checkIfPieceExists(col, 1, army, piece) -> 1
+                    checkIfPieceExists(col, 2, army, piece) -> 2
+                    checkIfPieceExists(col, 5, army, piece) -> 5
+                    checkIfPieceExists(col, 6, army, piece) -> 6
+                    army == Army.WHITE -> line + 1
+                    else -> line - 1
+                }
             removePiece(col, startingPoint)
         }
         putPiece(col, line, this)

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import pt.isel.pdm.chess4android.model.GameModel
+import pt.isel.pdm.chess4android.model.PuzzleModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import java.util.ArrayList
@@ -66,11 +67,11 @@ class GameActivityViewModel(
         Log.v(APP_TAG, "Thread ${Thread.currentThread().name}: Returned from fetchQuoteOfDay")
     }
 
-    var gameModel: GameModel = GameModel()
+    var gameModel: PuzzleModel = PuzzleModel()
 
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)
-    }
+}
 
     fun getAvailableSolution(col: Int, line: Int): Coord? {
         return gameModel.getAvailableSolution(col, line)

@@ -1,7 +1,7 @@
 package pt.isel.pdm.chess4android.pieces
 
-import pt.isel.pdm.chess4android.Army
-import pt.isel.pdm.chess4android.PiecesType
+import pt.isel.pdm.chess4android.model.Army
+import pt.isel.pdm.chess4android.model.PiecesType
 
 class Rook(
     override var army: Army,
