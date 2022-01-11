@@ -7,7 +7,6 @@ open class GameModel() {
     var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
     var isChecking : Boolean = false
-
     lateinit var solutions: ArrayList<Pair<Coord, Coord>>
     private var options: MutableList<Pair<Coord, Boolean>?>? = null
 

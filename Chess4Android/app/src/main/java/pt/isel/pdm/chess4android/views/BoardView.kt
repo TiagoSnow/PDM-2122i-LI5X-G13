@@ -34,7 +34,6 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
     private var prevCoord: Coord? = null
     private var newArmyToPlay: Army = Army.WHITE
     private var checkPair: Pair<Coord, Coord>? = null
-
     private val brush = Paint().apply {
         ctx.resources.getColor(R.color.chess_board_black, null)
         style = Paint.Style.STROKE
@@ -242,6 +241,11 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
     fun resetOptions() {
         options.clear()
+    }
+
+    fun updateCheckView() {
+        //TODO: Get Last Piece
+        changeBackgroundColor(tiles[1][1]!!/*tiles[col][line]!!*/, Color.RED)
     }
 
     companion object {

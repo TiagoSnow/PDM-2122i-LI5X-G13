@@ -57,9 +57,7 @@ class King(
 
         val allOptionsKing = getAllAvailableOptions()
 
-        val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
-
-        return interceptionList.toMutableList()
+        return getAllAvailableOptionsFromEnemy(allOptionsKing)
 
     }
 
@@ -94,9 +92,9 @@ class King(
                 )
     }
 
-    private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableSet<Pair<Coord, Boolean>?> {
+    private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         var listAux: MutableList<Pair<Coord, Boolean>?>
-        var list = mutableSetOf<Pair<Coord, Boolean>?>()
+        var list = mutableListOf<Pair<Coord, Boolean>?>()
         for (col in 0..7) {
             for (line in 0..7) {
                 val curr = board[col][line]
@@ -107,24 +105,14 @@ class King(
                         curr.searchRoute()
                     }
                     if (listAux.size != 0) {
-                        list = updateList(interception(allOptionsKing, listAux), list)
+
+                        list = interception(allOptionsKing, listAux)
                     }
                 }
 
             }
         }
         return list
-    }
-
-    private fun updateList(
-        interceptionList: MutableList<Pair<Coord, Boolean>?>,
-        listAux: MutableSet<Pair<Coord, Boolean>?>
-    ): MutableSet<Pair<Coord, Boolean>?> {
-        //first Time
-        if (listAux.size == 0 && interceptionList.size < listAux.size) {
-            return interceptionList.toMutableSet()
-        }
-        return listAux
     }
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {

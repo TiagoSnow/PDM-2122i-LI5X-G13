@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.Window
 import android.widget.Button
 import androidx.activity.viewModels
@@ -74,6 +73,8 @@ class GameActivity : AppCompatActivity() {
             viewModel.gameModel.newArmyToPlay,
             false
         )
+        if(viewModel.getIsChecking())
+        binding.boardView.updateCheckView()
         viewModel.updateSolutions(puzzle.puzzle.solution)
     }
 
@@ -105,11 +106,11 @@ class GameActivity : AppCompatActivity() {
                 //atualizar a view
                 binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
-                onCheckmate()
+                onCheckmate(newCoord)
             }
         }
 
-        override fun onCheckmate() {
+        override fun onCheckmate(newCoord: Coord?) {
             if (viewModel.gameModel.solutions.size == 0) {
 
                 viewModel.updatePuzzleEntity()

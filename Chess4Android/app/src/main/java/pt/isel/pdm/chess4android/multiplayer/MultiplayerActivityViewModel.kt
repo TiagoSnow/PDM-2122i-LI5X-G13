@@ -3,6 +3,7 @@ package pt.isel.pdm.chess4android.multiplayer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.MultiplayerModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
@@ -27,7 +28,19 @@ private val state: SavedStateHandle
         gameModel.movePiece(prevCoord, newCoord)
     }
 
-    fun getPiece(newCoord: Coord?): Piece? {
-        return gameModel.getPiece(newCoord!!.col, newCoord.line)
+    fun getPiece(newCoord: Coord?): Piece {
+        return gameModel.getPiece(newCoord!!.col, newCoord.line)!!
+    }
+
+    fun getNextArmyToPlay(): Army {
+        return gameModel.newArmyToPlay
+    }
+
+    fun currPieceArmy(col: Int, line: Int): Army {
+        return getPiece(Coord(col, line))!!.army
+    }
+
+    fun switchArmy() {
+        gameModel.switchArmy()
     }
 }

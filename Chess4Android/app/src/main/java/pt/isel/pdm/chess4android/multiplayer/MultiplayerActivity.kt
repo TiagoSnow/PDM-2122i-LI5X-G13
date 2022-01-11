@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import pt.isel.pdm.chess4android.BoardClickListener
-import pt.isel.pdm.chess4android.GameActivityViewModel
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.pieces.Coord
 
@@ -27,16 +26,18 @@ class MultiplayerActivity : AppCompatActivity() {
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
-            val availableOptions = viewModel.getAllOptions(col, line)
-            if (availableOptions != null) {
-                for (option in availableOptions) {
-                    if (option != null) {
-                        binding.boardView.paintBoard(option.first.col, option.first.line)
-                        binding.boardView.updateOptions(option.first)
+            if(viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)) {
+                val availableOptions = viewModel.getAllOptions(col, line)
+                if (availableOptions != null) {
+                    for (option in availableOptions) {
+                        if (option != null) {
+                            binding.boardView.paintBoard(option.first.col, option.first.line)
+                            binding.boardView.updateOptions(option.first)
+                        }
                     }
+                } else {
+                    binding.boardView.resetOptions()
                 }
-            } else {
-                binding.boardView.resetOptions()
             }
         }
 
@@ -48,7 +49,9 @@ class MultiplayerActivity : AppCompatActivity() {
             //atualizar a view
             binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
-            onCheckmate()
+            viewModel.switchArmy()
+
+            onCheckmate(newCoord)
             /*if (viewModel.removeOptionSelected(Pair(prevCoord, newCoord))) {
                 //atualizar a board
                 viewModel.movePiece(prevCoord, newCoord)
@@ -61,8 +64,18 @@ class MultiplayerActivity : AppCompatActivity() {
             }*/
         }
 
-        override fun onCheckmate() {
+        override fun onCheckmate(currCoord: Coord?) {
             //TODO: VER SE É CHECKMATE
+
+            var piece = viewModel.getPiece(currCoord)
+            var list = piece.searchRoute()
+
+            for(option in list) {
+                if(optionIsKing()){
+                    viewModel.gameModel.isChecking = true
+                }
+            }
+
             /*
             chamar check()
             se tiver em check -> ver se estou em posição de checkMate
