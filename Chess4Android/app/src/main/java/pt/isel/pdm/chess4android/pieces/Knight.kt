@@ -70,8 +70,9 @@ class Knight(
         line = startPositions.second
         this.colDest = colDest
         this.lineDest = lineDest
-        /*removePiece(startPositions.first, startPositions.second)
-        putPiece(colDest, lineDest, this)*/
+      //  updateBoard()
+        removePiece(startPositions.first, startPositions.second)
+        putPiece(colDest, lineDest, this)
     }
 
     private fun getPrevLine(colPrev: Int, colNext: Int, lineNext: Int, army: Army): Int {

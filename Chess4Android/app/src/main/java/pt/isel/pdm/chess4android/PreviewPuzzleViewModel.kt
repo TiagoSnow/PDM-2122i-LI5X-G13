@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import pt.isel.pdm.chess4android.model.GameModel
+import pt.isel.pdm.chess4android.model.PuzzleModel
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import java.util.ArrayList
@@ -19,7 +20,7 @@ class PreviewPuzzleViewModel(
 ) : AndroidViewModel(application) {
 
     var showingSolution: Boolean = false
-    var gameModel: GameModel = GameModel()
+    var gameModel: PuzzleModel = PuzzleModel()
 
     fun updateBoard(pgn: String) {
         gameModel.placePieces(pgn)

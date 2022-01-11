@@ -2,71 +2,38 @@ package pt.isel.pdm.chess4android.model
 
 import pt.isel.pdm.chess4android.pieces.*
 
-class PuzzleModel () : GameModel(){
+class PuzzleModel() : GameModel() {
 
     fun placePieces(pgn: String) {
         beginBoard()
         var armyFlag = true
         val lst: List<String> = pgn.split(" ")
+        var piece: Piece
         for (move: String in lst) {
             isChecking = '+' in move
             val army = getArmy(armyFlag)
             when (move.replace("+", "")[0]) {
-                'R' -> {
-                    val rook = Rook(
-                        army,
-                        board,
-                        0,
-                        0
-                    )      //this coordinates is only to initialize the object. Coordinates will be updated at the end of the function
-                    rook.movePGN(move)
-                    lastPGNMoveCol = rook.col
-                    lastPGNMoveLine = rook.line
-                }
-                'B' -> {
-                    val bishop = Bishop(army, board, 0, 0)
-                    bishop.movePGN(move)
-                    lastPGNMoveCol = bishop.col
-                    lastPGNMoveLine = bishop.line
-                }
-                'Q' -> {
-                    val queen = Queen(army, board, 0, 0)
-                    queen.movePGN(move)
-                    lastPGNMoveCol = queen.col
-                    lastPGNMoveLine = queen.line
-                }
-                'N' -> {
-                    val knight = Knight(army, board, -1, -1)
-                    knight.movePGN(move)
-                    updateCheckingPiece(knight)
-                    newArmyToPlay = getArmy(!armyFlag)
-                    if (stopPieceFromMoving(knight)) {
-                        //  knight.movePGN(move)
-                    }
-                    knight.updateBoard()
-                    newArmyToPlay = getArmy(!armyFlag)
-                    lastPGNMoveCol = knight.col
-                    lastPGNMoveLine = knight.line
-                }
-                'K' -> {
-                    val king = King(army, board, 0, 0)
-                    king.movePGN(move)
-                    lastPGNMoveCol = king.col
-                    lastPGNMoveLine = king.line
-                }
+                'R' -> piece = Rook(army, board, 0, 0)
+
+                'B' -> piece = Bishop(army, board, 0, 0)
+
+                'Q' -> piece = Queen(army, board, 0, 0)
+
+                'N' -> piece = Knight(army, board, 0, 0)
+
+                'K' -> piece = King(army, board, 0, 0)
+
                 'O' -> {
-                    if (move.length == 5)
-                        castlingLeft(armyFlag)
-                    else
-                        castlingRight(armyFlag)
+                    if (move.length == 5) castlingLeft(armyFlag)
+                    else castlingRight(armyFlag)
+                    armyFlag = !armyFlag
+                    newArmyToPlay = getArmy(armyFlag)
+                    return
                 }
-                else -> {
-                    val pawn = Pawn(army, board, 0, 0)
-                    pawn.movePGN(move)
-                    lastPGNMoveCol = pawn.col
-                    lastPGNMoveLine = pawn.line
-                }
+                else -> piece = Pawn(army, board, 0, 0)
+
             }
+            piece.movePGN(move)
             armyFlag = !armyFlag
         }
         newArmyToPlay = getArmy(armyFlag)
