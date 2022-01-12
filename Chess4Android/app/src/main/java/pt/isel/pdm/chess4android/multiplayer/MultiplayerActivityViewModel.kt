@@ -61,4 +61,8 @@ class MultiplayerActivityViewModel(
     fun getBoard(): Array<Array<Piece?>> {
         return gameModel.board
     }
+
+    fun doubleCheck() {
+        gameModel.doubleCheck()
+    }
 }
