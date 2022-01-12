@@ -106,11 +106,11 @@ class GameActivity : AppCompatActivity() {
                 //atualizar a view
                 binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
-                onCheckmate(newCoord)
+                onCheck(newCoord)
             }
         }
 
-        override fun onCheckmate(newCoord: Coord?) {
+        override fun onCheck(newCoord: Coord?) {
             if (viewModel.gameModel.solutions.size == 0) {
 
                 viewModel.updatePuzzleEntity()

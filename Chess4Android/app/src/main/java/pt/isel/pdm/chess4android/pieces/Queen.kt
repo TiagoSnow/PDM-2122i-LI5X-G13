@@ -103,6 +103,16 @@ class Queen(
             )
             else {
                 list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+                if (col + colDirection + colDir in 0..7 && line + lineDirection + lineDir in 0..7 && board[col + colDirection][line + lineDirection]?.piece == PiecesType.KING)
+                    list.add(
+                        Pair(
+                            Coord(
+                                col + colDirection + colDir,
+                                line + lineDirection + lineDir
+                            ), false
+                        )
+                    )
+
                 break
             }
             colDirection += colDir
@@ -112,7 +122,8 @@ class Queen(
     }
 
     private fun searchRouteLine(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        val array = mutableListOf<Pair<Coord, Boolean>?>()
+        var array = mutableListOf<Pair<Coord, Boolean>?>()
+
         if (line > direction) {     //up
             for (lineAux in (line - 1) downTo direction) {
                 val position = board[col][lineAux]
@@ -125,6 +136,8 @@ class Queen(
                         break
                     else {
                         array.add(Pair(Coord(col, lineAux), true))
+                        if (lineAux-1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(col, lineAux-1), true))
                         break
                     }
                 }
@@ -141,6 +154,9 @@ class Queen(
                         break
                     else {
                         array.add(Pair(Coord(col, lineAux), true))
+                        if (lineAux+1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(col, lineAux+1), true))
+
                         break
                     }
                 }
@@ -150,7 +166,7 @@ class Queen(
     }
 
     private fun searchRouteColumn(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        val array = mutableListOf<Pair<Coord, Boolean>?>()
+        var array = mutableListOf<Pair<Coord, Boolean>?>()
 
         if (col > direction) {     //left
             for (colAux in (col - 1) downTo 0) {
@@ -163,6 +179,9 @@ class Queen(
                         break
                     else {
                         array.add(Pair(Coord(colAux, line), true))
+                        if (colAux-1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(colAux-1, line), true))
+
                         break
                     }
                 }
@@ -178,6 +197,8 @@ class Queen(
                         break
                     else {
                         array.add(Pair(Coord(colAux, line), true))
+                        if (colAux+1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(colAux+1, line), true))
                         break
                     }
                 }

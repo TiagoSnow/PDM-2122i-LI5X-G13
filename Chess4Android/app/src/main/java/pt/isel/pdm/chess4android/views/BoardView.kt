@@ -245,7 +245,7 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
 
     fun updateCheckView() {
         //TODO: Get Last Piece
-        changeBackgroundColor(tiles[1][1]!!/*tiles[col][line]!!*/, Color.RED)
+       // changeBackgroundColor(tiles[1][1]!!/*tiles[col][line]!!*/, Color.RED)
     }
 
     companion object {

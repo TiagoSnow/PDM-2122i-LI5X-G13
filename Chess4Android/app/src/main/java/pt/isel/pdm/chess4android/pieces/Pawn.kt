@@ -115,10 +115,10 @@ class Pawn(
         if (col !in 0..7 || line !in 0..7) {
             return null
         }
-        if (board[col][line] == null) {
+        //if (board[col][line] == null) {
             return Pair(Coord(col, line), false)
-        }
-        return null
+      //  }
+      //  return null
     }
 
 }

@@ -80,6 +80,9 @@ class Bishop(
             )
             else {
                 list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
+                if (col + colDirection+colDir  in 0..7 && line + lineDirection+ lineDir in 0..7 && board[col + colDirection][line + lineDirection]?.piece == PiecesType.KING)
+                    list.add(Pair(Coord(col + colDirection+colDir , line + lineDirection+ lineDir), false))
+
                 break
             }
             colDirection += colDir

@@ -35,4 +35,5 @@ abstract class Piece {
 
     abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>
 
+
 }

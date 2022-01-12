@@ -76,7 +76,6 @@ class MultiplayerActivity : AppCompatActivity() {
                 if (viewModel.isChecking(option)) {
                     viewModel.gameModel.signalCheck(piece, option)
                     break
-
                 }
         }
     }

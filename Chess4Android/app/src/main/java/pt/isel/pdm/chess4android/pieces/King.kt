@@ -23,7 +23,7 @@ class King(
 ) : Piece() {
 
     override var piece = PiecesType.KING
-
+    var pieceChecking: Piece? = null
     override fun movePGN(move: String) {
         val col: Int
         val line: Int
@@ -57,31 +57,12 @@ class King(
 
         val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
 
-        return interceptionList.toMutableList()
+        if (pieceChecking != null)
+            return stopCheckAsKing(interceptionList)
 
+        return interceptionList
     }
 
-    private fun interception(
-        allOptionsKing: MutableList<Pair<Coord, Boolean>?>,
-        allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
-    ): MutableList<Pair<Coord, Boolean>?> {
-        //
-        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
-        for (option in allOptionsKing) {
-            for (enemyOptions in allEnemyOptions) {
-                if (pairIsEqual(option, enemyOptions)) {
-                    listAux.add(option)
-                    break
-                }
-            }
-        }
-        if (listAux.size != 0) {
-            for (pair in listAux) {
-                allOptionsKing.remove(pair)
-            }
-        }
-        return allOptionsKing
-    }
 
     private fun pairIsEqual(
         kingOption: Pair<Coord, Boolean>?,
@@ -106,10 +87,33 @@ class King(
                     }
                     if (listAux.size != 0)
                         list = interception(allOptionsKing, listAux)
+
                 }
             }
         }
         return list
+    }
+
+    private fun interception(
+        allOptionsKing: MutableList<Pair<Coord, Boolean>?>,
+        allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
+        //
+        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
+        for (option in allOptionsKing) {
+            for (enemyOptions in allEnemyOptions) {
+                if (pairIsEqual(option, enemyOptions)) {
+                    listAux.add(option)
+                    break
+                }
+            }
+        }
+        if (listAux.size != 0) {
+            for (pair in listAux) {
+                allOptionsKing.remove(pair)
+            }
+        }
+        return allOptionsKing
     }
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
@@ -135,8 +139,35 @@ class King(
             return null
         }
         if (board[col][line]?.army != army) {
-            return if (board[col][line] == null) Pair(Coord(col, line), false) else Pair(Coord(col, line), true)
+            return if (board[col][line] == null) Pair(Coord(col, line), false) else Pair(
+                Coord(
+                    col,
+                    line
+                ), true
+            )
         }
         return null
+    }
+
+    private fun canEatCheckingPiece(route: Pair<Coord, Boolean>): Boolean {
+        val a = mutableListOf<Pair<Coord, Boolean>?>()
+        a.add(route)
+        return getAllAvailableOptionsFromEnemy(a).isEmpty()
+    }
+
+    private fun stopCheckAsKing(routes: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
+        for (route in routes) {
+            if (route!!.first.col == pieceChecking?.col && route.first.line == pieceChecking?.line) {
+                if (!canEatCheckingPiece(route))
+                    routes.remove(route)
+                break
+            }
+        }
+        pieceChecking = null
+        return routes
+    }
+
+    fun signalCheck(pieceChecking: Piece) {
+        this.pieceChecking = pieceChecking
     }
 }

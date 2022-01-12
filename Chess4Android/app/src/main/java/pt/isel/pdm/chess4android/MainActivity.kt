@@ -15,6 +15,11 @@ import android.util.DisplayMetrics
 import pt.isel.pdm.chess4android.multiplayer.MultiplayerActivity
 import java.util.*
 
+/*@TODO
+    ADD CASTLING TO ROUTE
+    IMPROVE QUEEN MOVEMENT (SAME AS ROOK AND BISHOP)
+ */
+
 
 const val FLAG: String = "Idiom_flag"
 

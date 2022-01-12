@@ -155,6 +155,8 @@ class Rook(
                         break
                     else {
                         array.add(Pair(Coord(col, lineAux), true))
+                        if (lineAux-1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(col, lineAux-1), true))
                         break
                     }
                 }
@@ -171,6 +173,9 @@ class Rook(
                         break
                     else {
                         array.add(Pair(Coord(col, lineAux), true))
+                        if (lineAux+1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(col, lineAux+1), true))
+
                         break
                     }
                 }
@@ -193,6 +198,9 @@ class Rook(
                         break
                     else {
                         array.add(Pair(Coord(colAux, line), true))
+                        if (colAux-1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(colAux-1, line), true))
+
                         break
                     }
                 }
@@ -208,6 +216,9 @@ class Rook(
                         break
                     else {
                         array.add(Pair(Coord(colAux, line), true))
+                        if (colAux+1>=0 && position.piece == PiecesType.KING)
+                            array.add(Pair(Coord(colAux+1, line), true))
+
                         break
                     }
                 }
