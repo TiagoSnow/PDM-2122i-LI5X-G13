@@ -79,30 +79,6 @@ open class GameModel() {
         return board[column][row]
     }
 
-    fun stopPieceFromMoving(piece: Piece): Boolean {
-        //true -> não se pode mexer
-        //false -> pode-se mexer
-        for (col in 0..7) {
-            for (line in 0..7) {
-                if (board[col][line]?.army == newArmyToPlay && board[col][line] != pieceChecking) {
-                    board[piece.col][piece.line] = null
-                    val path = board[col][line]?.searchRoute()
-                    if (path != null) {
-                        for (option in path) {
-                            if (board[option!!.first.col][option.first.line] is King) {
-                                board[piece.col][piece.line] = piece
-                                return true
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        board[piece.col][piece.line] = piece
-        return false
-    }
-
-
     fun movePiece(prevCoord: Coord?, newCoord: Coord?) {
         val prevCol = prevCoord!!.col
         val prevLine = prevCoord.line
@@ -191,11 +167,11 @@ open class GameModel() {
     }
 
 
-    protected fun getKing(): Piece? {
+    protected fun getKing(): King? {
         for (line in board)
             for (elem in line)
                 if (elem != null && elem.piece == PiecesType.KING && elem.army == newArmyToPlay)
-                    return elem
+                    return elem as King
         return null
     }
 

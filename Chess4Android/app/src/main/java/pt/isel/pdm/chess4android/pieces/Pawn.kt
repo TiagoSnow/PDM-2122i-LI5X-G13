@@ -24,7 +24,6 @@ class Pawn(
             return
         }
 
-
         else if (move.length == 4) {
             col = move[2] - 'a'
             line = 8 - move[3].digitToInt()

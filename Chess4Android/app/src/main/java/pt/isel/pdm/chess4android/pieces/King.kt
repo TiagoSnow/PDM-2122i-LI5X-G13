@@ -163,11 +163,14 @@ class King(
                 break
             }
         }
-        pieceChecking = null
         return routes
     }
 
     fun signalCheck(pieceChecking: Piece) {
         this.pieceChecking = pieceChecking
+    }
+
+    fun removeSignalCheck() {
+        this.pieceChecking = null
     }
 }
