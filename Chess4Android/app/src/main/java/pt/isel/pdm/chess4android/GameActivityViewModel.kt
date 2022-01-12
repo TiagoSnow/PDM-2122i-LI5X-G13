@@ -105,7 +105,4 @@ class GameActivityViewModel(
         return gameModel.removeSolutionSelected(pair)
     }
 
-    fun getIsChecking(): Boolean {
-        return gameModel.isChecking
-    }
 }

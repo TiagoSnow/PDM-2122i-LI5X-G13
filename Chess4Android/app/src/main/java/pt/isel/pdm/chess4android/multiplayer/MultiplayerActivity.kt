@@ -25,8 +25,11 @@ class MultiplayerActivity : AppCompatActivity() {
 
 
     private var listener: BoardClickListener = object : BoardClickListener {
+        //TODO FIX BUG: Clicar em peça, clicar em sitio que não é route e depois clicar em sitio de route crasha
         override fun onTileClicked(col: Int, line: Int) {
-            if(viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)) {
+            if (viewModel.gameModel.board[col][line] != null &&
+                viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)
+            ) {
                 val availableOptions = viewModel.getAllOptions(col, line)
                 if (availableOptions != null) {
                     for (option in availableOptions) {
@@ -48,10 +51,10 @@ class MultiplayerActivity : AppCompatActivity() {
             //mpM!!.start()
             //atualizar a view
             binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
-
+            onCheck(newCoord)
             viewModel.switchArmy()
 
-            onCheckmate(newCoord)
+
             /*if (viewModel.removeOptionSelected(Pair(prevCoord, newCoord))) {
                 //atualizar a board
                 viewModel.movePiece(prevCoord, newCoord)
@@ -64,22 +67,17 @@ class MultiplayerActivity : AppCompatActivity() {
             }*/
         }
 
-        override fun onCheckmate(currCoord: Coord?) {
-            //TODO: VER SE É CHECKMATE
+        override fun onCheck(newCoord: Coord?) {
+            viewModel.gameModel.removeSignalCheck()
+            val piece = viewModel.getPiece(newCoord)
+            val list = piece.searchRoute()
 
-            var piece = viewModel.getPiece(currCoord)
-            var list = piece.searchRoute()
+            for (option in list)
+                if (viewModel.isChecking(option)) {
+                    viewModel.gameModel.signalCheck(piece, option)
+                    break
 
-            for(option in list) {
-                if(optionIsKing()){
-                    viewModel.gameModel.isChecking = true
                 }
-            }
-
-            /*
-            chamar check()
-            se tiver em check -> ver se estou em posição de checkMate
-             */
         }
     }
 }

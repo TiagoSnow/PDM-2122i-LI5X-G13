@@ -3,12 +3,15 @@ package pt.isel.pdm.chess4android.model
 import pt.isel.pdm.chess4android.pieces.*
 
 open class GameModel() {
-    private var pieceChecking: Piece? = null
     var newArmyToPlay: Army = Army.WHITE
     var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
-    var isChecking : Boolean = false
+
+    //var isChecking: Boolean = false // to delete?
     lateinit var solutions: ArrayList<Pair<Coord, Coord>>
-    private var options: MutableList<Pair<Coord, Boolean>?>? = null
+
+    //private var options: MutableList<Pair<Coord, Boolean>?>? = null
+    protected var checkPath: Pair<Coord, Boolean>? = null
+    protected var pieceChecking: Piece? = null
 
     fun beginBoard() {
         //colocar as peças no estado inicial
@@ -87,7 +90,7 @@ open class GameModel() {
             for (line in 0..7) {
                 if (board[col][line]?.army == newArmyToPlay && board[col][line] != pieceChecking) {
                     board[piece.col][piece.line] = null
-                    var path = board[col][line]?.searchRoute()
+                    val path = board[col][line]?.searchRoute()
                     if (path != null) {
                         for (option in path) {
                             if (board[option!!.first.col][option.first.line] is King) {
@@ -103,9 +106,6 @@ open class GameModel() {
         return false
     }
 
-    fun getMoveOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
-        return board[col][line]?.searchRoute()
-    }
 
     fun movePiece(prevCoord: Coord?, newCoord: Coord?) {
         val prevCol = prevCoord!!.col
@@ -122,5 +122,41 @@ open class GameModel() {
         //Atualizar model
         board[newCol][newLine] = movedPiece
         board[prevCol][prevLine] = null
+    }
+
+    fun isChecking(option: Pair<Coord, Boolean>?): Boolean {
+        return board[option!!.first.col][option.first.line]?.piece == PiecesType.KING
+    }
+
+    protected fun isCheckDiagonal(pieceChecking: Piece, king: Piece): Boolean {
+        return pieceChecking.col != checkPath!!.first.col && pieceChecking.line != checkPath!!.first.line
+    }
+
+    protected fun getDiagonalBlockOptions(
+        king: Piece,
+        routes: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>> {
+        val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>>()
+        val xInc = if (pieceChecking?.col!! < king.col) 1 else -1
+        val yInc = if (pieceChecking?.line!! < king.line) 1 else -1
+        var x = pieceChecking!!.col
+        var y = pieceChecking!!.line
+        while (x != king.col && y != king.line) {
+            routes.forEach { route ->
+                if (route != null && route.first.col == x && route.first.line == y)
+                    blockCheckRoutes.add(route)
+            }
+            x += xInc
+            y += yInc
+        }
+        return blockCheckRoutes
+    }
+
+    protected fun getKing(): Piece? {
+        for (line in board)
+            for (elem in line)
+                if (elem != null && elem.piece == PiecesType.KING && elem.army == newArmyToPlay)
+                    return elem
+        return null
     }
 }

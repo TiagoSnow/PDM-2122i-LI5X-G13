@@ -9,8 +9,9 @@ import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.chess4android.views.BoardView
 
-class MultiplayerActivityViewModel(application: Application,
-private val state: SavedStateHandle
+class MultiplayerActivityViewModel(
+    application: Application,
+    private val state: SavedStateHandle
 ) : AndroidViewModel(application) {
 
     var gameModel: MultiplayerModel = MultiplayerModel()
@@ -42,5 +43,9 @@ private val state: SavedStateHandle
 
     fun switchArmy() {
         gameModel.switchArmy()
+    }
+
+    fun isChecking(option: Pair<Coord, Boolean>?): Boolean {
+        return gameModel.isChecking(option)
     }
 }

@@ -10,7 +10,7 @@ class PuzzleModel() : GameModel() {
         val lst: List<String> = pgn.split(" ")
         var piece: Piece
         for (move: String in lst) {
-            isChecking = '+' in move
+            //isChecking = '+' in move
             val army = getArmy(armyFlag)
             when (move.replace("+", "")[0]) {
                 'R' -> piece = Rook(army, board, 0, 0)
@@ -28,10 +28,9 @@ class PuzzleModel() : GameModel() {
                     else castlingRight(armyFlag)
                     armyFlag = !armyFlag
                     newArmyToPlay = getArmy(armyFlag)
-                    return
+                    continue
                 }
                 else -> piece = Pawn(army, board, 0, 0)
-
             }
             piece.movePGN(move)
             armyFlag = !armyFlag

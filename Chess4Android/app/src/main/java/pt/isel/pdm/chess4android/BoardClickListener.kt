@@ -7,5 +7,5 @@ interface BoardClickListener {
     fun onTileClicked(col: Int, line:Int)
 
     fun onMovement(prevCoord: Coord?, newCoord: Coord?);
-    fun onCheckmate(newCoord: Coord?)
+    fun onCheck(newCoord: Coord?)
 }

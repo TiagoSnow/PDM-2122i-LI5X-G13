@@ -16,12 +16,16 @@ class Pawn(
         val col: Int
         val line: Int
         var startingPoint = 0
-        var toConvert : Char
-        if('=' in move) {
-            
+        var toConvert: Char
+
+        //TODO UPGRADE PAWN
+        if ('=' in move) {
+
             return
         }
-         else if (move.length == 4) {
+
+
+        else if (move.length == 4) {
             col = move[2] - 'a'
             line = 8 - move[3].digitToInt()
             val startColumn = move[0] - 'a'

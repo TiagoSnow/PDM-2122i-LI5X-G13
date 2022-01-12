@@ -5,8 +5,8 @@ import pt.isel.pdm.chess4android.model.PiecesType
 
 enum class KingDir(val x: Int, val y: Int) {
     UP(0, -1),
-    LEFT(-1, 0),
     DOWN(0, 1),
+    LEFT(-1, 0),
     RIGHT(1, 0),
     UP_LEFT(-1, -1),
     UP_RIGHT(1, -1),
@@ -49,15 +49,15 @@ class King(
                     line + dir.y
                 )
         }
-        return Pair(-1, -1);
+        return Pair(-1, -1)
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
-        //move-se para todos os lados. Somente uma casa
-
         val allOptionsKing = getAllAvailableOptions()
 
-        return getAllAvailableOptionsFromEnemy(allOptionsKing)
+        val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
+
+        return interceptionList.toMutableList()
 
     }
 
@@ -66,7 +66,7 @@ class King(
         allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
     ): MutableList<Pair<Coord, Boolean>?> {
         //
-        var listAux = mutableListOf<Pair<Coord, Boolean>?>()
+        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
         for (option in allOptionsKing) {
             for (enemyOptions in allEnemyOptions) {
                 if (pairIsEqual(option, enemyOptions)) {
@@ -94,7 +94,7 @@ class King(
 
     private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         var listAux: MutableList<Pair<Coord, Boolean>?>
-        var list = mutableListOf<Pair<Coord, Boolean>?>()
+        var list = allOptionsKing
         for (col in 0..7) {
             for (line in 0..7) {
                 val curr = board[col][line]
@@ -104,12 +104,9 @@ class King(
                     } else {
                         curr.searchRoute()
                     }
-                    if (listAux.size != 0) {
-
+                    if (listAux.size != 0)
                         list = interception(allOptionsKing, listAux)
-                    }
                 }
-
             }
         }
         return list
@@ -138,9 +135,7 @@ class King(
             return null
         }
         if (board[col][line]?.army != army) {
-            if (board[col][line] == null)
-                return Pair(Coord(col, line), false)
-            return Pair(Coord(col, line), true)
+            return if (board[col][line] == null) Pair(Coord(col, line), false) else Pair(Coord(col, line), true)
         }
         return null
     }

@@ -70,9 +70,9 @@ class Knight(
         line = startPositions.second
         this.colDest = colDest
         this.lineDest = lineDest
-      //  updateBoard()
-        removePiece(startPositions.first, startPositions.second)
-        putPiece(colDest, lineDest, this)
+        updateBoard()
+        //removePiece(startPositions.first, startPositions.second)
+       // putPiece(colDest, lineDest, this)
     }
 
     private fun getPrevLine(colPrev: Int, colNext: Int, lineNext: Int, army: Army): Int {
@@ -124,7 +124,7 @@ class Knight(
         for (dir in KnightDir.values()) {
             val x = col + dir.x
             val y = line + dir.y
-            if (x in 0..7 && y in 0..7 && x != this.col && y != this.line && checkIfPieceExists(x, y, army, piece))
+            if (x in 0..7 && y in 0..7/* && x != this.col && y != this.line*/ && checkIfPieceExists(x, y, army, piece))
                 return Pair(x, y)
         }
         return Pair(-1, -1)

@@ -73,7 +73,7 @@ class GameActivity : AppCompatActivity() {
             viewModel.gameModel.newArmyToPlay,
             false
         )
-        if(viewModel.getIsChecking())
+        //if(viewModel.getIsChecking())
         binding.boardView.updateCheckView()
         viewModel.updateSolutions(puzzle.puzzle.solution)
     }
