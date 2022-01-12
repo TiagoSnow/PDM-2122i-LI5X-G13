@@ -77,6 +77,9 @@ class MultiplayerActivity : AppCompatActivity() {
                     viewModel.gameModel.signalCheck(piece, option)
                     break
                 }
+
+            viewModel.doubleCheck()
+
         }
     }
 }

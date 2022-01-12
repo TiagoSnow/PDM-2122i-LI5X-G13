@@ -154,7 +154,6 @@ class King(
         a.add(route)
         return getAllAvailableOptionsFromEnemy(a).isEmpty()
     }
-
     private fun stopCheckAsKing(routes: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         for (route in routes) {
             if (route!!.first.col == pieceChecking?.col && route.first.line == pieceChecking?.line) {
