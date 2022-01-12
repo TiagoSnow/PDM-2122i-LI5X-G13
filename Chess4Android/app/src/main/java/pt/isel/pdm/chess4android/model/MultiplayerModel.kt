@@ -7,8 +7,6 @@ import pt.isel.pdm.chess4android.pieces.Piece
 class MultiplayerModel : GameModel() {
     private var isDoubleCheck: Boolean = false
 
-    private var isDoubleCheck: Boolean = false
-
     fun switchArmy() {
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
@@ -38,10 +36,7 @@ class MultiplayerModel : GameModel() {
         //not possible to block
         when {
             isDoubleCheck -> return blockCheckRoutes
-<<<<<<< HEAD
 
-=======
->>>>>>> 09938bd3f076198ae45b893476e1d6686ecd0131
             pieceChecking!!.piece == PiecesType.KNIGHT -> {
                 for (route in routes)
                     if (route!!.first.col == pieceChecking!!.col && route.first.line == pieceChecking!!.line) {
@@ -93,31 +88,7 @@ class MultiplayerModel : GameModel() {
     fun removeSignalCheck() {
         pieceChecking = null
         checkPath = null
-<<<<<<< HEAD
-=======
         getKing()?.removeSignalCheck()
->>>>>>> 09938bd3f076198ae45b893476e1d6686ecd0131
-        isDoubleCheck = false
-    }
-
-    fun doubleCheck() {
-        for (col in 0..7) {
-            for (line in 0..7) {
-                val piece = getPiece(col, line)
-                if (piece?.army == newArmyToPlay && piece != pieceChecking) {
-                    val routes = piece.searchRoute()
-                    if (routes.isNotEmpty()) {
-                        for (route in routes) {
-                            val routeCoord = route!!.first
-                            if (board[routeCoord.col][routeCoord.line] is King) {
-                                isDoubleCheck = true
-                                return
-                            }
-                        }
-                    }
-                }
-            }
-        }
         isDoubleCheck = false
     }
 }

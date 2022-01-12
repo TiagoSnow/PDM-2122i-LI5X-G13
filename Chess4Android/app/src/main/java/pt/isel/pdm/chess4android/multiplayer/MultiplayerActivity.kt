@@ -82,13 +82,9 @@ class MultiplayerActivity : AppCompatActivity() {
                     viewModel.gameModel.signalCheck(piece, option)
                     break
                 }
-<<<<<<< HEAD
 
             viewModel.doubleCheck()
 
-=======
-            viewModel.doubleCheck()
->>>>>>> 09938bd3f076198ae45b893476e1d6686ecd0131
         }
     }
 }

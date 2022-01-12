@@ -47,10 +47,7 @@ class MultiplayerActivityViewModel(
     fun isChecking(option: Pair<Coord, Boolean>?): Boolean {
         return gameModel.isChecking(option)
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 09938bd3f076198ae45b893476e1d6686ecd0131
     fun doubleCheck() {
         gameModel.doubleCheck()
     }

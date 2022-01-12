@@ -57,9 +57,11 @@ class King(
 
         val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
 
-        if (pieceChecking != null)
-            return stopCheckAsKing(interceptionList)
-
+        if (pieceChecking != null) {
+            val list = stopCheckAsKing(interceptionList)
+            //removeSignalCheck()
+            return list
+        }
         return interceptionList
     }
 
@@ -152,7 +154,7 @@ class King(
     private fun canEatCheckingPiece(route: Pair<Coord, Boolean>): Boolean {
         val a = mutableListOf<Pair<Coord, Boolean>?>()
         a.add(route)
-        return getAllAvailableOptionsFromEnemy(a).isEmpty()
+        return getAllAvailableOptionsFromEnemy(a).isNotEmpty()
     }
     private fun stopCheckAsKing(routes: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         for (route in routes) {
