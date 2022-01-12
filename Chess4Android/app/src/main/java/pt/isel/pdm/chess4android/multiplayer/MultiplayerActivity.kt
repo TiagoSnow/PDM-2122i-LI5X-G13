@@ -28,6 +28,8 @@ class MultiplayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel.beginBoard()
+        binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay, false)
+
         mp = MediaPlayer.create(this, R.raw.button_pressed)
         binding.boardView.updateView(
             viewModel.gameModel.board,

@@ -17,9 +17,8 @@ class MultiplayerActivityViewModel(
 
     var gameModel: MultiplayerModel = MultiplayerModel()
 
-    fun beginBoard(boardView: BoardView) {
+    fun beginBoard() {
         gameModel.beginBoard()
-        boardView.updateView(gameModel.board, gameModel.newArmyToPlay, false)
     }
 
     fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
