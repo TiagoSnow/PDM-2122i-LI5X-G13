@@ -1,5 +1,7 @@
 package pt.isel.pdm.chess4android.pieces
 
+
+
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.PiecesType
 

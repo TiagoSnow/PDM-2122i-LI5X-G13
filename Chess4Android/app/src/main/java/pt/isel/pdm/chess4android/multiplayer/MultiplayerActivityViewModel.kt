@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.MultiplayerModel
+import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.chess4android.views.BoardView
@@ -47,5 +48,17 @@ class MultiplayerActivityViewModel(
 
     fun isChecking(option: Pair<Coord, Boolean>?): Boolean {
         return gameModel.isChecking(option)
+    }
+
+    fun verifyPiecePromotion(newCoord: Coord?): Boolean {
+        return gameModel.verifyPiecePromotion(newCoord)
+    }
+
+    fun promotePiece(newCoord: Coord?, pieceType: PiecesType) {
+        return gameModel.promotePiece(newCoord,pieceType)
+    }
+
+    fun getBoard(): Array<Array<Piece?>> {
+        return gameModel.board
     }
 }

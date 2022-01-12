@@ -1,8 +1,6 @@
 package pt.isel.pdm.chess4android.model
 
-import pt.isel.pdm.chess4android.pieces.Coord
-import pt.isel.pdm.chess4android.pieces.King
-import pt.isel.pdm.chess4android.pieces.Piece
+import pt.isel.pdm.chess4android.pieces.*
 
 class MultiplayerModel : GameModel() {
 
@@ -66,4 +64,24 @@ class MultiplayerModel : GameModel() {
         checkPath = null
     }
 
+    fun verifyPiecePromotion(newCoord: Coord?): Boolean {
+        if((newCoord!!.line==0 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
+            && board[newCoord!!.col][newCoord.line]!!.army == Army.WHITE)
+            || (newCoord!!.line==7 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
+                    && board[newCoord!!.col][newCoord.line]!!.army == Army.BLACK)
+                ){
+           return true
+        }
+        return false
+    }
+
+    fun promotePiece(newCoord: Coord?, pieceType: PiecesType) {
+        var army = board[newCoord!!.col][newCoord.line]!!.army
+        when(pieceType){
+            PiecesType.BISHOP -> board[newCoord!!.col][newCoord.line] = Bishop(army,board,newCoord.col,newCoord.line)
+            PiecesType.KNIGHT -> board[newCoord!!.col][newCoord.line] = Knight(army,board,newCoord.col,newCoord.line)
+            PiecesType.QUEEN -> board[newCoord!!.col][newCoord.line] = Queen(army,board,newCoord.col,newCoord.line)
+            PiecesType.ROOK -> board[newCoord!!.col][newCoord.line] = Rook(army,board,newCoord.col,newCoord.line)
+        }
+    }
 }

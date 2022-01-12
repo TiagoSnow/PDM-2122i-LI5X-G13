@@ -13,22 +13,27 @@ class Pawn(
     override var piece = PiecesType.PAWN
 
     override fun movePGN(move: String) {
+        var moveTemp = move
         val col: Int
         val line: Int
         var startingPoint = 0
-        var toConvert: Char
+        var toConvert: Char? = null
 
         //TODO UPGRADE PAWN
-        if ('=' in move) {
-
-            return
+        if ('=' in moveTemp) {
+            if('x' in moveTemp){
+                toConvert = moveTemp[5]
+            }
+            else{
+                toConvert = moveTemp[4]
+            }
+            moveTemp = moveTemp.split('=')[0]
         }
 
-
-        else if (move.length == 4) {
-            col = move[2] - 'a'
-            line = 8 - move[3].digitToInt()
-            val startColumn = move[0] - 'a'
+        if (moveTemp.length == 4) {
+            col = moveTemp[2] - 'a'
+            line = 8 - moveTemp[3].digitToInt()
+            val startColumn = moveTemp[0] - 'a'
             for (l in 0..7) {
                 if (checkIfPieceExists(startColumn, l, army, piece)) {
                     startingPoint = l
@@ -37,8 +42,8 @@ class Pawn(
             }
             removePiece(startColumn, startingPoint)
         } else {
-            col = move[0] - 'a'
-            line = 8 - move[1].digitToInt()
+            col = moveTemp[0] - 'a'
+            line = 8 - moveTemp[1].digitToInt()
             if ((line == 3) && army == Army.BLACK ||
                 (line == 4) && army == Army.WHITE
             )
@@ -52,11 +57,20 @@ class Pawn(
                 }
             removePiece(col, startingPoint)
         }
-        putPiece(col, line, this)
-    }
-
-    private fun convertPawn(move: String) {
-
+        if(toConvert==null){
+            putPiece(col, line, this)
+        }
+        else{
+            var piece: Piece
+            when(toConvert){
+                'N' -> piece = Knight(army,board, col, line)
+                'Q' -> piece = Queen(army,board, col, line)
+                'R' -> piece = Rook(army,board, col, line)
+                'B' -> piece = Bishop(army,board, col, line)
+                else -> piece = this
+            }
+            putPiece(col,line,piece)
+        }
     }
 
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
@@ -116,9 +130,9 @@ class Pawn(
             return null
         }
         //if (board[col][line] == null) {
-            return Pair(Coord(col, line), false)
-      //  }
-      //  return null
+        return Pair(Coord(col, line), false)
+        //  }
+        //  return null
     }
 
 }
