@@ -18,7 +18,12 @@ class MultiplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.beginBoard(binding.boardView)
+        viewModel.beginBoard()
+        binding.boardView.updateView(
+            viewModel.gameModel.board,
+            viewModel.gameModel.newArmyToPlay,
+            false
+        )
 
         binding.boardView.setOnBoardClickedListener(listener)
     }
@@ -77,9 +82,13 @@ class MultiplayerActivity : AppCompatActivity() {
                     viewModel.gameModel.signalCheck(piece, option)
                     break
                 }
+<<<<<<< HEAD
 
             viewModel.doubleCheck()
 
+=======
+            viewModel.doubleCheck()
+>>>>>>> 09938bd3f076198ae45b893476e1d6686ecd0131
         }
     }
 }

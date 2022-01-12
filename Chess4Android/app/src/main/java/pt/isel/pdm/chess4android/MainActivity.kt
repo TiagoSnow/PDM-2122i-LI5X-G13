@@ -42,17 +42,13 @@ class MainActivity : AppCompatActivity() {
 
         val intent = intent
 
-        if(intent.getStringExtra(FLAG) == null) {
+        if (intent.getStringExtra(FLAG) == null) {
             idiomInit()
-        }
-        else {
+        } else {
             idiomLanguage = intent.getStringExtra(FLAG)!!
             idiomChangeByIntent()
         }
-
-
-
-        val  mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
+        val mp: MediaPlayer = MediaPlayer.create(this, R.raw.button_pressed)
 
         binding.creditsButton.setOnClickListener {
             mp.start()
@@ -78,16 +74,15 @@ class MainActivity : AppCompatActivity() {
             changeLanguage()
         }
 
-        binding.soundIcon!!.setOnClickListener{
+        binding.soundIcon!!.setOnClickListener {
             val drawable: Drawable
-            if(soundflag){
+            if (soundflag) {
                 drawable = getDrawable(R.mipmap.nosound_img)!!
                 binding.soundIcon!!.foreground = drawable
                 soundflag = false
                 //tirar o som
                 stopService(svc)
-            }
-            else{
+            } else {
                 drawable = getDrawable(R.mipmap.sound_img)!!
                 binding.soundIcon!!.foreground = drawable
                 soundflag = true
@@ -104,14 +99,13 @@ class MainActivity : AppCompatActivity() {
         val curr_language = Locale.getDefault().language
         val drawable: Drawable?
 
-        if(curr_language == "en") {
+        if (curr_language == "en") {
             drawable = getDrawable(R.mipmap.united_kingdom)
             binding.imageButton.foreground = drawable
             setAppLocale("en")
             idiom = "_english"
             idiomLanguage = "en"
-        }
-        else {
+        } else {
             drawable = getDrawable(R.mipmap.portugal_flag_foreground)
             binding.imageButton.foreground = drawable
             setAppLocale("pt")
@@ -124,13 +118,12 @@ class MainActivity : AppCompatActivity() {
     private fun idiomChangeByIntent() {
         val drawable: Drawable?
 
-        if(idiomLanguage == "en") {
+        if (idiomLanguage == "en") {
             drawable = getDrawable(R.mipmap.united_kingdom)
             binding.imageButton.foreground = drawable
             setAppLocale("en")
             idiom = "_english"
-        }
-        else if(idiomLanguage == "pt") {
+        } else if (idiomLanguage == "pt") {
             drawable = getDrawable(R.mipmap.portugal_flag_foreground)
             binding.imageButton.foreground = drawable
             setAppLocale("pt")
