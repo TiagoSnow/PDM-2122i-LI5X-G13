@@ -42,7 +42,6 @@ class MultiplayerActivity : AppCompatActivity() {
 
 
     private var listener: BoardClickListener = object : BoardClickListener {
-        //TODO FIX BUG: Clicar em peça, clicar em sitio que não é route e depois clicar em sitio de route crasha
         override fun onTileClicked(col: Int, line: Int) {
             if (viewModel.gameModel.board[col][line] != null &&
                 viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)
