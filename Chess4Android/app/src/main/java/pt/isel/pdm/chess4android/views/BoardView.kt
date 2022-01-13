@@ -90,9 +90,10 @@ class BoardView(private val ctx: Context, attrs: AttributeSet?) : GridLayout(ctx
                 } else {
                     if (isTileAnOption(column, row)) {
                         listener?.onMovement(prevCoord, Coord(column, row))
-                        options.clear()
+                        resetOptions()
                         setPreviousColor()
                     } else {
+                        resetOptions()
                         if (prevCoord != null) {
                             setPreviousColor()
 
