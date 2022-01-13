@@ -75,7 +75,7 @@ class King(
                 )
     }
 
-    private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
+    fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         var listAux: MutableList<Pair<Coord, Boolean>?>
         var list = allOptionsKing
         for (col in 0..7) {
@@ -152,10 +152,43 @@ class King(
     }
 
     private fun canEatCheckingPiece(route: Pair<Coord, Boolean>): Boolean {
-        val a = mutableListOf<Pair<Coord, Boolean>?>()
+        /*val a = mutableListOf<Pair<Coord, Boolean>?>()
         a.add(route)
-        return getAllAvailableOptionsFromEnemy(a).isNotEmpty()
+        return getAllAvailableOptionsFromEnemy(a).isNotEmpty()*/
+        return canBeEaten(route)
     }
+
+    private fun canBeEaten(route: Pair<Coord, Boolean>): Boolean {
+        //mudar para a posição de comer. Ver o que retorna o searchRoute() e apagar previamente o pieceChecking
+        val currKing = board[col][line]
+        val currRoutePiece = board[route.first.col][route.first.line]
+
+        //update king in board
+        val currCol = col
+        val currLine = line
+        board[route.first.col][route.first.line] = currKing
+        board[col][line] = null
+
+        //update the king coords
+        val newKing: King = board[route.first.col][route.first.line] as King
+        newKing!!.col = route.first.col
+        newKing.line = route.first.line
+
+        //delete pieceChecking
+        pieceChecking = null
+
+        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
+        listAux.add(route)
+        val list = newKing.getAllAvailableOptionsFromEnemy(listAux)
+
+        //reset board
+        col = currCol
+        line = currLine
+        board[col][line] = currKing
+        board[route.first.col][route.first.line] = currRoutePiece
+        return list.isNotEmpty()
+    }
+
     private fun stopCheckAsKing(routes: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         for (route in routes) {
             if (route!!.first.col == pieceChecking?.col && route.first.line == pieceChecking?.line) {
