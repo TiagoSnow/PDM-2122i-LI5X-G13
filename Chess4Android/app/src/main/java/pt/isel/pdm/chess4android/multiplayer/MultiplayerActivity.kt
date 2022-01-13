@@ -1,15 +1,18 @@
 package pt.isel.pdm.chess4android.multiplayer
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
+import android.widget.TextView
 import androidx.activity.viewModels
 import com.google.android.material.button.MaterialButton
 import pt.isel.pdm.chess4android.BoardClickListener
+import pt.isel.pdm.chess4android.MainActivity
 import pt.isel.pdm.chess4android.R
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
 import pt.isel.pdm.chess4android.model.PiecesType
@@ -113,18 +116,6 @@ class MultiplayerActivity : AppCompatActivity() {
 
             onCheck(newCoord)
             viewModel.switchArmy()
-
-
-            /*if (viewModel.removeOptionSelected(Pair(prevCoord, newCoord))) {
-                //atualizar a board
-                viewModel.movePiece(prevCoord, newCoord)
-
-                //mpM!!.start()
-                //atualizar a view
-                binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
-
-                onCheckmate()
-            }*/
         }
 
         override fun onCheck(newCoord: Coord?) {
@@ -135,11 +126,33 @@ class MultiplayerActivity : AppCompatActivity() {
             for (option in list)
                 if (viewModel.isChecking(option)) {
                     viewModel.gameModel.signalCheck(piece, option)
+                    viewModel.doubleCheck()
+                    if(viewModel.isCheckMate())
+                        showDialog(viewModel.getNextArmyToPlay().name)
                     break
                 }
 
-            viewModel.doubleCheck()
-
         }
+    }
+
+    fun showDialog(winner: String) {
+        //passar para nova activity que mostra a mensagem a dizer checkmate
+        val dialog = Dialog(this@MultiplayerActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.cm_popup_multiplayer)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val text: TextView = dialog.findViewById(R.id.winnerText)
+        text.text = getString(R.string.winnerText) + " " + winner + "!"
+
+        val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btOk)
+        mDialogMenu.setOnClickListener {
+            mp!!.start()
+            startActivity(Intent(this@MultiplayerActivity, MainActivity::class.java))
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

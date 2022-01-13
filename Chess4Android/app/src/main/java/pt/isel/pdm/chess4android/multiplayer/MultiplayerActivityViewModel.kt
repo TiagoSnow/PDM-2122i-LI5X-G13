@@ -64,4 +64,8 @@ class MultiplayerActivityViewModel(
     fun doubleCheck() {
         gameModel.doubleCheck()
     }
+
+    fun isCheckMate(): Boolean {
+        return gameModel.isCheckMate()
+    }
 }

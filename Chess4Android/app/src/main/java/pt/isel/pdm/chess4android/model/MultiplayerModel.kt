@@ -21,17 +21,15 @@ class MultiplayerModel : GameModel() {
         val piece = getPiece(col, line) ?: return mutableListOf()
         val routes = board[col][line]!!.searchRoute()
         return if (piece.piece == PiecesType.KING || pieceChecking == null) {
-            removeSignalCheck()
             routes
         } else stopCheck(piece)
     }
 
     private fun stopCheck(pieceStopping: Piece): MutableList<Pair<Coord, Boolean>?> {
-        //if(check normal)
         val routes = pieceStopping.searchRoute()
         val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>?>()
         val king = getKing()
-        //not possible to block
+
         when {
             isDoubleCheck -> return blockCheckRoutes
 
@@ -54,7 +52,6 @@ class MultiplayerModel : GameModel() {
         return blockCheckRoutes
     }
 
-    //else Double Check ?
 
     fun doubleCheck() {
         for (col in 0..7) {
@@ -104,10 +101,40 @@ class MultiplayerModel : GameModel() {
     fun promotePiece(newCoord: Coord?, pieceType: PiecesType) {
         var army = board[newCoord!!.col][newCoord.line]!!.army
         when(pieceType){
-            PiecesType.BISHOP -> board[newCoord!!.col][newCoord.line] = Bishop(army,board,newCoord.col,newCoord.line)
-            PiecesType.KNIGHT -> board[newCoord!!.col][newCoord.line] = Knight(army,board,newCoord.col,newCoord.line)
-            PiecesType.QUEEN -> board[newCoord!!.col][newCoord.line] = Queen(army,board,newCoord.col,newCoord.line)
-            PiecesType.ROOK -> board[newCoord!!.col][newCoord.line] = Rook(army,board,newCoord.col,newCoord.line)
+            PiecesType.BISHOP -> board[newCoord.col][newCoord.line] = Bishop(army,board,newCoord.col,newCoord.line)
+            PiecesType.KNIGHT -> board[newCoord.col][newCoord.line] = Knight(army,board,newCoord.col,newCoord.line)
+            PiecesType.QUEEN -> board[newCoord.col][newCoord.line] = Queen(army,board,newCoord.col,newCoord.line)
+            PiecesType.ROOK -> board[newCoord.col][newCoord.line] = Rook(army,board,newCoord.col,newCoord.line)
         }
+    }
+
+    fun isCheckMate(): Boolean {
+        switchArmy()
+
+        //king nao se poder mexer e estar em check
+
+        //nenhuma peça pode fazer block
+        for (col in 0..7)
+            for (line in 0..7) {
+                val piece = getPiece(col, line)
+                if (piece != null && piece.army == newArmyToPlay /*&& piece != pieceChecking*/) {
+                    if(piece is King) {
+                        val kingRoutes = piece.searchRoute()
+                        if(kingRoutes.isNotEmpty()) {
+                            switchArmy()
+                            return false
+                        }
+                    }
+                    else {
+                        val pieceRoutes = stopCheck(piece)
+                        if(pieceRoutes.isNotEmpty()) {
+                            switchArmy()
+                            return false
+                        }
+                    }
+                }
+            }
+        switchArmy()
+        return true
     }
 }

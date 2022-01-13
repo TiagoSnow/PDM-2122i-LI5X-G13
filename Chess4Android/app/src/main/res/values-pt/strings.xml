@@ -16,4 +16,5 @@
     <string name="solution">Solução</string>
     <string name="history">História de Puzzles</string>
     <string name="reset">Reset</string>
+    <string name="winnerText">A equipa vencedora foi a </string>
 </resources>

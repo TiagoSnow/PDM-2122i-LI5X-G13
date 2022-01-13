@@ -59,7 +59,6 @@ class King(
 
         if (pieceChecking != null) {
             val list = stopCheckAsKing(interceptionList)
-            //removeSignalCheck()
             return list
         }
         return interceptionList
@@ -175,6 +174,7 @@ class King(
         newKing.line = route.first.line
 
         //delete pieceChecking
+        val prevpieceChecking = pieceChecking
         pieceChecking = null
 
         val listAux = mutableListOf<Pair<Coord, Boolean>?>()
@@ -186,6 +186,8 @@ class King(
         line = currLine
         board[col][line] = currKing
         board[route.first.col][route.first.line] = currRoutePiece
+        pieceChecking = prevpieceChecking
+
         return list.isNotEmpty()
     }
 

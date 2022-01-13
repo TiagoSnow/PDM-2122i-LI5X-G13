@@ -112,38 +112,40 @@ class GameActivity : AppCompatActivity() {
 
         override fun onCheck(newCoord: Coord?) {
             if (viewModel.gameModel.solutions.size == 0) {
-
                 viewModel.updatePuzzleEntity()
-
-                //passar para nova activity que mostra a mesnagem a dizer checkmate
-                val dialog = Dialog(this@GameActivity)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(false)
-                dialog.setContentView(R.layout.cm_popup)
-                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
-                mDialogMenu.setOnClickListener { //Toast.makeText(applicationContext, "Cancel", Toast.LENGTH_SHORT).show()
-                    mp!!.start()
-                    startActivity(Intent(this@GameActivity, MainActivity::class.java))
-                    dialog.dismiss()
-                }
-
-                val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
-                mDialogReset.setOnClickListener {
-                    mp!!.start()
-                    startActivity(
-                        buildIntent(
-                            this@GameActivity,
-                            viewModel.getCurrentPuzzleInfoDTO()
-                        )
-                    )
-                    dialog.dismiss()
-                }
-
-                dialog.show()
+                showDialog()
             }
         }
+    }
+
+    fun showDialog() {
+        //passar para nova activity que mostra a mensagem a dizer checkmate
+        val dialog = Dialog(this@GameActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.cm_popup)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
+        mDialogMenu.setOnClickListener {
+            mp!!.start()
+            startActivity(Intent(this@GameActivity, MainActivity::class.java))
+            dialog.dismiss()
+        }
+
+        val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
+        mDialogReset.setOnClickListener {
+            mp!!.start()
+            startActivity(
+                buildIntent(
+                    this@GameActivity,
+                    viewModel.getCurrentPuzzleInfoDTO()
+                )
+            )
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     fun buildIntent(origin: Activity, puzzleDto: PuzzleInfoDTO): Intent {

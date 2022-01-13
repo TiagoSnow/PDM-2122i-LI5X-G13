@@ -16,9 +16,7 @@
         <entry key="..\:/Users/Daniel/Desktop/PDM_13/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/cm_popup.xml" value="0.536" />
         <entry key="..\:/Users/Daniel/Desktop/PDM_13/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/credits_popup.xml" value="0.24818840579710144" />
         <entry key="..\:/Users/Daniel/Desktop/PDM_13/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/item_history_view.xml" value="0.14114583333333333" />
-        <entry key="..\:/Users/Daniel/Desktop/PDM_13/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/promotion_popup.xml" value="0.536" />
         <entry key="..\:/Users/tiago/Desktop/PDM/Chess4Android/app/src/main/res/layout/activity_main.xml" value="0.2740036231884058" />
-        <entry key="..\:/Users/tiago/Desktop/PDM/Trab1/Chess4Android/app/src/main/res/layout/activity_game.xml" value="0.1859375" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/drawable/ic_black_bishop.xml" value="0.2703125" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/drawable/ic_black_king.xml" value="0.2703125" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/drawable/ic_black_knight.xml" value="0.2703125" />
@@ -36,6 +34,7 @@
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/activity_multiplayer.xml" value="0.25416666666666665" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/activity_preview_puzzle.xml" value="0.15092592592592594" />
+        <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/layout/cm_popup_multiplayer.xml" value="0.25416666666666665" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/menu/menu.xml" value="0.25416666666666665" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/mipmap-anydpi-v26/portugalFlag.xml" value="0.1" />
         <entry key="..\:/marco/ISEL/Trabalhos/7Semestre/PDM/Trabalhos/Repo/PDM-2122i-LI5X-G13/Chess4Android/app/src/main/res/mipmap-anydpi-v26/portugal_flag.xml" value="0.2703125" />
