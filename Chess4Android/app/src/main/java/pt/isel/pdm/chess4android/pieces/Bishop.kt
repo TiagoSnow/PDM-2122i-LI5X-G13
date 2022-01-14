@@ -20,10 +20,10 @@ class Bishop(
     override var piece = PiecesType.BISHOP
 
     private fun searchBishop(tileStart: Int, army: Army): Pair<Int, Int> {
-        var startColPosition = 0
-        var startLinePosition = 0
+        var startColPosition = MIN_BOARD
+        var startLinePosition = MIN_BOARD
         var initLineAux = tileStart - 1
-        for (c in 0..MAX_BOARD_VAL) {
+        for (c in MIN_BOARD..MAX_BOARD) {
             initLineAux = if (initLineAux == 0) 1 else 0
             for (l in initLineAux until 8 step 2)
                 if (board[c][l]?.piece == PiecesType.BISHOP && board[c][l]?.army == army) {
@@ -65,35 +65,6 @@ class Bishop(
     }
 
     private fun searchRouteDiagonal(colDir: Int, lineDir: Int): MutableList<Pair<Coord, Boolean>?> {
-        val list = mutableListOf<Pair<Coord, Boolean>?>()
-        var colDirection = colDir
-        var lineDirection = lineDir
-
-        while (col + colDirection in 0..7 && line + lineDirection in 0..7 && board[col + colDirection][line + lineDirection]?.army != army) {
-            if (board[col + colDirection][line + lineDirection] == null) list.add(
-                Pair(
-                    Coord(
-                        col + colDirection,
-                        line + lineDirection
-                    ), false
-                )
-            )
-            else {
-                list.add(Pair(Coord(col + colDirection, line + lineDirection), true))
-                if (col + colDirection + colDir in 0..7 && line + lineDirection + lineDir in 0..7 && board[col + colDirection][line + lineDirection]?.piece == PiecesType.KING)
-                    list.add(
-                        Pair(
-                            Coord(
-                                col + colDirection + colDir,
-                                line + lineDirection + lineDir
-                            ), false
-                        )
-                    )
-                break
-            }
-            colDirection += colDir
-            lineDirection += lineDir
-        }
-        return list
+        return searchDiagonal(colDir, lineDir, col, line, army, board)
     }
 }

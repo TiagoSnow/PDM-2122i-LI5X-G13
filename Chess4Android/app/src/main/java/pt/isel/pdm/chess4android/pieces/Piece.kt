@@ -5,8 +5,8 @@ import pt.isel.pdm.chess4android.model.PiecesType
 
 abstract class Piece {
 
-    val MIN_BOARD_VAL = 0
-    val MAX_BOARD_VAL = 7
+    val MIN_BOARD = 0
+    val MAX_BOARD = 7
     abstract val board: Array<Array<Piece?>>
 
     abstract var col: Int
@@ -33,7 +33,14 @@ abstract class Piece {
         board[col][line] = null
     }
 
-    abstract fun searchRoute() : MutableList<Pair<Coord, Boolean>?>
+    fun updateBoard(colDest: Int, lineDest: Int) {
+        removePiece(this.col, this.line)
+        this.col = colDest
+        this.line = lineDest
+        putPiece(this.col, this.line, this)
+    }
+
+    abstract fun searchRoute(): MutableList<Pair<Coord, Boolean>?>
 
 
 }

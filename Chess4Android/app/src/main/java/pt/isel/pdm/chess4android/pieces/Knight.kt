@@ -22,8 +22,6 @@ class Knight(
 ) : Piece() {
 
     override var piece = PiecesType.KNIGHT
-    var colDest = 0
-    var lineDest = 0
 
     override fun movePGN(move: String) {
         var colDest: Int = 0
@@ -68,11 +66,7 @@ class Knight(
 
         col = startPositions.first
         line = startPositions.second
-        this.colDest = colDest
-        this.lineDest = lineDest
-        updateBoard()
-        //removePiece(startPositions.first, startPositions.second)
-       // putPiece(colDest, lineDest, this)
+        updateBoard(colDest, lineDest)
     }
 
     private fun getPrevLine(colPrev: Int, colNext: Int, lineNext: Int, army: Army): Int {
@@ -101,7 +95,6 @@ class Knight(
         //we are able to get the diference in line by this subtraction
         when (linePrev - lineNext) {
             -1, 1 -> {
-                val pieceAux = board[colNext - 2][linePrev]
                 return if (colNext - 2 in 0..7 &&
                     checkIfPieceExists(colNext - 2, linePrev, army, piece)
                 )
@@ -109,7 +102,6 @@ class Knight(
                 else colNext + 2
             }
             -2, 2 -> {
-                val pieceAux = board[colNext - 1][linePrev]
                 return if (colNext - 1 in 0..7 &&
                     checkIfPieceExists(colNext - 1, linePrev, army, piece)
                 )
@@ -124,7 +116,13 @@ class Knight(
         for (dir in KnightDir.values()) {
             val x = col + dir.x
             val y = line + dir.y
-            if (x in 0..7 && y in 0..7/* && x != this.col && y != this.line*/ && checkIfPieceExists(x, y, army, piece))
+            if (x in 0..7 && y in 0..7/* && x != this.col && y != this.line*/ && checkIfPieceExists(
+                    x,
+                    y,
+                    army,
+                    piece
+                )
+            )
                 return Pair(x, y)
         }
         return Pair(-1, -1)
@@ -145,11 +143,5 @@ class Knight(
         return list
     }
 
-    fun updateBoard() {
-        removePiece(this.col, this.line)
-        this.col = this.colDest
-        this.line = this.lineDest
-        putPiece(this.col, this.line, this)
-    }
 
 }

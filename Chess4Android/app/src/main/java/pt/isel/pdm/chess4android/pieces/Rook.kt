@@ -10,7 +10,6 @@ class Rook(
     override var line: Int
 ) : Piece() {
 
-
     override var piece = PiecesType.ROOK
 
     override fun movePGN(move: String) {
@@ -67,24 +66,16 @@ class Rook(
         var colFrom = 0
         var lineFrom = 0
         for (i in 1..7) {
-            if (lineDest + i <= MAX_BOARD_VAL && checkIfPieceExists(
-                    colDest,
-                    lineDest + i,
-                    army,
-                    PiecesType.ROOK
-                )
+            if (lineDest + i <= MAX_BOARD &&
+                checkIfPieceExists(colDest, lineDest + i, army, PiecesType.ROOK)
             ) {
                 colFrom = colDest
                 lineFrom = lineDest + i
                 break
             }
             //left search
-            if (lineDest - i >= MIN_BOARD_VAL && checkIfPieceExists(
-                    colDest,
-                    lineDest - i,
-                    army,
-                    PiecesType.ROOK
-                )
+            if (lineDest - i >= MIN_BOARD &&
+                checkIfPieceExists(colDest, lineDest - i, army, PiecesType.ROOK)
             ) {
                 colFrom = colDest
                 lineFrom = lineDest - i
@@ -92,24 +83,16 @@ class Rook(
             }
             //searches for rook in previous position vertically
             //right search
-            if (colDest + i <= MAX_BOARD_VAL && checkIfPieceExists(
-                    colDest + i,
-                    lineDest,
-                    army,
-                    PiecesType.ROOK
-                )
+            if (colDest + i <= MAX_BOARD &&
+                checkIfPieceExists(colDest + i, lineDest, army, PiecesType.ROOK)
             ) {
                 colFrom = colDest + i
                 lineFrom = lineDest
                 break
             }
             //left search
-            if (colDest - i >= MIN_BOARD_VAL && checkIfPieceExists(
-                    colDest - i,
-                    lineDest,
-                    army,
-                    PiecesType.ROOK
-                )
+            if (colDest - i >= MIN_BOARD &&
+                checkIfPieceExists(colDest - i, lineDest, army, PiecesType.ROOK)
             ) {
                 colFrom = colDest - i
                 lineFrom = lineDest
@@ -127,7 +110,7 @@ class Rook(
     ): Int {
         return if (colFrom == colDest) {
             var line = 0
-            while (line < MAX_BOARD_VAL) {
+            while (line < MAX_BOARD) {
                 if (checkIfPieceExists(colFrom, line, army, PiecesType.ROOK))
                     break
                 line++
@@ -141,106 +124,20 @@ class Rook(
     }
 
     private fun searchRouteLine(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        var array = mutableListOf<Pair<Coord, Boolean>?>()
-
-        if (line > direction) {     //up
-            for (lineAux in (line - 1) downTo direction) {
-                val position = board[col][lineAux]
-                if (position == null) {
-                    array.add(Pair(Coord(col, lineAux), false))
-                }
-
-                if (position is Piece) {
-                    if (position.army == army)
-                        break
-                    else {
-                        array.add(Pair(Coord(col, lineAux), true))
-                        if (lineAux-1>=0 && position.piece == PiecesType.KING)
-                            array.add(Pair(Coord(col, lineAux-1), true))
-                        break
-                    }
-                }
-            }
-        } else {              //down
-            for (lineAux in (line + 1)..direction) {
-                val position = board[col][lineAux]
-                if (position == null) {
-                    array.add(Pair(Coord(col, lineAux), false))
-                }
-
-                if (position is Piece) {
-                    if (position.army == army)
-                        break
-                    else {
-                        array.add(Pair(Coord(col, lineAux), true))
-                        if (lineAux+1>=0 && position.piece == PiecesType.KING)
-                            array.add(Pair(Coord(col, lineAux+1), true))
-
-                        break
-                    }
-                }
-            }
-        }
-        return array
+        return searchHorizontal(direction, col, line, army, board)
     }
 
     private fun searchRouteColumn(direction: Int): MutableList<Pair<Coord, Boolean>?> {
-        var array = mutableListOf<Pair<Coord, Boolean>?>()
 
-        if (col > direction) {     //left
-            for (colAux in (col - 1) downTo 0) {
-                val position = board[colAux][line]
-                if (position == null) {
-                    array.add(Pair(Coord(colAux, line), false))
-                }
-                if (position is Piece) {
-                    if (position.army == army)
-                        break
-                    else {
-                        array.add(Pair(Coord(colAux, line), true))
-                        if (colAux-1>=0 && position.piece == PiecesType.KING)
-                            array.add(Pair(Coord(colAux-1, line), true))
-
-                        break
-                    }
-                }
-            }
-        } else {                      //right
-            for (colAux in (col + 1)..direction) {
-                val position = board[colAux][line]
-                if (position == null) {
-                    array.add(Pair(Coord(colAux, line), false))
-                }
-                if (position is Piece) {
-                    if (position.army == army)
-                        break
-                    else {
-                        array.add(Pair(Coord(colAux, line), true))
-                        if (colAux+1>=0 && position.piece == PiecesType.KING)
-                            array.add(Pair(Coord(colAux+1, line), true))
-
-                        break
-                    }
-                }
-            }
-        }
-        return array
+        return searchVertical(direction, col, line, army, board)
     }
 
     private fun getAllAvailableOptions(): MutableList<Pair<Coord, Boolean>?> {
-        val list = mutableListOf<Pair<Coord, Boolean>?>()
-
-        val listUp = searchRouteLine(0)             //up
-        val listLeft = searchRouteColumn(0)       //left
-        val listRight = searchRouteColumn(7)        //right
-        val listDown = searchRouteLine(7)         //down
-
-
-        list.addAll(listUp)
-        list.addAll(listLeft)
-        list.addAll(listRight)
-        list.addAll(listDown)
-
-        return list
+        return mutableListOf<Pair<Coord, Boolean>?>().apply {
+            addAll(searchRouteLine(0))
+            addAll(searchRouteColumn(0))
+            addAll(searchRouteColumn(7))
+            addAll(searchRouteLine(7))
+        }
     }
 }

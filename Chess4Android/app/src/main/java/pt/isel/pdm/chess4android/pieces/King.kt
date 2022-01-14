@@ -43,7 +43,7 @@ class King(
 
     private fun searchKing(col: Int, line: Int, army: Army): Pair<Int, Int> {
         for (dir in KingDir.values()) {
-            if (col + dir.x in 0..7 && line + dir.y in 0..7)
+            if (col + dir.x in MIN_BOARD..MAX_BOARD && line + dir.y in MIN_BOARD..MAX_BOARD)
                 if (checkIfPieceExists(col + dir.x, line + dir.y, army, piece)) return Pair(
                     col + dir.x,
                     line + dir.y
@@ -139,15 +139,13 @@ class King(
         if (col !in 0..7 || line !in 0..7) {
             return null
         }
-        if (board[col][line]?.army != army) {
-            return if (board[col][line] == null) Pair(Coord(col, line), false) else Pair(
-                Coord(
-                    col,
-                    line
-                ), true
-            )
+        return when {
+            board[col][line]?.army != army -> {
+                if (board[col][line] == null) Pair(Coord(col, line), false)
+                else Pair(Coord(col, line), true)
+            }
+            else -> null
         }
-        return null
     }
 
     private fun canEatCheckingPiece(route: Pair<Coord, Boolean>): Boolean {
