@@ -175,6 +175,7 @@ class MultiplayerModel : GameModel() {
      * (Very ugly implementation :/ )
      */
     private fun canMovePiece(piece: Piece): Boolean {
+        val pieceRoutes = piece.searchRoute()
         var listAux: MutableList<Pair<Coord, Boolean>?>
         for (col in 0..7) {
             for (line in 0..7) {
@@ -188,6 +189,10 @@ class MultiplayerModel : GameModel() {
                     if (listAux.size != 0)
                         if (!canCheckKing(list1, listAux, piece)) {
                             board[piece.col][piece.line] = piece
+                            pieceRoutes.forEach { route ->
+                                if (comparePairCoords(route, enemyPiece.col, enemyPiece.line))
+                                    return true
+                            }
                             return false
                         }
                     board[piece.col][piece.line] = piece
@@ -273,11 +278,23 @@ class MultiplayerModel : GameModel() {
         var y = pieceChecking!!.line
         while (y != king.line) {
             routes.forEach { route ->
-                if (route != null && route.first.line == y && route.first.col == king.col)
+                if (comparePairCoords(route, king.col, y))
                     blockCheckRoutes.add(route)
             }
             y += yInc
         }
         return blockCheckRoutes
     }
+
+    fun comparePairCoords(
+        firstRoute: Pair<Coord, Boolean>?,
+        secondRouteX: Int,
+        secondRouteY: Int
+    ): Boolean {
+        return (firstRoute != null && firstRoute!!.first.col == secondRouteX &&
+                firstRoute.first.line == secondRouteY
+                )
+    }
 }
+
+

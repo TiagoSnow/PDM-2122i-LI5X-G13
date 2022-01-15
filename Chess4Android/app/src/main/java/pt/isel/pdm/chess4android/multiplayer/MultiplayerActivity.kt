@@ -60,13 +60,13 @@ class MultiplayerActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
-//    private val viewModel: MultiplayerActivityViewModel by viewModels ()
+  // private val viewModel: MultiplayerActivityViewModel by viewModels ()
 
     private val viewModel: MultiplayerActivityViewModel by viewModels {
         @Suppress("UNCHECKED_CAST")
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                Log.v("INITSTATE", "value: "+initialState!!.board)
+               // Log.v("INITSTATE", "value: "+initialState!!.board)
                 return MultiplayerActivityViewModel(application, initialState, localPlayer) as T
             }
         }
@@ -78,7 +78,7 @@ class MultiplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.updateOnlineCurrArmy(initialState, localPlayer)
+       viewModel.updateOnlineCurrArmy(initialState, localPlayer)
 
         viewModel.beginBoard()
         binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay, false)
@@ -114,7 +114,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
     }
 
-    fun showDialogFF() {
+    private fun showDialogFF() {
         val dialog = Dialog(this@MultiplayerActivity)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)

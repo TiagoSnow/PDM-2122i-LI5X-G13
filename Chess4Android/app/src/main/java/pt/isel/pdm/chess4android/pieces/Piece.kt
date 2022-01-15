@@ -45,13 +45,4 @@ abstract class Piece {
 
 
 
-    fun pairIsEqual(
-        kingOption: Pair<Coord, Boolean>?,
-        enemyOption: Pair<Coord, Boolean>?
-    ): Boolean {
-        return (kingOption!!.first.col == enemyOption!!.first.col &&
-                kingOption.first.line == enemyOption.first.line
-                )
-    }
-
 }
