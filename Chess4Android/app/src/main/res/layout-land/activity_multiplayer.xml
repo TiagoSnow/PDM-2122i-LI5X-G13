@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".multiplayer.MultiplayerActivity">
+    tools:context=".multiplayer.MultiplayerActivity"
+    tools:layout_editor_absoluteX="19dp"
+    tools:layout_editor_absoluteY="-23dp">
 
 
     <ImageView
@@ -13,48 +15,21 @@
         android:layout_height="61dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintHorizontal_bias="0.976"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.975"
+        app:layout_constraintVertical_bias="0.954"
         app:srcCompat="@mipmap/flag_surrender_round" />
-
-    <TextView
-        android:id="@+id/royale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="104dp"
-        android:fontFamily="cursive"
-        android:text="Royale"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/puzzleOfDay_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.713" />
-
-    <TextView
-        android:id="@+id/chess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="24dp"
-        android:fontFamily="cursive"
-        android:text="Chess"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
     <pt.isel.pdm.chess4android.views.BoardView
         android:id="@+id/boardView_multiplayer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="390dp"
+        android:layout_height="395dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -64,19 +39,47 @@
         android:id="@+id/btPermMenuMul"
         android:layout_width="221dp"
         android:layout_height="61dp"
-        android:layout_marginTop="16dp"
         android:background="@android:color/transparent"
         android:drawableTop="@drawable/ic_black_king"
         android:fontFamily="cursive"
         android:gravity="center"
         android:textColor="#FFFFFF"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/boardView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.894"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.145"
         tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/royale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="Royale"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.164" />
+
+    <TextView
+        android:id="@+id/chess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="Chess"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.716"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.164" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

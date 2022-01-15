@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.GameModel
 import pt.isel.pdm.chess4android.model.PuzzleModel
 import pt.isel.pdm.chess4android.pieces.Coord
@@ -75,6 +76,10 @@ class GameActivityViewModel(
 
     fun getAvailableSolution(col: Int, line: Int): Coord? {
         return gameModel.getAvailableSolution(col, line)
+    }
+
+    fun getNextArmyToPlay(): Army {
+        return gameModel.newArmyToPlay
     }
 
     fun updateSolutions(solution: ArrayList<String>) {

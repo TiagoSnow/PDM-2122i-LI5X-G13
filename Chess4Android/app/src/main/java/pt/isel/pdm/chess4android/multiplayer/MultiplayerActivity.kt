@@ -9,6 +9,8 @@ import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import com.google.android.material.button.MaterialButton
@@ -72,9 +74,42 @@ class MultiplayerActivity : AppCompatActivity() {
             false
         )
 
+        val btMenuPermMul: Button = findViewById(R.id.btPermMenuMul)
+        btMenuPermMul.setOnClickListener {
+            mp!!.start()
+            startActivity(Intent(this@MultiplayerActivity, MainActivity::class.java))
+        }
+
+        val flagSurrender: ImageView = findViewById(R.id.flag_surrender_GA)
+        flagSurrender.setOnClickListener {
+            mp!!.start()
+            showDialogFF()
+        }
+
         binding.boardView.setOnBoardClickedListener(listener)
     }
 
+    fun showDialogFF() {
+        val dialog = Dialog(this@MultiplayerActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.ff_popup)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val btYesFF: MaterialButton = dialog.findViewById(R.id.btYesFF)
+        btYesFF.setOnClickListener {
+            mp!!.start()
+            dialog.dismiss()
+            viewModel.switchArmy()
+            showDialog(viewModel.getNextArmyToPlay().name)
+        }
+        val btNoFF: MaterialButton = dialog.findViewById(R.id.btNoFF)
+        btNoFF.setOnClickListener {
+            mp!!.start()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
