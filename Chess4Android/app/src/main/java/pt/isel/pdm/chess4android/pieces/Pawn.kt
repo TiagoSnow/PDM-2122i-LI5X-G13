@@ -62,7 +62,7 @@ class Pawn(
             val piece: Piece = when (toConvert) {
                 'N' -> Knight(army, board, col, line)
                 'Q' -> Queen(army, board, col, line)
-                'R' -> Rook(army, board, col, line)
+                'R' -> Rook(army, board, col, line, false)
                 'B' -> Bishop(army, board, col, line)
                 else -> this
             }

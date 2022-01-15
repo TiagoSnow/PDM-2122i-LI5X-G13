@@ -8,15 +8,11 @@ class MultiplayerModel : GameModel() {
     private var localPlayerArmy: Army? = null
 
     fun switchArmy() {
-<<<<<<< HEAD
-        Log.v("TEST","My localPlayer is: "+localPlayerArmy + " and the next turn is "+ newArmyToPlay.name)
-=======
         Log.v(
             "TEST",
             "My localPlayer is: " + localPlayerArmy + " and the next turn is " + newArmyToPlay.name
         )
         if (localPlayerArmy != null) return
->>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
@@ -168,15 +164,11 @@ class MultiplayerModel : GameModel() {
         localPlayerArmy = localPlayer
     }
 
-<<<<<<< HEAD
     fun updateBoardFromOnline(board: Array<Array<Piece?>>) {
         //Log.v("BOARD", ""+board[1][1]!!.piece)
         this.board = board
     }
 
-    fun setTurn(turn: Army?) {
-
-=======
     /**
      * Method that checks if piece can be moved without compromising the King
      * (Very ugly implementation :/ )
@@ -286,6 +278,5 @@ class MultiplayerModel : GameModel() {
             y += yInc
         }
         return blockCheckRoutes
->>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
     }
 }

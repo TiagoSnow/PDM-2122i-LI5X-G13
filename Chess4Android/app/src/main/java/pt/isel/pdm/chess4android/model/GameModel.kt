@@ -40,7 +40,7 @@ open class GameModel() {
     /**
      * Resolve Castling in PGN
      */
-    protected fun castlingLeft(armyFlag: Boolean) {
+    /*protected fun castlingLeft(armyFlag: Boolean) {
         val yCoord = if(armyFlag) 7 else 0
         val army = if (armyFlag) Army.WHITE else Army.BLACK
 
@@ -61,9 +61,9 @@ open class GameModel() {
             board[2][yCoord] = King(army, board, 2, yCoord,moved = true)
 
         }
-    }
+    }*/
 
-    private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
+    /*private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
 
         val list: IntArray = if(dir=="left") intArrayOf(2,3) else intArrayOf(5,6)
         val listEnemyOptions =
@@ -73,7 +73,7 @@ open class GameModel() {
             if(board[option][yCoord] == null && )
         }
 
-    }
+    }*/
 
 
     protected fun castlingRight(armyFlag: Boolean) {

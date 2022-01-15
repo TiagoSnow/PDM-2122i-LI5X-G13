@@ -25,7 +25,7 @@ class PuzzleModel() : GameModel() {
                 'K' -> piece = King(army, board, 0, 0,moved = true)
 
                 'O' -> {
-                    if (move.length == 5) castlingLeft(armyFlag)
+                    if (move.length == 5) //castlingLeft(armyFlag)
                     else castlingRight(armyFlag)
                     armyFlag = !armyFlag
                     newArmyToPlay = getArmy(armyFlag)

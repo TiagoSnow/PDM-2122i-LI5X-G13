@@ -12,12 +12,8 @@ import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.tictactoe.game.GameState
-<<<<<<< HEAD
-import pt.isel.pdm.tictactoe.game.model.Board
 import pt.isel.pdm.tictactoe.game.toBoard
-=======
 import pt.isel.pdm.chess4android.model.Board
->>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
 import pt.isel.pdm.tictactoe.game.toGameState
 
 class MultiplayerActivityViewModel(
@@ -25,6 +21,8 @@ class MultiplayerActivityViewModel(
     var initialGameState: GameState?,
     var localPlayer: Army?,
 ) : AndroidViewModel(application) {
+
+    private var isBeginOfGame: Boolean = true
 
     var gameModel: MultiplayerModel = MultiplayerModel()
 
@@ -158,9 +156,13 @@ class MultiplayerActivityViewModel(
     }
 
     fun updateBoardFromOnline(board: Array<Array<Piece?>>, turn: Army?) {
-        if(_game.value?.isSuccess == null) return
+        if(isBeginOfGame){
+            isBeginOfGame = false
+            return
+        }
+        if(_game.value == null) return
         gameModel.updateBoardFromOnline(board)
-        //initialGameState!!.turn = turn!!.name
+        initialGameState!!.turn = turn!!.name
     }
 
     fun updateBoard(prevCoord: Coord, newCoord: Coord) {
