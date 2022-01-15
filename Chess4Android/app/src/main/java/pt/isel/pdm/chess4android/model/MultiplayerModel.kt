@@ -9,7 +9,6 @@ class MultiplayerModel : GameModel() {
 
     fun switchArmy() {
         Log.v("TEST","My localPlayer is: "+localPlayerArmy + " and the next turn is "+ newArmyToPlay.name)
-        if(localPlayerArmy != null) return
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
@@ -144,5 +143,14 @@ class MultiplayerModel : GameModel() {
 
     fun setLocalPlayerArmy(localPlayer: Army) {
         localPlayerArmy = localPlayer
+    }
+
+    fun updateBoardFromOnline(board: Array<Array<Piece?>>) {
+        //Log.v("BOARD", ""+board[1][1]!!.piece)
+        this.board = board
+    }
+
+    fun setTurn(turn: Army?) {
+
     }
 }

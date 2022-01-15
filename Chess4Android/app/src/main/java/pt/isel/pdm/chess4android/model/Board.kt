@@ -1,8 +1,7 @@
 package pt.isel.pdm.tictactoe.game.model
 
 import pt.isel.pdm.chess4android.model.Army
-import pt.isel.pdm.chess4android.pieces.Coord
-import pt.isel.pdm.chess4android.pieces.Piece
+import pt.isel.pdm.chess4android.pieces.*
 
 /**
  * Represents a Tic-Tac-Toe board. Instances are immutable.

@@ -1,5 +1,6 @@
 package pt.isel.pdm.chess4android.model
 
+import android.util.Log
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,7 +29,7 @@ class GamesRepository(private val mapper: Gson) {
         challenge: ChallengeInfo,
         onComplete: (Result<Pair<ChallengeInfo, GameState>>) -> Unit
     ) {
-        val gameState = Board().toGameState(challenge.id)
+        val gameState = Board().toGameState(challenge.id, null)
         Firebase.firestore.collection(GAMES_COLLECTION)
             .document(challenge.id)
             .set(hashMapOf(GAME_STATE_KEY to mapper.toJson(gameState)))
@@ -67,6 +68,7 @@ class GamesRepository(private val mapper: Gson) {
                 }
 
                 if (snapshot?.exists() == true) {
+                    Log.v("TT", "Atualizou")
                     val gameState = mapper.fromJson(
                         snapshot.get(GAME_STATE_KEY) as String,
                         GameState::class.java

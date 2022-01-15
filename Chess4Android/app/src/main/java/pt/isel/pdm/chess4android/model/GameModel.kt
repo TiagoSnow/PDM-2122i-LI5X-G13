@@ -70,7 +70,7 @@ open class GameModel() {
     var lastPGNMoveCol = 0
     var lastPGNMoveLine = 0
 
-    protected fun getArmy(armyFlag: Boolean): Army {
+    fun getArmy(armyFlag: Boolean): Army {
         return if (armyFlag)
             Army.WHITE
         else

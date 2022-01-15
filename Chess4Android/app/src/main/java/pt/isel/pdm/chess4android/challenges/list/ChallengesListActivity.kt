@@ -53,7 +53,7 @@ class ChallengesListActivity : AppCompatActivity() {
                 val intent = MultiplayerActivity.buildIntent(
                     origin = this,
                     turn = Army.firstToMove,
-                    local = Army.other,
+                    local = Army.BLACK,
                     challengeInfo = createdGameInfo.first
                 )
                 startActivity(intent)
