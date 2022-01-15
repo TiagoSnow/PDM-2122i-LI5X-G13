@@ -18,15 +18,15 @@
     <string name="reset">Reset</string>
     <string name="winnerText">A equipa vencedora foi a </string>
     <string name="create_challenge_prompt_challenger_name">Nome</string>
-    <string name="create_challenge_prompt_message">Mensage,</string>
+    <string name="create_challenge_prompt_message">Mensagem</string>
     <string name="create_challenge_button_label_in_short">Postar</string>
     <string name="create_challenge_button_label">Postar desafio</string>
-    <string name="create_challenge_waiting_message">à espera pelo oponente</string>
+    <string name="create_challenge_waiting_message">À espera pelo oponente</string>
     <string name="list_create_challenge_button_label">Novo desafio</string>
     <string name="cancel_challenge_button_label">Cancelar</string>
     <string name="error_creating_challenge">Não foi possivel criar o desafio</string>
     <string name="error_getting_list">Não foi possivel fazer fetch da lista de desafios</string>
-    <string name="accept_challenge_dialog_title">Aceita %s\'s desafios?</string>
+    <string name="accept_challenge_dialog_title">Aceita %s\ desafio?</string>
     <string name="accept_challenge_dialog_ok">Ok</string>
     <string name="accept_challenge_dialog_cancel">Cancelar</string>
 </resources>

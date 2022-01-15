@@ -122,6 +122,8 @@ class MultiplayerActivity : AppCompatActivity() {
             clickSound!!.start()
             dialog.dismiss()
             viewModel.switchArmy()
+            if(initialState != null)
+                viewModel.switchArmy()
             showDialog(viewModel.getNextArmyToPlay().name)
         }
         val btNoFF: MaterialButton = dialog.findViewById(R.id.btNoFF)

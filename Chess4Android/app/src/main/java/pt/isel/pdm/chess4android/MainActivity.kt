@@ -16,12 +16,6 @@ import pt.isel.pdm.chess4android.multiplayer.MultiplayerActivity
 import pt.isel.pdm.tictactoe.challenges.list.ChallengesListActivity
 import java.util.*
 
-/*@TODO
-    ADD CASTLING TO ROUTE
-    IMPROVE QUEEN MOVEMENT (SAME AS ROOK AND BISHOP)
- */
-
-
 const val FLAG: String = "Idiom_flag"
 
 class MainActivity : AppCompatActivity() {

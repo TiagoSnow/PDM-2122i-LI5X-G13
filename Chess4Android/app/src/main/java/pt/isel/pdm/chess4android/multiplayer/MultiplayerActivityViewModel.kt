@@ -46,7 +46,7 @@ class MultiplayerActivityViewModel(
     private lateinit var gameSubscription: ListenerRegistration
 
     fun setGameSubscription() {
-        if(initialGameState != null) {
+        if(isChallenge()) {
             gameSubscription = getApplication<PuzzleOfDayApplication>()
                 .gamesRepository.subscribeToGameStateChanges(
                     challengeId = initialGameState!!.id,
@@ -56,7 +56,9 @@ class MultiplayerActivityViewModel(
         }
     }
 
-
+    fun isChallenge(): Boolean {
+        return initialGameState != null
+    }
 
     fun beginBoard() {
         gameModel.beginBoard()
@@ -133,11 +135,11 @@ class MultiplayerActivityViewModel(
     fun isThisPlayerTurn(): Boolean {
         if(localPlayer == null) return true
         val turn = getTurn()
-        return localPlayer == turn && turn == getNextArmyToPlay()
+        return localPlayer!!.name == turn.name && turn.name == getNextArmyToPlay().name
     }
 
     fun getTurn(): Army {
-        if(initialGameState == null) return getNextArmyToPlay()
+        if(!isChallenge()) return getNextArmyToPlay()
         return gameModel.getArmy(initialGameState?.turn == "WHITE")
     }
 
@@ -151,16 +153,28 @@ class MultiplayerActivityViewModel(
     }
 
     fun updateBoardFromOnline(board: Array<Array<Piece?>>, turn: Army?) {
-        if(isBeginOfGame){
-            isBeginOfGame = false
-            beginBoard()
-            _game.value?.onSuccess { Board(getNextArmyToPlay(), gameModel.board) }
-            _game.value?.onFailure { Board(getNextArmyToPlay(), gameModel.board) }
-            return
+        if(isChallenge()) {
+            if (isBeginOfGame) {
+                isBeginOfGame = false
+                beginBoard()
+                val newBoard = Board(getNextArmyToPlay(), gameModel.board)
+                getApplication<PuzzleOfDayApplication>().gamesRepository.updateGameState(
+                    gameState = newBoard.toGameState(
+                        initialGameState!!.id,
+                        initialGameState!!.turn
+                    ),
+                    onComplete = { result ->
+                        if (result.isFailure)
+                            throw IllegalStateException("Error updating board at player: $localPlayer")
+                    }
+                )
+                return
+            }
+            if (_game.value == null) return
+            gameModel.updateBoardFromOnline(board)
+            initialGameState!!.turn = turn!!.name
+            gameModel.newArmyToPlay = turn
         }
-        if(_game.value == null) return
-        gameModel.updateBoardFromOnline(board)
-        initialGameState!!.turn = turn!!.name
     }
 
 }

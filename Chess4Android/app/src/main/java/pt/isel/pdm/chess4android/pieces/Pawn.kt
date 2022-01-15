@@ -19,7 +19,6 @@ class Pawn(
         var startingPoint = 0
         var toConvert: Char? = null
 
-        //TODO UPGRADE PAWN
         if ('=' in moveTemp) {
             toConvert = if ('x' in moveTemp) {
                 moveTemp[5]
