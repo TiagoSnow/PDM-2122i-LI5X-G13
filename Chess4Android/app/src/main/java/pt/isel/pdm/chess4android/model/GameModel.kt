@@ -37,60 +37,6 @@ open class GameModel() {
         }
     }
 
-    /**
-     * Resolve Castling in PGN
-     */
-    protected fun castlingLeft(armyFlag: Boolean) {
-        val yCoord = if(armyFlag) 7 else 0
-        val army = if (armyFlag) Army.WHITE else Army.BLACK
-
-        val piece: Piece? = board[0][yCoord]
-        val king : Piece? = board[4][yCoord]
-
-
-        if((piece!=null && piece is Rook && !piece.moved)       //Se é Rook e ainda não se mexeu
-            && (king!=null && king is King && !king.moved)      //Se é King e ainda não se mexeu
-            && checkIfPathIsSafeToCastling(yCoord,dir="left")   //caminho não tem peças, nem options enemy
-            && king.pieceChecking==null){                       //King não está em check
-
-            board[0][yCoord] = null
-            board[3][yCoord] = Rook(army, board, 3, yCoord, moved = true)
-
-            //update King
-            board[4][yCoord] = null
-            board[2][yCoord] = King(army, board, 2, yCoord,moved = true)
-
-        }
-    }
-
-    private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
-
-        val list: IntArray = if(dir=="left") intArrayOf(2,3) else intArrayOf(5,6)
-        val listEnemyOptions =
-        //army-> WHITE else BLACK
-
-        for (option in list){
-            if(board[option][yCoord] == null && )
-        }
-
-    }
-
-
-    protected fun castlingRight(armyFlag: Boolean) {
-
-        val yCoord = if (armyFlag) 7 else 0
-        val army = if (armyFlag) Army.WHITE else Army.BLACK
-
-        board[7][yCoord] = null
-        board[5][yCoord] = Rook(army, board, 5, yCoord, moved = true)
-
-        //update King
-        board[4][yCoord] = null
-        board[6][yCoord] = King(army, board, 6, yCoord,moved = true)
-
-    }
-
-
 
     var lastPGNMoveCol = 0
     var lastPGNMoveLine = 0
