@@ -103,48 +103,7 @@ class MultiplayerActivity : AppCompatActivity() {
             //atualizar a view
             binding.boardView.movePiece(prevCoord, newCoord, viewModel.getPiece(newCoord))
 
-            //popDaPromotion
-            if(viewModel.verifyPiecePromotion(newCoord)){
-                val dialog = Dialog(this@MultiplayerActivity)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(false)
-                dialog.setContentView(R.layout.promotion_popup)
-                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                val mDialogBishop: MaterialButton = dialog.findViewById(R.id.btBishop)
-                mDialogBishop.setOnClickListener {
-                    mp!!.start()
-                    viewModel.promotePiece(newCoord,PiecesType.BISHOP)
-                    binding.boardView.updateView(viewModel.getBoard(),viewModel.getNextArmyToPlay(),false)
-                    dialog.dismiss()
-                }
-
-                val mDialogQueen: MaterialButton = dialog.findViewById(R.id.btQueen)
-                mDialogQueen.setOnClickListener {
-                    mp!!.start()
-                    viewModel.promotePiece(newCoord,PiecesType.QUEEN)
-                    binding.boardView.updateView(viewModel.getBoard(),viewModel.getNextArmyToPlay(),false)
-                    dialog.dismiss()
-                }
-
-                val mDialogKnight: MaterialButton = dialog.findViewById(R.id.btKnight)
-                mDialogKnight.setOnClickListener {
-                    mp!!.start()
-                    viewModel.promotePiece(newCoord,PiecesType.KNIGHT)
-                    binding.boardView.updateView(viewModel.getBoard(),viewModel.getNextArmyToPlay(),false)
-                    dialog.dismiss()
-                }
-
-                val mDialogRook: MaterialButton = dialog.findViewById(R.id.btRook)
-                mDialogRook.setOnClickListener {
-                    mp!!.start()
-                    viewModel.promotePiece(newCoord,PiecesType.ROOK)
-                    binding.boardView.updateView(viewModel.getBoard(),viewModel.getNextArmyToPlay(),false)
-                    dialog.dismiss()
-                }
-
-                dialog.show()
-            }
+            if(viewModel.verifyPiecePromotion(newCoord)) onPromotion(newCoord)
 
             onCheck(newCoord)
             viewModel.switchArmy()
@@ -167,6 +126,48 @@ class MultiplayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun onPromotion(newCoord: Coord?) {
+        val dialog = Dialog(this@MultiplayerActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.promotion_popup)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val mDialogBishop: MaterialButton = dialog.findViewById(R.id.btBishop)
+        mDialogBishop.setOnClickListener {
+            mp!!.start()
+            viewModel.promotePiece(newCoord, PiecesType.BISHOP)
+            binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
+            dialog.dismiss()
+        }
+
+        val mDialogQueen: MaterialButton = dialog.findViewById(R.id.btQueen)
+        mDialogQueen.setOnClickListener {
+            mp!!.start()
+            viewModel.promotePiece(newCoord, PiecesType.QUEEN)
+            binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
+            dialog.dismiss()
+        }
+
+        val mDialogKnight: MaterialButton = dialog.findViewById(R.id.btKnight)
+        mDialogKnight.setOnClickListener {
+            mp!!.start()
+            viewModel.promotePiece(newCoord, PiecesType.KNIGHT)
+            binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
+            dialog.dismiss()
+        }
+
+        val mDialogRook: MaterialButton = dialog.findViewById(R.id.btRook)
+        mDialogRook.setOnClickListener {
+            mp!!.start()
+            viewModel.promotePiece(newCoord, PiecesType.ROOK)
+            binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     fun showDialog(winner: String) {
         //passar para nova activity que mostra a mensagem a dizer checkmate
         val dialog = Dialog(this@MultiplayerActivity)
@@ -176,7 +177,7 @@ class MultiplayerActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val text: TextView = dialog.findViewById(R.id.winnerText)
-        text.text = getString(R.string.winnerText) + " " + winner + "!"
+        text.text = """${getString(R.string.winnerText)} $winner!"""
 
         val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btOk)
         mDialogMenu.setOnClickListener {

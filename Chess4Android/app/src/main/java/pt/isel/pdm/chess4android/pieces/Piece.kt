@@ -42,44 +42,7 @@ abstract class Piece {
 
     abstract fun searchRoute(): MutableList<Pair<Coord, Boolean>?>
 
-    fun canMovePiece(
-        pieceOptions: MutableList<Pair<Coord, Boolean>?>,
-    ): Boolean {
-        var listAux: MutableList<Pair<Coord, Boolean>?>
-        var list = pieceOptions
-        for (col in 0..7) {
-            for (line in 0..7) {
-                val enemyPiece = board[col][line]
-                if ((enemyPiece is Rook || enemyPiece is Queen || enemyPiece is Bishop)
-                    && enemyPiece.army != army
-                ) {
-                    val list1 = enemyPiece.searchRoute()
-                    board[this.col][this.line] = null
-                    listAux = enemyPiece.searchRoute()
-                    if (listAux.size != 0)
-                        if (!interception2(list1, listAux))
-                            return false
-                }
-            }
-        }
-        board[this.col][this.line] = this
-        return true
-    }
 
-    private fun interception2(
-        optionsWithPiece: MutableList<Pair<Coord, Boolean>?>,
-        optionsWithoutPiece: MutableList<Pair<Coord, Boolean>?>
-    ): Boolean {
-        //
-        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
-        val pair: Pair<Coord, Boolean> = Pair(Coord(this.col, this.line), false)
-        val difference = optionsWithoutPiece.toSet().minus(optionsWithPiece.toSet())
-        difference.forEach { enemyOption ->
-            if (enemyOption != null && board[enemyOption.first.col][enemyOption.first.line]?.piece == PiecesType.KING)
-                return false
-        }
-        return true
-    }
 
 
     fun pairIsEqual(

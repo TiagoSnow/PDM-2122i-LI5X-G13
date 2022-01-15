@@ -7,6 +7,7 @@ class PuzzleModel() : GameModel() {
     fun placePieces(pgn: String) {
         beginBoard()
         var armyFlag = true
+
         val lst: List<String> = pgn.replace("+", "").split(" ")
         var piece: Piece
         for (move: String in lst) {
