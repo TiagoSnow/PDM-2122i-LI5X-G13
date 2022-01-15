@@ -70,7 +70,7 @@ class GameActivity : AppCompatActivity() {
         viewModel.dataOfDay.observe(this) {
             updateModel(viewModel.dataOfDay.value!!)
         }
-        viewModel.error.observe(this) { displayError() }
+        viewModel.error.observe(this) { }
     }
 
     private fun updateModel(puzzle: PuzzleInfoDTO) {
@@ -81,18 +81,9 @@ class GameActivity : AppCompatActivity() {
             viewModel.gameModel.newArmyToPlay,
             false
         )
-        //if(viewModel.getIsChecking())
-        binding.boardView.updateCheckView()
         viewModel.updateSolutions(puzzle.puzzle.solution)
     }
 
-    /**
-     * Helper method used do display an error, if one has occured while fetching the day's quote.
-     */
-    private fun displayError() {
-        //TODO: IMPLEMENT TOAST TO SHOW ERROR TO USER
-        //Toast.makeText(this, R.string.get_quote_error, Toast.LENGTH_LONG).show()
-    }
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
