@@ -1,11 +1,15 @@
 package pt.isel.pdm.chess4android.model
 
+import android.util.Log
 import pt.isel.pdm.chess4android.pieces.*
 
 class MultiplayerModel : GameModel() {
     private var isDoubleCheck: Boolean = false
+    private var localPlayerArmy: Army? = null
 
     fun switchArmy() {
+        Log.v("TEST","My localPlayer is: "+localPlayerArmy + " and the next turn is "+ newArmyToPlay.name)
+        if(localPlayerArmy != null) return
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
@@ -117,7 +121,7 @@ class MultiplayerModel : GameModel() {
         for (col in 0..7)
             for (line in 0..7) {
                 val piece = getPiece(col, line)
-                if (piece != null && piece.army == newArmyToPlay /*&& piece != pieceChecking*/) {
+                if (piece != null && piece.army == newArmyToPlay) {
                     if(piece is King) {
                         val kingRoutes = piece.searchRoute()
                         if(kingRoutes.isNotEmpty()) {
@@ -136,5 +140,9 @@ class MultiplayerModel : GameModel() {
             }
         switchArmy()
         return true
+    }
+
+    fun setLocalPlayerArmy(localPlayer: Army) {
+        localPlayerArmy = localPlayer
     }
 }

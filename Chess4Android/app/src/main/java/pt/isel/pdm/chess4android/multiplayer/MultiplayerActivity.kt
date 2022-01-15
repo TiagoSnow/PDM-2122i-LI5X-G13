@@ -37,16 +37,15 @@ class MultiplayerActivity : AppCompatActivity() {
                 .putExtra(LOCAL_PLAYER_EXTRA, local.name)
     }
 
-    private val localPlayer: Army by lazy {
+    private val localPlayer: Army? by lazy {
         val armyString = intent.getStringExtra(LOCAL_PLAYER_EXTRA)
         if (armyString != null) getArmy(armyString[0])
-        else throw IllegalArgumentException("Mandatory extra $LOCAL_PLAYER_EXTRA not present")
+        else null
     }
 
 
-    private val initialState: GameState by lazy {
-        intent.getParcelableExtra<GameState>(GAME_EXTRA) ?:
-        throw IllegalArgumentException("Mandatory extra $GAME_EXTRA not present")
+    private val initialState: GameState? by lazy {
+        intent.getParcelableExtra<GameState>(GAME_EXTRA)
     }
 
 
@@ -61,9 +60,7 @@ class MultiplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.initialGameState = initialState
-        viewModel.localPlayer = localPlayer
-        viewModel.updateCurrArmy()
+        viewModel.updateOnlineCurrArmy(initialState, localPlayer)
 
         viewModel.beginBoard()
         binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay, false)
