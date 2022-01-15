@@ -66,8 +66,8 @@ private fun String.toBoardContents(): Array<Array<Piece?>> {
             'B' -> board[currCol][currLine] = Bishop(getArmy(this[idx+1]), board, currCol, currLine)
             'N' -> board[currCol][currLine] = Knight(getArmy(this[idx+1]), board, currCol, currLine)
             'Q' -> board[currCol][currLine] = Queen(getArmy(this[idx+1]), board, currCol, currLine)
-            'R' -> board[currCol][currLine] = Rook(getArmy(this[idx+1]), board, currCol, currLine)
-            'K' -> board[currCol][currLine] = King(getArmy(this[idx+1]), board, currCol, currLine)
+            'R' -> board[currCol][currLine] = Rook(getArmy(this[idx+1]), board, currCol, currLine,moved = false)
+            'K' -> board[currCol][currLine] = King(getArmy(this[idx+1]), board, currCol, currLine,moved = false)
             'P' -> board[currCol][currLine] = Pawn(getArmy(this[idx+1]), board, currCol, currLine)
             else -> board[currCol][currLine] = null
         }

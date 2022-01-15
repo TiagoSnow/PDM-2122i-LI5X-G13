@@ -14,7 +14,7 @@ class PuzzleModel() : GameModel() {
             //isChecking = '+' in move
             val army = getArmy(armyFlag)
             when (move[0]) {
-                'R' -> piece = Rook(army, board, 0, 0)
+                'R' -> piece = Rook(army, board, 0, 0,moved = true)
 
                 'B' -> piece = Bishop(army, board, 0, 0)
 
@@ -22,7 +22,7 @@ class PuzzleModel() : GameModel() {
 
                 'N' -> piece = Knight(army, board, 0, 0)
 
-                'K' -> piece = King(army, board, 0, 0)
+                'K' -> piece = King(army, board, 0, 0,moved = true)
 
                 'O' -> {
                     if (move.length == 5) castlingLeft(armyFlag)

@@ -126,7 +126,7 @@ class MultiplayerModel : GameModel() {
             PiecesType.QUEEN -> board[newCoord.col][newCoord.line] =
                 Queen(army, board, newCoord.col, newCoord.line)
             PiecesType.ROOK -> board[newCoord.col][newCoord.line] =
-                Rook(army, board, newCoord.col, newCoord.line)
+                Rook(army, board, newCoord.col, newCoord.line,moved = true)
             else -> {}
         }
     }
