@@ -3,9 +3,12 @@ package pt.isel.pdm.chess4android
 import android.app.Application
 import androidx.room.Room
 import androidx.work.*
+import com.google.gson.Gson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import pt.isel.pdm.chess4android.history.HistoryDataAccess.*
+import pt.isel.pdm.chess4android.model.GamesRepository
+import pt.isel.pdm.tictactoe.challenges.ChallengesRepository
 import java.util.concurrent.TimeUnit
 
 const val APP_TAG = "PuzzleOfDay"
@@ -53,4 +56,16 @@ class PuzzleOfDayApplication: Application() {
                 workRequest
             )
     }
+
+    private val mapper: Gson by lazy { Gson() }
+
+    /**
+     * The challenges' repository
+     */
+    val challengesRepository: ChallengesRepository by lazy { ChallengesRepository() }
+
+    /**
+     * The games' repository
+     */
+    val gamesRepository: GamesRepository by lazy { GamesRepository(mapper) }
 }

@@ -42,6 +42,13 @@
         <activity
             android:name=".GameActivity"
             android:exported="false" />
+
+        <activity android:name="pt.isel.pdm.tictactoe.challenges.list.ChallengesListActivity"
+            android:exported="false"/>
+
+        <activity android:name="pt.isel.pdm.tictactoe.challenges.create.CreateChallengeActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

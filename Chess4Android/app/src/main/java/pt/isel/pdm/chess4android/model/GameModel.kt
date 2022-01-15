@@ -2,9 +2,11 @@ package pt.isel.pdm.chess4android.model
 
 import pt.isel.pdm.chess4android.pieces.*
 
+const val BOARD_SIZE = 8
+
 open class GameModel() {
     var newArmyToPlay: Army = Army.WHITE
-    var board: Array<Array<Piece?>> = Array(8) { Array<Piece?>(8) { null } }
+    var board: Array<Array<Piece?>> = Array(BOARD_SIZE) { Array<Piece?>(BOARD_SIZE) { null } }
 
     //var isChecking: Boolean = false // to delete?
     lateinit var solutions: ArrayList<Pair<Coord, Coord>>

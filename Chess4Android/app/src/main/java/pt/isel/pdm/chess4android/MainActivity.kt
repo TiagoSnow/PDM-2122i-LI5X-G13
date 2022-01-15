@@ -13,6 +13,7 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import pt.isel.pdm.chess4android.multiplayer.MultiplayerActivity
+import pt.isel.pdm.tictactoe.challenges.list.ChallengesListActivity
 import java.util.*
 
 /*@TODO
@@ -68,6 +69,11 @@ class MainActivity : AppCompatActivity() {
         binding.historyButton.setOnClickListener {
             mp.start()
             startActivity(Intent(this, HistoryActivity::class.java))
+        }
+
+        binding.challengeButton.setOnClickListener {
+            mp.start()
+            startActivity(Intent(this, ChallengesListActivity::class.java))
         }
 
         binding.imageButton.setOnClickListener {

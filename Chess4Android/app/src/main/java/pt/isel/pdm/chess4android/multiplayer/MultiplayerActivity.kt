@@ -1,6 +1,7 @@
 package pt.isel.pdm.chess4android.multiplayer
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -15,10 +16,40 @@ import pt.isel.pdm.chess4android.BoardClickListener
 import pt.isel.pdm.chess4android.MainActivity
 import pt.isel.pdm.chess4android.R
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
+import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
+import pt.isel.pdm.tictactoe.challenges.ChallengeInfo
+import pt.isel.pdm.tictactoe.game.GameState
+import pt.isel.pdm.tictactoe.game.getArmy
+import pt.isel.pdm.tictactoe.game.model.Board
+import pt.isel.pdm.tictactoe.game.toGameState
+
+private const val GAME_EXTRA = "MultiplayerActivity.GameInfoExtra"
+private const val LOCAL_PLAYER_EXTRA = "MultiplayerActivity.LocalPlayerExtra"
 
 class MultiplayerActivity : AppCompatActivity() {
+
+    companion object {
+        fun buildIntent(origin: Context, local: Army, turn: Army, challengeInfo: ChallengeInfo) =
+            Intent(origin, MultiplayerActivity::class.java)
+                .putExtra(GAME_EXTRA, Board(turn = turn).toGameState(challengeInfo.id))
+                .putExtra(LOCAL_PLAYER_EXTRA, local.name)
+    }
+
+    private val localPlayer: Army by lazy {
+        val armyString = intent.getStringExtra(LOCAL_PLAYER_EXTRA)
+        if (armyString != null) getArmy(armyString[0])
+        else throw IllegalArgumentException("Mandatory extra $LOCAL_PLAYER_EXTRA not present")
+    }
+
+
+    private val initialState: GameState by lazy {
+        intent.getParcelableExtra<GameState>(GAME_EXTRA) ?:
+        throw IllegalArgumentException("Mandatory extra $GAME_EXTRA not present")
+    }
+
+
     private val binding by lazy {
         ActivityGameBinding.inflate(layoutInflater)
     }
@@ -29,6 +60,10 @@ class MultiplayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        viewModel.initialGameState = initialState
+        viewModel.localPlayer = localPlayer
+        viewModel.updateCurrArmy()
 
         viewModel.beginBoard()
         binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay, false)

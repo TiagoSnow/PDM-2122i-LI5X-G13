@@ -16,5 +16,17 @@
     <string name="history">Puzzle History</string>
     <string name="reset">Reset</string>
     <string name="winnerText">The winner is team </string>
+    <string name="create_challenge_prompt_challenger_name">Name</string>
+    <string name="create_challenge_prompt_message">Message</string>
+    <string name="create_challenge_button_label_in_short">Post it</string>
+    <string name="create_challenge_button_label">Post challenge</string>
+    <string name="create_challenge_waiting_message">Waiting for the contender</string>
+    <string name="list_create_challenge_button_label">New Chanllenge</string>
+    <string name="cancel_challenge_button_label">Cancel</string>
+    <string name="error_creating_challenge">Could not create challenge</string>
+    <string name="error_getting_list">Could not fetch challenges list</string>
+    <string name="accept_challenge_dialog_title">Accept %s\'s challenge?</string>
+    <string name="accept_challenge_dialog_ok">Ok</string>
+    <string name="accept_challenge_dialog_cancel">Cancel</string>
 
 </resources>
