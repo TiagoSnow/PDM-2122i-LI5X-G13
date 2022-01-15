@@ -3,7 +3,8 @@ package pt.isel.pdm.chess4android.multiplayer
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import pt.isel.pdm.chess4android.PuzzleOfDayApplication
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.MultiplayerModel
@@ -11,20 +12,61 @@ import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.tictactoe.game.GameState
+<<<<<<< HEAD
+import pt.isel.pdm.tictactoe.game.model.Board
+import pt.isel.pdm.tictactoe.game.toBoard
+=======
 import pt.isel.pdm.chess4android.model.Board
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
 import pt.isel.pdm.tictactoe.game.toGameState
 
 class MultiplayerActivityViewModel(
     application: Application,
-    private val state: SavedStateHandle
+    var initialGameState: GameState?,
+    var localPlayer: Army?,
 ) : AndroidViewModel(application) {
 
     var gameModel: MultiplayerModel = MultiplayerModel()
-    var initialGameState: GameState? = null
-    var localPlayer: Army? = null
+
+
+    init {
+        beginBoard()
+    }
+
+    private val _game: MutableLiveData<Result<Board>> by lazy {
+        MutableLiveData(Result.success(getOnlineBoard()/*initialGameState!!.toBoard()*/))
+    }
+
+    private fun getOnlineBoard(): Board {
+        return Board(getTurn(), getBoard())
+    }
+
+    val game: LiveData<Result<Board>> = _game
+
+    private val gameSubscription = getApplication<PuzzleOfDayApplication>()
+        .gamesRepository.subscribeToGameStateChanges(
+            challengeId = initialGameState!!.id,
+            onSubscriptionError = { _game.value = Result.failure(it) },
+            onGameStateChange = { _game.value = Result.success(it.toBoard()) }
+        )
+
+    /**
+     * View model is destroyed
+     */
+    override fun onCleared() {
+        super.onCleared()
+        getApplication<PuzzleOfDayApplication>().gamesRepository.deleteGame(
+            challengeId = initialGameState!!.id,
+            onComplete = { }
+        )
+        gameSubscription.remove()
+    }
 
     fun beginBoard() {
         gameModel.beginBoard()
+        /*_game.value!!.onSuccess {
+            it.beginBoard()
+        }*/
     }
 
     fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
@@ -38,7 +80,7 @@ class MultiplayerActivityViewModel(
         if(localPlayer != null) {
             val newBoard = Board(getNextArmyToPlay(), gameModel.board)
             getApplication<PuzzleOfDayApplication>().gamesRepository.updateGameState(
-                gameState = newBoard.toGameState(initialGameState!!.id),
+                gameState = newBoard.toGameState(initialGameState!!.id, getNextTurn()),
                 onComplete = { result ->
                     if(result.isFailure)
                         throw IllegalStateException("Error updating board at player: $localPlayer")
@@ -88,12 +130,43 @@ class MultiplayerActivityViewModel(
     }
 
     fun updateOnlineCurrArmy(initialState: GameState?, localPlayer: Army?) {
-        initialGameState = initialState
-        this.localPlayer = localPlayer
         Log.v("TEST","my localPlayer is "+localPlayer)
-        if(this.localPlayer != null && getNextArmyToPlay() != this.localPlayer) {
+        if(localPlayer != null && getNextArmyToPlay() != localPlayer) {
             gameModel.setLocalPlayerArmy(localPlayer!!)
             gameModel.newArmyToPlay = localPlayer
         }
     }
+
+    fun isThisPlayerTurn(): Boolean {
+        if(localPlayer == null) return true
+        val turn = getTurn()
+        return localPlayer == turn && turn == getNextArmyToPlay()
+    }
+
+    fun getTurn(): Army {
+        if(initialGameState == null) return getNextArmyToPlay()
+        return gameModel.getArmy(initialGameState?.turn == "WHITE")
+    }
+
+    fun getNextTurn(): String {
+        val turn = getTurn()
+        return if(turn == Army.BLACK) {
+            Army.WHITE.name
+        } else {
+            Army.BLACK.name
+        }
+    }
+
+    fun updateBoardFromOnline(board: Array<Array<Piece?>>, turn: Army?) {
+        if(_game.value?.isSuccess == null) return
+        gameModel.updateBoardFromOnline(board)
+        //initialGameState!!.turn = turn!!.name
+    }
+
+    fun updateBoard(prevCoord: Coord, newCoord: Coord) {
+        _game.value?.onSuccess {
+            it.makeMove(newCoord, prevCoord)
+        }
+    }
 }
+

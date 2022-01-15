@@ -8,11 +8,14 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import pt.isel.pdm.chess4android.BoardClickListener
 import pt.isel.pdm.chess4android.MainActivity
@@ -35,13 +38,15 @@ class MultiplayerActivity : AppCompatActivity() {
     companion object {
         fun buildIntent(origin: Context, local: Army, turn: Army, challengeInfo: ChallengeInfo) =
             Intent(origin, MultiplayerActivity::class.java)
-                .putExtra(GAME_EXTRA, Board(turn = turn).toGameState(challengeInfo.id))
+                .putExtra(GAME_EXTRA, Board(turn = turn).toGameState(challengeInfo.id, null))
                 .putExtra(LOCAL_PLAYER_EXTRA, local.name)
     }
 
     private val localPlayer: Army? by lazy {
         val armyString = intent.getStringExtra(LOCAL_PLAYER_EXTRA)
-        if (armyString != null) getArmy(armyString[0])
+        if (armyString != null) {
+            getArmy(armyString[0])
+        }
         else null
     }
 
@@ -55,7 +60,18 @@ class MultiplayerActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: MultiplayerActivityViewModel by viewModels()
+//    private val viewModel: MultiplayerActivityViewModel by viewModels ()
+
+    private val viewModel: MultiplayerActivityViewModel by viewModels {
+        @Suppress("UNCHECKED_CAST")
+        object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                Log.v("INITSTATE", "value: "+initialState!!.board)
+                return MultiplayerActivityViewModel(application, initialState, localPlayer) as T
+            }
+        }
+    }
+
     var mp: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +103,15 @@ class MultiplayerActivity : AppCompatActivity() {
         }
 
         binding.boardView.setOnBoardClickedListener(listener)
+
+        viewModel.game.observe(this) {
+            it.onSuccess {
+
+                viewModel.updateBoardFromOnline(it.board, it.turn)
+                binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
+            }
+        }
+
     }
 
     fun showDialogFF() {
@@ -113,19 +138,21 @@ class MultiplayerActivity : AppCompatActivity() {
 
     private var listener: BoardClickListener = object : BoardClickListener {
         override fun onTileClicked(col: Int, line: Int) {
-            if (viewModel.gameModel.board[col][line] != null &&
-                viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)
-            ) {
-                val availableOptions = viewModel.getAllOptions(col, line)
-                if (availableOptions != null) {
-                    for (option in availableOptions) {
-                        if (option != null) {
-                            binding.boardView.paintBoard(option.first.col, option.first.line)
-                            binding.boardView.updateOptions(option.first)
+            if(viewModel.isThisPlayerTurn()) {
+                if (viewModel.gameModel.board[col][line] != null &&
+                    viewModel.getNextArmyToPlay() == viewModel.currPieceArmy(col, line)
+                ) {
+                    val availableOptions = viewModel.getAllOptions(col, line)
+                    if (availableOptions != null) {
+                        for (option in availableOptions) {
+                            if (option != null) {
+                                binding.boardView.paintBoard(option.first.col, option.first.line)
+                                binding.boardView.updateOptions(option.first)
+                            }
                         }
+                    } else {
+                        binding.boardView.resetOptions()
                     }
-                } else {
-                    binding.boardView.resetOptions()
                 }
             }
         }
