@@ -48,17 +48,7 @@ class MultiplayerActivityViewModel(
             onGameStateChange = { _game.value = Result.success(it.toBoard()) }
         )
 
-    /**
-     * View model is destroyed
-     */
-    override fun onCleared() {
-        super.onCleared()
-        getApplication<PuzzleOfDayApplication>().gamesRepository.deleteGame(
-            challengeId = initialGameState!!.id,
-            onComplete = { }
-        )
-        gameSubscription.remove()
-    }
+
 
     fun beginBoard() {
         gameModel.beginBoard()

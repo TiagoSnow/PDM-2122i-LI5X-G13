@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="deploymentTargetDropDown">
-<<<<<<< HEAD
     <runningDeviceTargetSelectedWithDropDown>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\marco\.android\avd\Galaxy_Nexus_API_27.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="HYFDU19222003660" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-01-15T21:25:32.197990500Z" />
-=======
->>>>>>> 752bb94dfc368c95d4055ee13086d4bc820a8c6e
+    <timeTargetWasSelectedWithDropDown value="2022-01-15T22:14:40.685462600Z" />
+    <multipleDevicesSelectedInDropDown value="true" />
     <runningDeviceTargetsSelectedWithDialog>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\marco\.android\avd\Galaxy_Nexus_API_27.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="HYFDU19222003660" />
           </Key>
         </deviceKey>
       </Target>
@@ -30,8 +28,8 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="R58N856GDXA" />
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\tiago\.android\avd\Pixel_2_API_29.avd" />
           </Key>
         </deviceKey>
       </Target>
