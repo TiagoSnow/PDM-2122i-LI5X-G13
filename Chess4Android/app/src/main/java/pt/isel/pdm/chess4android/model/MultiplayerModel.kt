@@ -8,8 +8,11 @@ class MultiplayerModel : GameModel() {
     private var localPlayerArmy: Army? = null
 
     fun switchArmy() {
-        Log.v("TEST","My localPlayer is: "+localPlayerArmy + " and the next turn is "+ newArmyToPlay.name)
-        if(localPlayerArmy != null) return
+        Log.v(
+            "TEST",
+            "My localPlayer is: " + localPlayerArmy + " and the next turn is " + newArmyToPlay.name
+        )
+        if (localPlayerArmy != null) return
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
@@ -92,23 +95,28 @@ class MultiplayerModel : GameModel() {
     }
 
     fun verifyPiecePromotion(newCoord: Coord?): Boolean {
-        if((newCoord!!.line==0 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
-            && board[newCoord!!.col][newCoord.line]!!.army == Army.WHITE)
-            || (newCoord!!.line==7 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
-                    && board[newCoord!!.col][newCoord.line]!!.army == Army.BLACK)
-                ){
-           return true
+        if ((newCoord!!.line == 0 && board[newCoord.col][newCoord.line]!!.piece == PiecesType.PAWN
+                    && board[newCoord.col][newCoord.line]!!.army == Army.WHITE)
+            || (newCoord.line == 7 && board[newCoord.col][newCoord.line]!!.piece == PiecesType.PAWN
+                    && board[newCoord.col][newCoord.line]!!.army == Army.BLACK)
+        ) {
+            return true
         }
         return false
     }
 
     fun promotePiece(newCoord: Coord?, pieceType: PiecesType) {
-        var army = board[newCoord!!.col][newCoord.line]!!.army
-        when(pieceType){
-            PiecesType.BISHOP -> board[newCoord.col][newCoord.line] = Bishop(army,board,newCoord.col,newCoord.line)
-            PiecesType.KNIGHT -> board[newCoord.col][newCoord.line] = Knight(army,board,newCoord.col,newCoord.line)
-            PiecesType.QUEEN -> board[newCoord.col][newCoord.line] = Queen(army,board,newCoord.col,newCoord.line)
-            PiecesType.ROOK -> board[newCoord.col][newCoord.line] = Rook(army,board,newCoord.col,newCoord.line)
+        val army = board[newCoord!!.col][newCoord.line]!!.army
+        when (pieceType) {
+            PiecesType.BISHOP -> board[newCoord.col][newCoord.line] =
+                Bishop(army, board, newCoord.col, newCoord.line)
+            PiecesType.KNIGHT -> board[newCoord.col][newCoord.line] =
+                Knight(army, board, newCoord.col, newCoord.line)
+            PiecesType.QUEEN -> board[newCoord.col][newCoord.line] =
+                Queen(army, board, newCoord.col, newCoord.line)
+            PiecesType.ROOK -> board[newCoord.col][newCoord.line] =
+                Rook(army, board, newCoord.col, newCoord.line)
+            else -> {}
         }
     }
 
@@ -122,16 +130,15 @@ class MultiplayerModel : GameModel() {
             for (line in 0..7) {
                 val piece = getPiece(col, line)
                 if (piece != null && piece.army == newArmyToPlay) {
-                    if(piece is King) {
+                    if (piece is King) {
                         val kingRoutes = piece.searchRoute()
-                        if(kingRoutes.isNotEmpty()) {
+                        if (kingRoutes.isNotEmpty()) {
                             switchArmy()
                             return false
                         }
-                    }
-                    else {
+                    } else {
                         val pieceRoutes = stopCheck(piece)
-                        if(pieceRoutes.isNotEmpty()) {
+                        if (pieceRoutes.isNotEmpty()) {
                             switchArmy()
                             return false
                         }
@@ -145,4 +152,6 @@ class MultiplayerModel : GameModel() {
     fun setLocalPlayerArmy(localPlayer: Army) {
         localPlayerArmy = localPlayer
     }
+
+
 }

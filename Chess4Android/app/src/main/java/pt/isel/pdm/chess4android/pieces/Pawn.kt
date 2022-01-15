@@ -21,11 +21,10 @@ class Pawn(
 
         //TODO UPGRADE PAWN
         if ('=' in moveTemp) {
-            if('x' in moveTemp){
-                toConvert = moveTemp[5]
-            }
-            else{
-                toConvert = moveTemp[4]
+            toConvert = if ('x' in moveTemp) {
+                moveTemp[5]
+            } else {
+                moveTemp[4]
             }
             moveTemp = moveTemp.split('=')[0]
         }
@@ -46,30 +45,28 @@ class Pawn(
             line = 8 - moveTemp[1].digitToInt()
             if ((line == 3) && army == Army.BLACK ||
                 (line == 4) && army == Army.WHITE
-            )
-                startingPoint = when {
-                    checkIfPieceExists(col, 1, army, piece) -> 1
-                    checkIfPieceExists(col, 2, army, piece) -> 2
-                    checkIfPieceExists(col, 5, army, piece) -> 5
-                    checkIfPieceExists(col, 6, army, piece) -> 6
-                    army == Army.WHITE -> line + 1
-                    else -> line - 1
-                }
+            ) when {
+                //mais clean?
+                checkIfPieceExists(col, 1, army, piece) -> startingPoint = 1
+                checkIfPieceExists(col, 2, army, piece) -> startingPoint = 2
+                checkIfPieceExists(col, 5, army, piece) -> startingPoint = 5
+                checkIfPieceExists(col, 6, army, piece) -> startingPoint = 6
+            } else
+                startingPoint = if (army == Army.WHITE) line + 1 else line - 1
+            
             removePiece(col, startingPoint)
         }
-        if(toConvert==null){
+        if (toConvert == null) {
             putPiece(col, line, this)
-        }
-        else{
-            var piece: Piece
-            when(toConvert){
-                'N' -> piece = Knight(army,board, col, line)
-                'Q' -> piece = Queen(army,board, col, line)
-                'R' -> piece = Rook(army,board, col, line)
-                'B' -> piece = Bishop(army,board, col, line)
-                else -> piece = this
+        } else {
+            val piece: Piece = when (toConvert) {
+                'N' -> Knight(army, board, col, line)
+                'Q' -> Queen(army, board, col, line)
+                'R' -> Rook(army, board, col, line)
+                'B' -> Bishop(army, board, col, line)
+                else -> this
             }
-            putPiece(col,line,piece)
+            putPiece(col, line, piece)
         }
     }
 
@@ -126,13 +123,9 @@ class Pawn(
     }
 
     private fun searchDirection(col: Int, line: Int): Pair<Coord, Boolean>? {
-        if (col !in 0..7 || line !in 0..7) {
-            return null
+        if (col in 0..7 && line in 0..7) {
+            return Pair(Coord(col, line), false)
         }
-        //if (board[col][line] == null) {
-        return Pair(Coord(col, line), false)
-        //  }
-        //  return null
+        return null
     }
-
 }

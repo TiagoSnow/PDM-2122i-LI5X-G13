@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.*
-import pt.isel.pdm.tictactoe.game.model.BOARD_SIZE
-import pt.isel.pdm.tictactoe.game.model.Board
+import pt.isel.pdm.chess4android.model.BOARD_SIZE
+import pt.isel.pdm.chess4android.model.Board
 
 /**
  * Data type used to represent the game state externally, that is, when the game state crosses

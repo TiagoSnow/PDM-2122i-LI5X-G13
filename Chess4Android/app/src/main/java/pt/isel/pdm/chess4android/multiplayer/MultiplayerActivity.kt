@@ -22,7 +22,7 @@ import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.tictactoe.challenges.ChallengeInfo
 import pt.isel.pdm.tictactoe.game.GameState
 import pt.isel.pdm.tictactoe.game.getArmy
-import pt.isel.pdm.tictactoe.game.model.Board
+import pt.isel.pdm.chess4android.model.Board
 import pt.isel.pdm.tictactoe.game.toGameState
 
 private const val GAME_EXTRA = "MultiplayerActivity.GameInfoExtra"
