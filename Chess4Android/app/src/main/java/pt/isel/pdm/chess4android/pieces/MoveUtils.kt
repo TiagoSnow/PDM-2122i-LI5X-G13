@@ -3,6 +3,10 @@ package pt.isel.pdm.chess4android.pieces
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.PiecesType
 
+/**
+ * File that contains movements that are the same between Queen, Bishop and Rook
+ */
+
 internal fun searchHorizontal(
     direction: Int,
     col: Int,
@@ -98,7 +102,7 @@ internal fun searchVertical(
     army: Army,
     board: Array<Array<Piece?>>
 ): MutableList<Pair<Coord, Boolean>?> {
-    var array = mutableListOf<Pair<Coord, Boolean>?>()
+    val array = mutableListOf<Pair<Coord, Boolean>?>()
 
     if (col > direction) {     //left
         for (colAux in (col - 1) downTo 0) {
@@ -137,3 +141,7 @@ internal fun searchVertical(
     }
     return array
 }
+
+
+
+

@@ -43,4 +43,15 @@ abstract class Piece {
     abstract fun searchRoute(): MutableList<Pair<Coord, Boolean>?>
 
 
+
+
+    fun pairIsEqual(
+        kingOption: Pair<Coord, Boolean>?,
+        enemyOption: Pair<Coord, Boolean>?
+    ): Boolean {
+        return (kingOption!!.first.col == enemyOption!!.first.col &&
+                kingOption.first.line == enemyOption.first.line
+                )
+    }
+
 }

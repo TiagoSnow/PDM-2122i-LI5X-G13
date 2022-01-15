@@ -7,7 +7,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import pt.isel.pdm.tictactoe.challenges.ChallengeInfo
 import pt.isel.pdm.tictactoe.game.GameState
-import pt.isel.pdm.tictactoe.game.model.Board
 import pt.isel.pdm.tictactoe.game.toGameState
 
 /**

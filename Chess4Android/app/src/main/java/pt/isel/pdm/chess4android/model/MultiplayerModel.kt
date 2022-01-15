@@ -8,7 +8,15 @@ class MultiplayerModel : GameModel() {
     private var localPlayerArmy: Army? = null
 
     fun switchArmy() {
+<<<<<<< HEAD
         Log.v("TEST","My localPlayer is: "+localPlayerArmy + " and the next turn is "+ newArmyToPlay.name)
+=======
+        Log.v(
+            "TEST",
+            "My localPlayer is: " + localPlayerArmy + " and the next turn is " + newArmyToPlay.name
+        )
+        if (localPlayerArmy != null) return
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
         newArmyToPlay = if (newArmyToPlay == Army.WHITE) {
             Army.BLACK
         } else {
@@ -17,17 +25,25 @@ class MultiplayerModel : GameModel() {
     }
 
     /**
-     * Returns pieces routes if not check or is king
+     * Returns pieces routes if not check, is king or can be moved without compromising King
      * Else returns options to stop check (capture or block checking piece)
      */
     fun getMoveOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?> {
         val piece = getPiece(col, line) ?: return mutableListOf()
-        val routes = board[col][line]!!.searchRoute()
-        return if (piece.piece == PiecesType.KING || pieceChecking == null) {
-            routes
-        } else stopCheck(piece)
+        return when {
+            !canMovePiece(piece) -> mutableListOf()
+            else -> {
+                val routes = piece.searchRoute()
+                if (piece.piece == PiecesType.KING || pieceChecking == null)
+                    routes
+                else stopCheck(piece)
+            }
+        }
     }
 
+    /**
+     *  Returns routes in which the selected [pieceStopping] can block the piece checking
+     */
     private fun stopCheck(pieceStopping: Piece): MutableList<Pair<Coord, Boolean>?> {
         val routes = pieceStopping.searchRoute()
         val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>?>()
@@ -55,7 +71,9 @@ class MultiplayerModel : GameModel() {
         return blockCheckRoutes
     }
 
-
+    /**
+     * Verification for the possibility of double check, which prevents movement of pieces that are not the King
+     */
     fun doubleCheck() {
         for (col in 0..7) {
             for (line in 0..7) {
@@ -77,6 +95,7 @@ class MultiplayerModel : GameModel() {
         isDoubleCheck = false
     }
 
+
     fun signalCheck(piece: Piece, option: Pair<Coord, Boolean>?) {
         pieceChecking = piece
         checkPath = option
@@ -91,23 +110,28 @@ class MultiplayerModel : GameModel() {
     }
 
     fun verifyPiecePromotion(newCoord: Coord?): Boolean {
-        if((newCoord!!.line==0 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
-            && board[newCoord!!.col][newCoord.line]!!.army == Army.WHITE)
-            || (newCoord!!.line==7 && board[newCoord!!.col][newCoord.line]!!.piece == PiecesType.PAWN
-                    && board[newCoord!!.col][newCoord.line]!!.army == Army.BLACK)
-                ){
-           return true
+        if ((newCoord!!.line == 0 && board[newCoord.col][newCoord.line]!!.piece == PiecesType.PAWN
+                    && board[newCoord.col][newCoord.line]!!.army == Army.WHITE)
+            || (newCoord.line == 7 && board[newCoord.col][newCoord.line]!!.piece == PiecesType.PAWN
+                    && board[newCoord.col][newCoord.line]!!.army == Army.BLACK)
+        ) {
+            return true
         }
         return false
     }
 
     fun promotePiece(newCoord: Coord?, pieceType: PiecesType) {
-        var army = board[newCoord!!.col][newCoord.line]!!.army
-        when(pieceType){
-            PiecesType.BISHOP -> board[newCoord.col][newCoord.line] = Bishop(army,board,newCoord.col,newCoord.line)
-            PiecesType.KNIGHT -> board[newCoord.col][newCoord.line] = Knight(army,board,newCoord.col,newCoord.line)
-            PiecesType.QUEEN -> board[newCoord.col][newCoord.line] = Queen(army,board,newCoord.col,newCoord.line)
-            PiecesType.ROOK -> board[newCoord.col][newCoord.line] = Rook(army,board,newCoord.col,newCoord.line)
+        val army = board[newCoord!!.col][newCoord.line]!!.army
+        when (pieceType) {
+            PiecesType.BISHOP -> board[newCoord.col][newCoord.line] =
+                Bishop(army, board, newCoord.col, newCoord.line)
+            PiecesType.KNIGHT -> board[newCoord.col][newCoord.line] =
+                Knight(army, board, newCoord.col, newCoord.line)
+            PiecesType.QUEEN -> board[newCoord.col][newCoord.line] =
+                Queen(army, board, newCoord.col, newCoord.line)
+            PiecesType.ROOK -> board[newCoord.col][newCoord.line] =
+                Rook(army, board, newCoord.col, newCoord.line,moved = true)
+            else -> {}
         }
     }
 
@@ -121,16 +145,15 @@ class MultiplayerModel : GameModel() {
             for (line in 0..7) {
                 val piece = getPiece(col, line)
                 if (piece != null && piece.army == newArmyToPlay) {
-                    if(piece is King) {
+                    if (piece is King) {
                         val kingRoutes = piece.searchRoute()
-                        if(kingRoutes.isNotEmpty()) {
+                        if (kingRoutes.isNotEmpty()) {
                             switchArmy()
                             return false
                         }
-                    }
-                    else {
+                    } else {
                         val pieceRoutes = stopCheck(piece)
-                        if(pieceRoutes.isNotEmpty()) {
+                        if (pieceRoutes.isNotEmpty()) {
                             switchArmy()
                             return false
                         }
@@ -145,6 +168,7 @@ class MultiplayerModel : GameModel() {
         localPlayerArmy = localPlayer
     }
 
+<<<<<<< HEAD
     fun updateBoardFromOnline(board: Array<Array<Piece?>>) {
         //Log.v("BOARD", ""+board[1][1]!!.piece)
         this.board = board
@@ -152,5 +176,116 @@ class MultiplayerModel : GameModel() {
 
     fun setTurn(turn: Army?) {
 
+=======
+    /**
+     * Method that checks if piece can be moved without compromising the King
+     * (Very ugly implementation :/ )
+     */
+    private fun canMovePiece(piece: Piece): Boolean {
+        var listAux: MutableList<Pair<Coord, Boolean>?>
+        for (col in 0..7) {
+            for (line in 0..7) {
+                val enemyPiece = board[col][line]
+                if ((enemyPiece is Rook || enemyPiece is Queen || enemyPiece is Bishop)
+                    && enemyPiece.army != piece.army
+                ) {
+                    val list1 = enemyPiece.searchRoute()
+                    board[piece.col][piece.line] = null
+                    listAux = enemyPiece.searchRoute()
+                    if (listAux.size != 0)
+                        if (!canCheckKing(list1, listAux, piece)) {
+                            board[piece.col][piece.line] = piece
+                            return false
+                        }
+                    board[piece.col][piece.line] = piece
+                }
+            }
+        }
+        board[piece.col][piece.line] = piece
+        return true
+    }
+
+    private fun canCheckKing(
+        optionsWithPiece: MutableList<Pair<Coord, Boolean>?>,
+        optionsWithoutPiece: MutableList<Pair<Coord, Boolean>?>,
+        piece: Piece
+    ): Boolean {
+        //
+        val listAux = mutableListOf<Pair<Coord, Boolean>?>()
+        val pair: Pair<Coord, Boolean> = Pair(Coord(piece.col, piece.line), false)
+        val difference = optionsWithoutPiece.toSet().minus(optionsWithPiece.toSet())
+        difference.forEach { enemyOption ->
+            if (enemyOption != null && board[enemyOption.first.col][enemyOption.first.line]?.piece == PiecesType.KING)
+                return false
+        }
+        return true
+    }
+
+
+    private fun isCheckDiagonal(pieceChecking: Piece): Boolean {
+        return pieceChecking.col != checkPath!!.first.col && pieceChecking.line != checkPath!!.first.line
+    }
+
+    private fun getDiagonalBlockOptions(
+        king: Piece,
+        routes: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
+        val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>?>()
+        val xInc = if (pieceChecking?.col!! < king.col) 1 else -1
+        val yInc = if (pieceChecking?.line!! < king.line) 1 else -1
+        var x = pieceChecking!!.col
+        var y = pieceChecking!!.line
+        while (x != king.col && y != king.line) {
+            routes.forEach { route ->
+                if (route != null && route.first.col == x && route.first.line == y)
+                    blockCheckRoutes.add(route)
+            }
+            x += xInc
+            y += yInc
+        }
+        return blockCheckRoutes
+    }
+
+    private fun isCheckHorizontal(pieceChecking: Piece): Boolean {
+        return pieceChecking.line == checkPath!!.first.line
+    }
+
+    private fun getHorizontalBlockOptions(
+        king: Piece,
+        routes: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
+        val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>?>()
+        val xInc = if (pieceChecking?.col!! < king.col) 1 else -1
+        var x = pieceChecking!!.col
+        while (x != king.col) {
+            routes.forEach { route ->
+                if (route != null && route.first.col == x && route.first.line == king.line)
+                    blockCheckRoutes.add(route)
+            }
+            x += xInc
+        }
+        return blockCheckRoutes
+    }
+
+    private fun isCheckVertical(pieceChecking: Piece): Boolean {
+        return pieceChecking.col == checkPath!!.first.col
+    }
+
+    private fun getVerticalBlockOptions(
+        king: Piece,
+        routes: MutableList<Pair<Coord, Boolean>?>
+    ): MutableList<Pair<Coord, Boolean>?> {
+        val blockCheckRoutes = mutableListOf<Pair<Coord, Boolean>?>()
+        val yInc = if (pieceChecking?.line!! < king.line) 1 else -1
+        var y = pieceChecking!!.line
+        while (y != king.line) {
+            routes.forEach { route ->
+                if (route != null && route.first.line == y && route.first.col == king.col)
+                    blockCheckRoutes.add(route)
+            }
+            y += yInc
+        }
+        return blockCheckRoutes
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
     }
 }

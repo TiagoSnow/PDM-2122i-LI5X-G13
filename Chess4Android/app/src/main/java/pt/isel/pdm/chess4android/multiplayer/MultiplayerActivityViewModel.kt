@@ -12,8 +12,12 @@ import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.Coord
 import pt.isel.pdm.chess4android.pieces.Piece
 import pt.isel.pdm.tictactoe.game.GameState
+<<<<<<< HEAD
 import pt.isel.pdm.tictactoe.game.model.Board
 import pt.isel.pdm.tictactoe.game.toBoard
+=======
+import pt.isel.pdm.chess4android.model.Board
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
 import pt.isel.pdm.tictactoe.game.toGameState
 
 class MultiplayerActivityViewModel(

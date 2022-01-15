@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.PiecesType
 import pt.isel.pdm.chess4android.pieces.*
-import pt.isel.pdm.tictactoe.game.model.BOARD_SIZE
-import pt.isel.pdm.tictactoe.game.model.Board
+import pt.isel.pdm.chess4android.model.BOARD_SIZE
+import pt.isel.pdm.chess4android.model.Board
 
 /**
  * Data type used to represent the game state externally, that is, when the game state crosses
@@ -60,6 +60,7 @@ private fun String.toBoardContents(): Array<Array<Piece?>> {
     var currCol = 0
     var currLine = 0
 
+<<<<<<< HEAD
     var array = this
     array = array.replace("[","")
     array = array.replace(",","")
@@ -76,6 +77,17 @@ private fun String.toBoardContents(): Array<Array<Piece?>> {
             'K' -> board[currCol][currLine] = King(getArmy(array[idx+1]), board, currCol, currLine)
             'P' -> board[currCol][currLine] = Pawn(getArmy(array[idx+1]), board, currCol, currLine)
             '|' -> board[currCol][currLine] = null
+=======
+    while(idx < this.length) {
+        when (this[idx]) {
+            'B' -> board[currCol][currLine] = Bishop(getArmy(this[idx+1]), board, currCol, currLine)
+            'N' -> board[currCol][currLine] = Knight(getArmy(this[idx+1]), board, currCol, currLine)
+            'Q' -> board[currCol][currLine] = Queen(getArmy(this[idx+1]), board, currCol, currLine)
+            'R' -> board[currCol][currLine] = Rook(getArmy(this[idx+1]), board, currCol, currLine,moved = false)
+            'K' -> board[currCol][currLine] = King(getArmy(this[idx+1]), board, currCol, currLine,moved = false)
+            'P' -> board[currCol][currLine] = Pawn(getArmy(this[idx+1]), board, currCol, currLine)
+            else -> board[currCol][currLine] = null
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
         }
         idx += if(array[idx] == '|') {
             1

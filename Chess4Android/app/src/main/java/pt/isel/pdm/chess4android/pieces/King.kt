@@ -18,7 +18,8 @@ class King(
     override var army: Army,
     override var board: Array<Array<Piece?>>,
     override var col: Int,
-    override var line: Int
+    override var line: Int,
+    var moved: Boolean
 
 ) : Piece() {
 
@@ -57,24 +58,11 @@ class King(
 
         val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
 
-        if (pieceChecking != null) {
-            val list = stopCheckAsKing(interceptionList)
-            return list
-        }
-        return interceptionList
+        return if (pieceChecking != null) stopCheckAsKing(interceptionList)
+         else interceptionList
     }
 
-
-    private fun pairIsEqual(
-        kingOption: Pair<Coord, Boolean>?,
-        enemyOption: Pair<Coord, Boolean>?
-    ): Boolean {
-        return (kingOption!!.first.col == enemyOption!!.first.col &&
-                kingOption.first.line == enemyOption.first.line
-                )
-    }
-
-    fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
+     private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         var listAux: MutableList<Pair<Coord, Boolean>?>
         var list = allOptionsKing
         for (col in 0..7) {
@@ -95,7 +83,7 @@ class King(
         return list
     }
 
-    private fun interception(
+    fun interception(
         allOptionsKing: MutableList<Pair<Coord, Boolean>?>,
         allEnemyOptions: MutableList<Pair<Coord, Boolean>?>
     ): MutableList<Pair<Coord, Boolean>?> {
@@ -125,13 +113,6 @@ class King(
                 list.add(pair)
             }
         }
-        return list
-    }
-
-    fun standardMoves(): MutableList<Pair<Coord, Boolean>?> {
-        val list = mutableListOf<Pair<Coord, Boolean>?>()
-        for (dir in KingDir.values())
-            list.add(Pair(Coord(col + dir.x, line + dir.y), false))
         return list
     }
 
@@ -168,7 +149,7 @@ class King(
 
         //update the king coords
         val newKing: King = board[route.first.col][route.first.line] as King
-        newKing!!.col = route.first.col
+        newKing.col = route.first.col
         newKing.line = route.first.line
 
         //delete pieceChecking

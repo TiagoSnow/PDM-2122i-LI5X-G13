@@ -7,13 +7,14 @@ class PuzzleModel() : GameModel() {
     fun placePieces(pgn: String) {
         beginBoard()
         var armyFlag = true
-        val lst: List<String> = pgn.split(" ")
+
+        val lst: List<String> = pgn.replace("+", "").split(" ")
         var piece: Piece
         for (move: String in lst) {
             //isChecking = '+' in move
             val army = getArmy(armyFlag)
-            when (move.replace("+", "")[0]) {
-                'R' -> piece = Rook(army, board, 0, 0)
+            when (move[0]) {
+                'R' -> piece = Rook(army, board, 0, 0,moved = true)
 
                 'B' -> piece = Bishop(army, board, 0, 0)
 
@@ -21,7 +22,7 @@ class PuzzleModel() : GameModel() {
 
                 'N' -> piece = Knight(army, board, 0, 0)
 
-                'K' -> piece = King(army, board, 0, 0)
+                'K' -> piece = King(army, board, 0, 0,moved = true)
 
                 'O' -> {
                     if (move.length == 5) castlingLeft(armyFlag)

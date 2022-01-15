@@ -1,7 +1,12 @@
-package pt.isel.pdm.tictactoe.game.model
+package pt.isel.pdm.chess4android.model
 
+<<<<<<< HEAD
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.pieces.*
+=======
+import pt.isel.pdm.chess4android.pieces.Coord
+import pt.isel.pdm.chess4android.pieces.Piece
+>>>>>>> f9afb1fd760bdde5934c5f934b5d7ed0d1edb17e
 
 /**
  * Represents a Tic-Tac-Toe board. Instances are immutable.
@@ -29,6 +34,7 @@ data class Board(
      * @return the [Player] instance that made the move, or null if the position is empty
      */
     fun getPiece(at: Coord): Piece? = board[at.col][at.line]
+
 
     /**
      * Makes a move at the given coordinates and returns the new board instance.

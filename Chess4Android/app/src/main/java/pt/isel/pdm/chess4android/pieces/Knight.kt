@@ -24,8 +24,8 @@ class Knight(
     override var piece = PiecesType.KNIGHT
 
     override fun movePGN(move: String) {
-        var colDest: Int = 0
-        var lineDest: Int = 0
+        var colDest = 0
+        var lineDest = 0
         var startPositions: Pair<Int, Int> = Pair(-1, -1)
         when (move.length) {
             3 -> {

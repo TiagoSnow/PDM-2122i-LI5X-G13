@@ -7,7 +7,8 @@ class Rook(
     override var army: Army,
     override var board: Array<Array<Piece?>>,
     override var col: Int,
-    override var line: Int
+    override var line: Int,
+    var moved: Boolean
 ) : Piece() {
 
     override var piece = PiecesType.ROOK

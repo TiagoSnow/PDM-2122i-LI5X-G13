@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.viewModels
 import com.google.android.material.button.MaterialButton
 import pt.isel.pdm.chess4android.databinding.ActivityGameBinding
@@ -44,11 +46,17 @@ class GameActivity : AppCompatActivity() {
         mpM = MediaPlayer.create(this, R.raw.moving_piece)
 
         mp = MediaPlayer.create(this, R.raw.button_pressed)
-        val btPermMenu: Button = findViewById(R.id.btPermMenu)
+        val btPermMenu: Button = findViewById(R.id.btPermMenuMul)
 
         btPermMenu.setOnClickListener {
             mp!!.start()
             startActivity(Intent(this@GameActivity, MainActivity::class.java))
+        }
+
+        val flag_surrender: ImageView = findViewById(R.id.flag_surrender_GA)
+        flag_surrender.setOnClickListener {
+            mp!!.start()
+            showDialogFF()
         }
     }
 
@@ -126,14 +134,14 @@ class GameActivity : AppCompatActivity() {
         dialog.setContentView(R.layout.cm_popup)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btMenu)
+        val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btYesFF)
         mDialogMenu.setOnClickListener {
             mp!!.start()
             startActivity(Intent(this@GameActivity, MainActivity::class.java))
             dialog.dismiss()
         }
 
-        val mDialogReset: MaterialButton = dialog.findViewById(R.id.btReset)
+        val mDialogReset: MaterialButton = dialog.findViewById(R.id.btNoFF)
         mDialogReset.setOnClickListener {
             mp!!.start()
             startActivity(
@@ -145,6 +153,47 @@ class GameActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
+        dialog.show()
+    }
+
+    fun showDialogFF() {
+        val dialog = Dialog(this@GameActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.ff_popup)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val btYesFF: MaterialButton = dialog.findViewById(R.id.btYesFF)
+        btYesFF.setOnClickListener {
+            mp!!.start()
+            dialog.dismiss()
+            showDialogWinner(viewModel.getNextArmyToPlay().name)
+        }
+        val btNoFF: MaterialButton = dialog.findViewById(R.id.btNoFF)
+        btNoFF.setOnClickListener {
+            mp!!.start()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showDialogWinner(winner: String) {
+        val dialog = Dialog(this@GameActivity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.cm_popup_multiplayer)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val text: TextView = dialog.findViewById(R.id.winnerText)
+        text.text = getString(R.string.winnerText) + " " + winner + "!"
+
+        val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btOk)
+        mDialogMenu.setOnClickListener {
+            mp!!.start()
+            startActivity(Intent(this@GameActivity, MainActivity::class.java))
+            dialog.dismiss()
+        }
         dialog.show()
     }
 
