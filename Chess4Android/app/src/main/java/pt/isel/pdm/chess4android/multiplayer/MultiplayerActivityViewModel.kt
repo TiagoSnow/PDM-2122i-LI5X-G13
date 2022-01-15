@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.ListenerRegistration
 import pt.isel.pdm.chess4android.PuzzleOfDayApplication
 import pt.isel.pdm.chess4android.model.Army
 import pt.isel.pdm.chess4android.model.MultiplayerModel
@@ -29,10 +30,11 @@ class MultiplayerActivityViewModel(
 
     init {
         beginBoard()
+
     }
 
     private val _game: MutableLiveData<Result<Board>> by lazy {
-        MutableLiveData(Result.success(getOnlineBoard()/*initialGameState!!.toBoard()*/))
+        MutableLiveData(Result.success(getOnlineBoard()))
     }
 
     private fun getOnlineBoard(): Board {
@@ -41,20 +43,23 @@ class MultiplayerActivityViewModel(
 
     val game: LiveData<Result<Board>> = _game
 
-    private val gameSubscription = getApplication<PuzzleOfDayApplication>()
-        .gamesRepository.subscribeToGameStateChanges(
-            challengeId = initialGameState!!.id,
-            onSubscriptionError = { _game.value = Result.failure(it) },
-            onGameStateChange = { _game.value = Result.success(it.toBoard()) }
-        )
+    private lateinit var gameSubscription: ListenerRegistration
+
+    fun setGameSubscription() {
+        if(initialGameState != null) {
+            gameSubscription = getApplication<PuzzleOfDayApplication>()
+                .gamesRepository.subscribeToGameStateChanges(
+                    challengeId = initialGameState!!.id,
+                    onSubscriptionError = { _game.value = Result.failure(it) },
+                    onGameStateChange = { _game.value = Result.success(it.toBoard()) }
+                )
+        }
+    }
 
 
 
     fun beginBoard() {
         gameModel.beginBoard()
-        /*_game.value!!.onSuccess {
-            it.beginBoard()
-        }*/
     }
 
     fun getAllOptions(col: Int, line: Int): MutableList<Pair<Coord, Boolean>?>? {
@@ -148,6 +153,9 @@ class MultiplayerActivityViewModel(
     fun updateBoardFromOnline(board: Array<Array<Piece?>>, turn: Army?) {
         if(isBeginOfGame){
             isBeginOfGame = false
+            beginBoard()
+            _game.value?.onSuccess { Board(getNextArmyToPlay(), gameModel.board) }
+            _game.value?.onFailure { Board(getNextArmyToPlay(), gameModel.board) }
             return
         }
         if(_game.value == null) return
@@ -155,10 +163,5 @@ class MultiplayerActivityViewModel(
         initialGameState!!.turn = turn!!.name
     }
 
-    fun updateBoard(prevCoord: Coord, newCoord: Coord) {
-        _game.value?.onSuccess {
-            it.makeMove(newCoord, prevCoord)
-        }
-    }
 }
 

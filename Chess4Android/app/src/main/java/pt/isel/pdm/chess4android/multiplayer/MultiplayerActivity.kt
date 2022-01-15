@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
@@ -60,19 +59,16 @@ class MultiplayerActivity : AppCompatActivity() {
         ActivityGameBinding.inflate(layoutInflater)
     }
 
-  // private val viewModel: MultiplayerActivityViewModel by viewModels ()
-
     private val viewModel: MultiplayerActivityViewModel by viewModels {
         @Suppress("UNCHECKED_CAST")
         object: ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-               // Log.v("INITSTATE", "value: "+initialState!!.board)
                 return MultiplayerActivityViewModel(application, initialState, localPlayer) as T
             }
         }
     }
 
-    var mp: MediaPlayer? = null
+    var clickSound: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,10 +76,9 @@ class MultiplayerActivity : AppCompatActivity() {
 
        viewModel.updateOnlineCurrArmy(initialState, localPlayer)
 
-        viewModel.beginBoard()
-        binding.boardView.updateView(viewModel.gameModel.board, viewModel.gameModel.newArmyToPlay, false)
+        viewModel.setGameSubscription()
 
-        mp = MediaPlayer.create(this, R.raw.button_pressed)
+        clickSound = MediaPlayer.create(this, R.raw.button_pressed)
         binding.boardView.updateView(
             viewModel.gameModel.board,
             viewModel.gameModel.newArmyToPlay,
@@ -92,21 +87,22 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val btMenuPermMul: Button = findViewById(R.id.btPermMenuMul)
         btMenuPermMul.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             startActivity(Intent(this@MultiplayerActivity, MainActivity::class.java))
         }
 
         val flagSurrender: ImageView = findViewById(R.id.flag_surrender_GA)
         flagSurrender.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             showDialogFF()
         }
 
         binding.boardView.setOnBoardClickedListener(listener)
 
+        viewModel.beginBoard()
+
         viewModel.game.observe(this) {
             it.onSuccess {
-
                 viewModel.updateBoardFromOnline(it.board, it.turn)
                 binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
             }
@@ -123,14 +119,14 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val btYesFF: MaterialButton = dialog.findViewById(R.id.btYesFF)
         btYesFF.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             dialog.dismiss()
             viewModel.switchArmy()
             showDialog(viewModel.getNextArmyToPlay().name)
         }
         val btNoFF: MaterialButton = dialog.findViewById(R.id.btNoFF)
         btNoFF.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             dialog.dismiss()
         }
         dialog.show()
@@ -197,7 +193,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val mDialogBishop: MaterialButton = dialog.findViewById(R.id.btBishop)
         mDialogBishop.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             viewModel.promotePiece(newCoord, PiecesType.BISHOP)
             binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
             dialog.dismiss()
@@ -205,7 +201,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val mDialogQueen: MaterialButton = dialog.findViewById(R.id.btQueen)
         mDialogQueen.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             viewModel.promotePiece(newCoord, PiecesType.QUEEN)
             binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
             dialog.dismiss()
@@ -213,7 +209,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val mDialogKnight: MaterialButton = dialog.findViewById(R.id.btKnight)
         mDialogKnight.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             viewModel.promotePiece(newCoord, PiecesType.KNIGHT)
             binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
             dialog.dismiss()
@@ -221,7 +217,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val mDialogRook: MaterialButton = dialog.findViewById(R.id.btRook)
         mDialogRook.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             viewModel.promotePiece(newCoord, PiecesType.ROOK)
             binding.boardView.updateView(viewModel.getBoard(), viewModel.getNextArmyToPlay(), false)
             dialog.dismiss()
@@ -243,7 +239,7 @@ class MultiplayerActivity : AppCompatActivity() {
 
         val mDialogMenu: MaterialButton = dialog.findViewById(R.id.btOk)
         mDialogMenu.setOnClickListener {
-            mp!!.start()
+            clickSound!!.start()
             startActivity(Intent(this@MultiplayerActivity, MainActivity::class.java))
             dialog.dismiss()
         }
