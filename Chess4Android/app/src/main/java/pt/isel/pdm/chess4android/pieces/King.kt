@@ -53,16 +53,17 @@ class King(
         return Pair(-1, -1)
     }
 
+
     override fun searchRoute(): MutableList<Pair<Coord, Boolean>?> {
         val allOptionsKing = getAllAvailableOptions()
 
         val interceptionList = getAllAvailableOptionsFromEnemy(allOptionsKing)
 
         return if (pieceChecking != null) stopCheckAsKing(interceptionList)
-         else interceptionList
+        else interceptionList
     }
 
-     private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
+    private fun getAllAvailableOptionsFromEnemy(allOptionsKing: MutableList<Pair<Coord, Boolean>?>): MutableList<Pair<Coord, Boolean>?> {
         var listAux: MutableList<Pair<Coord, Boolean>?>
         var list = allOptionsKing
         for (col in 0..7) {
@@ -188,4 +189,83 @@ class King(
     fun removeSignalCheck() {
         this.pieceChecking = null
     }
+
+
+    protected fun castlingLeft() : Coord?  {        //returns avaiable position or null
+        val yCoord = if (army==Army.BLACK) 7 else 0
+
+        val piece: Piece? = board[0][yCoord]
+        val king: Piece? = board[4][yCoord]
+
+
+        if ((piece != null && piece is Rook && !piece.moved)       //Se é Rook e ainda não se mexeu
+            && (king != null && king is King && !king.moved)      //Se é King e ainda não se mexeu
+            && checkIfPathIsSafeToCastling(                        //caminho não tem peças, nem options enemy
+                yCoord,
+                dir = "left"
+            )
+            && king.pieceChecking == null                          //King não está em check
+        ) {
+                return Coord(0,yCoord)
+//            board[0][yCoord] = null
+//            board[3][yCoord] = Rook(army, board, 3, yCoord, moved = true)
+//
+//            //update King
+//            board[4][yCoord] = null
+//            board[2][yCoord] = King(army, board, 2, yCoord, moved = true)
+        }
+        return null
+    }
+
+    protected fun castlingRight() : Coord? {
+
+        val yCoord = if (army==Army.BLACK) 7 else 0
+
+        val piece: Piece? = board[7][yCoord]
+        val king: Piece? = board[4][yCoord]
+
+
+        if ((piece != null && piece is Rook && !piece.moved)       //Se é Rook e ainda não se mexeu
+            && (king != null && king is King && !king.moved)      //Se é King e ainda não se mexeu
+            && checkIfPathIsSafeToCastling(                       //caminho não tem peças, nem options enemy
+                yCoord,
+                dir = "right"
+            )
+            && king.pieceChecking == null   //King não está em check
+        ) {
+            return Coord(7,yCoord)
+//            board[7][yCoord] = null
+//            board[5][yCoord] = Rook(army, board, 5, yCoord, moved = true)
+//
+//            //update King
+//            board[4][yCoord] = null
+//            board[6][yCoord] = King(army, board, 6, yCoord, moved = true)
+        }
+        return null
+    }
+    private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
+
+        val listPosToCastling: MutableList<Pair<Coord, Boolean>?> =
+            if (dir == "left") {
+                if (board[1][yCoord] == null) {
+                    mutableListOf(Pair(Coord(2, yCoord), false), Pair(Coord(3, yCoord), false))
+                } else mutableListOf()
+            } else {
+                mutableListOf(Pair(Coord(5, yCoord), false), Pair(Coord(6, yCoord), false))
+            }
+
+        if (listPosToCastling.isEmpty()) return false    //posicao do Cavalo (1,yCoord) está ocupada
+
+        val listEnemyOption: MutableList<Pair<Coord, Boolean>?> =
+            getAllAvailableOptionsFromEnemy(listPosToCastling)
+
+        for (option in listEnemyOption) {
+            if (board[option!!.first.col][option.first.line] != null) {
+                return false
+            }
+        }
+        return true
+    }
+
+
 }

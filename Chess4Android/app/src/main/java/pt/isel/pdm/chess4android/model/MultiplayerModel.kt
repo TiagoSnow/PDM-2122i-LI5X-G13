@@ -164,6 +164,7 @@ class MultiplayerModel : GameModel() {
         localPlayerArmy = localPlayer
     }
 
+
     fun updateBoardFromOnline(board: Array<Array<Piece?>>) {
         //Log.v("BOARD", ""+board[1][1]!!.piece)
         this.board = board

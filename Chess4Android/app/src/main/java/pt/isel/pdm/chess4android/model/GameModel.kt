@@ -61,9 +61,9 @@ open class GameModel() {
             board[2][yCoord] = King(army, board, 2, yCoord,moved = true)
 
         }
-    }*/
+    }
 
-    /*private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
+    private fun checkIfPathIsSafeToCastling(yCoord: Int, dir: String): Boolean {
 
         val list: IntArray = if(dir=="left") intArrayOf(2,3) else intArrayOf(5,6)
         val listEnemyOptions =
@@ -89,8 +89,6 @@ open class GameModel() {
         board[6][yCoord] = King(army, board, 6, yCoord,moved = true)
 
     }
-
-
 
     var lastPGNMoveCol = 0
     var lastPGNMoveLine = 0
